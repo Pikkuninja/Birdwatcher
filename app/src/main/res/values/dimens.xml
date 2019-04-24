@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_padding">8dp</dimen>
+    <dimen name="card_text_margin">8dp</dimen>
+
+    <dimen name="sighting_listitem_image_width">120dp</dimen>
+    <dimen name="sighting_listitem_image_height">120dp</dimen>
+</resources>
