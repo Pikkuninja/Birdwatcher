@@ -30,6 +30,7 @@ dependencies {
     implementation deps.appCompat
     implementation deps.androidKotlinExtensions
 
+    implementation deps.materialDesign
     implementation deps.constraintLayout
     implementation deps.recyclerView
     implementation deps.cardView

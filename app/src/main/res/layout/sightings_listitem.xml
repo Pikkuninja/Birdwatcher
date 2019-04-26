@@ -13,54 +13,55 @@
         android:padding="@dimen/card_padding">
 
         <TextView
-            style="@style/TextAppearance.AppCompat.Title"
             android:id="@+id/sighting_listitem_title"
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/card_text_margin"
-            android:layout_toStartOf="@+id/sighting_listitem_image"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:maxLines="1"
-            android:ellipsize="end"
-            tools:text="Albatross" />
-
-        <TextView
-            style="@style/TextAppearance.AppCompat.Body1"
-            android:id="@+id/sighting_listitem_datetime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/card_text_margin"
             android:layout_toStartOf="@+id/sighting_listitem_image"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/sighting_listitem_title"
+            android:ellipsize="end"
             android:maxLines="1"
-            tools:text="2019-04-24T19:27:16Z" />
+            tools:text="@sample/birds" />
+
+        <TextView
+            android:id="@+id/sighting_listitem_datetime"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sighting_listitem_title"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="@dimen/card_text_margin"
+            android:layout_toStartOf="@+id/sighting_listitem_image"
+            android:maxLines="1"
+            tools:text="@sample/datetimes" />
 
         <TextView
             android:id="@+id/sighting_listitem_rarity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/card_text_margin"
-            android:layout_alignStart="@id/sighting_listitem_datetime"
             android:layout_below="@id/sighting_listitem_datetime"
-            android:textStyle="italic"
+            android:layout_alignStart="@id/sighting_listitem_datetime"
+            android:layout_marginEnd="@dimen/card_text_margin"
             android:maxLines="1"
-            tools:text="Extremely rare" />
+            android:textStyle="italic"
+            tools:text="@sample/bird_rarities" />
 
         <TextView
             android:id="@+id/sighting_listitem_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/card_text_margin"
-            android:layout_marginTop="@dimen/card_text_margin"
-            android:layout_alignParentStart="true"
-            android:layout_alignBottom="@+id/sighting_listitem_image"
-            android:layout_toStartOf="@+id/sighting_listitem_image"
             android:layout_below="@id/sighting_listitem_rarity"
-            android:maxLines="2"
+            android:layout_alignBottom="@+id/sighting_listitem_image"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="@dimen/card_text_margin"
+            android:layout_marginEnd="@dimen/card_text_margin"
+            android:layout_toStartOf="@+id/sighting_listitem_image"
             android:ellipsize="end"
+            android:maxLines="2"
             tools:text="@tools:sample/lorem/random" />
+
         <ImageView
             android:id="@+id/sighting_listitem_image"
             android:layout_width="@dimen/sighting_listitem_image_width"
@@ -68,6 +69,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             tools:src="@tools:sample/avatars" />
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
