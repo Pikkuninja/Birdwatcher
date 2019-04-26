@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Birdwatcher</string>
+
+    <string name="sighting_image_description">Image you added to this sighting</string>
 </resources>

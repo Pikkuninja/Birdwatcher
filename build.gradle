@@ -14,6 +14,7 @@ buildscript {
             'appCompat'              : '1.0.2',
             'androidKotlinExtensions': '1.0.1',
 
+            'materialDesign'         : '1.0.0',
             'constraintLayout'       : '1.1.3',
             'recyclerView'           : '1.0.0',
             'cardView'               : '1.0.0',
@@ -32,6 +33,7 @@ buildscript {
             'appCompat'              : "androidx.appcompat:appcompat:$versions.appCompat",
             'androidKotlinExtensions': "androidx.core:core-ktx:$versions.androidKotlinExtensions",
 
+            'materialDesign'         : "com.google.android.material:material:$versions.materialDesign",
             'constraintLayout'       : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
             'recyclerView'           : "androidx.recyclerview:recyclerview:$versions.recyclerView",
             'cardView'               : "androidx.cardview:cardview:$versions.cardView",
