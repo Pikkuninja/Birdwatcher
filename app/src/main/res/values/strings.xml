@@ -13,4 +13,6 @@
     <string name="add_sighting_location_waiting">Waiting for location…</string>
     <string name="add_sighting_save">Save</string>
     <string name="add_sighting_toolbar_title">Add sighting</string>
+
+    <string name="menu_sorting_order">Sorting order</string>
 </resources>

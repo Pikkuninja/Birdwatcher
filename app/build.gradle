@@ -28,7 +28,16 @@ dependencies {
     implementation deps.kotlinStdLib
 
     implementation deps.appCompat
-    implementation deps.androidKotlinExtensions
+    implementation deps.androidKtx
+
+    implementation deps.lifecycleKtx
+    implementation deps.viewmodelKtx
+    implementation deps.navigationKtx
+    implementation deps.navigationUIKtx
+
+    implementation deps.rxJava
+    implementation deps.rxKotlin
+    implementation deps.rxAndroid
 
     implementation deps.materialDesign
     implementation deps.constraintLayout

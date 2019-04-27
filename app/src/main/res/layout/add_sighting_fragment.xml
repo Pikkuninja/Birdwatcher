@@ -1,140 +1,120 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!-- Description input is dynamic in height, scrolling needed to make sure save button stays accessible -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/add_sighting_appbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginEnd="@dimen/margin_medium">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/add_sighting_toolbar"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_sighting_species_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/add_sighting_toolbar_title" />
+            android:hint="@string/add_sighting_species_hint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/add_sighting_species"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1" />
 
-    <!-- Description input is dynamic in height, scrolling needed to make sure save button stays accessible -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RadioGroup
+            android:id="@+id/add_sighting_rarity_radiogroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_species_container">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_sighting_rarity_title" />
+
+            <RadioButton
+                android:id="@+id/add_sighting_rarity_common"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rarity_common" />
+
+            <RadioButton
+                android:id="@+id/add_sighting_rarity_rare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rarity_rare" />
+
+            <RadioButton
+                android:id="@+id/add_sighting_rarity_extremely_rare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rarity_extremely_rare" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/add_sighting_location_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:text="@string/add_sighting_location_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_rarity_radiogroup" />
+
+        <CheckBox
+            android:id="@+id/add_sighting_location_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_sighting_location_toggle_hint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_location_title" />
+
+
+        <TextView
+            android:id="@+id/add_sighting_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_large"
+            android:text="@string/add_sighting_location_waiting"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_location_toggle" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_sighting_description_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_medium"
-            android:layout_marginEnd="@dimen/margin_medium">
+            android:hint="@string/add_sighting_description_hint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_location">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/add_sighting_species_container"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/add_sighting_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_sighting_species_hint"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:inputType="textMultiLine" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_sighting_species"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/add_sighting_save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_sighting_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_description_container" />
 
-            <RadioGroup
-                android:id="@+id/add_sighting_rarity_radiogroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_medium"
-                android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_sighting_species_container">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_sighting_rarity_title" />
-
-                <RadioButton
-                    android:id="@+id/add_sighting_rarity_common"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rarity_common" />
-
-                <RadioButton
-                    android:id="@+id/add_sighting_rarity_rare"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rarity_rare" />
-
-                <RadioButton
-                    android:id="@+id/add_sighting_rarity_extremely_rare"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rarity_extremely_rare" />
-
-            </RadioGroup>
-
-            <TextView
-                android:id="@+id/add_sighting_location_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_medium"
-                android:text="@string/add_sighting_location_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_sighting_rarity_radiogroup" />
-
-            <CheckBox
-                android:id="@+id/add_sighting_location_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_sighting_location_toggle_hint"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_sighting_location_title" />
-
-
-            <TextView
-                android:id="@+id/add_sighting_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_large"
-                android:text="@string/add_sighting_location_waiting"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_sighting_location_toggle" />
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/add_sighting_description_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/add_sighting_description_hint"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_sighting_location">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_sighting_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textMultiLine" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/add_sighting_save_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_sighting_save"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_sighting_description_container" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
