@@ -11,5 +11,5 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="sighting_listitem_image_width">120dp</dimen>
-    <dimen name="sighting_listitem_image_height">120dp</dimen>
+    <dimen name="sighting_listitem_height">140dp</dimen>
 </resources>

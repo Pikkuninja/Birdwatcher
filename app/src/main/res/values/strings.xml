@@ -2,4 +2,15 @@
     <string name="app_name">Birdwatcher</string>
 
     <string name="sighting_image_description">Image you added to this sighting</string>
+    <string name="add_sighting_species_hint">Species</string>
+    <string name="rarity_extremely_rare">Extremely rare</string>
+    <string name="rarity_common">Common</string>
+    <string name="rarity_rare">Rare</string>
+    <string name="add_sighting_rarity_title">Rarity</string>
+    <string name="add_sighting_description_hint">Notes</string>
+    <string name="add_sighting_location_title">Location</string>
+    <string name="add_sighting_location_toggle_hint">Add current location to sighting</string>
+    <string name="add_sighting_location_waiting">Waiting for location…</string>
+    <string name="add_sighting_save">Save</string>
+    <string name="add_sighting_toolbar_title">Add sighting</string>
 </resources>

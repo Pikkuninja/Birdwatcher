@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/sighting_listitem_height"
     android:layout_margin="@dimen/card_margin"
     android:orientation="vertical">
 
@@ -37,11 +37,24 @@
             android:maxLines="1"
             tools:text="@sample/datetimes" />
 
+
+        <TextView
+            android:id="@+id/sighting_listitem_location"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sighting_listitem_datetime"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="@dimen/card_text_margin"
+            android:layout_toStartOf="@+id/sighting_listitem_image"
+            android:maxLines="1"
+            tools:text="@sample/locations" />
+
         <TextView
             android:id="@+id/sighting_listitem_rarity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sighting_listitem_datetime"
+            android:layout_below="@id/sighting_listitem_location"
             android:layout_alignStart="@id/sighting_listitem_datetime"
             android:layout_marginEnd="@dimen/card_text_margin"
             android:maxLines="1"
@@ -52,12 +65,9 @@
             android:id="@+id/sighting_listitem_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sighting_listitem_rarity"
-            android:layout_alignBottom="@+id/sighting_listitem_image"
+            android:layout_below="@id/sighting_listitem_image"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="@dimen/card_text_margin"
-            android:layout_marginEnd="@dimen/card_text_margin"
-            android:layout_toStartOf="@+id/sighting_listitem_image"
+            android:layout_alignParentEnd="true"
             android:ellipsize="end"
             android:maxLines="2"
             tools:text="@tools:sample/lorem/random" />
@@ -65,9 +75,10 @@
         <ImageView
             android:id="@+id/sighting_listitem_image"
             android:layout_width="@dimen/sighting_listitem_image_width"
-            android:layout_height="@dimen/sighting_listitem_image_height"
+            android:layout_height="0dp"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@id/sighting_listitem_rarity"
             tools:src="@tools:sample/avatars" />
 
     </RelativeLayout>
