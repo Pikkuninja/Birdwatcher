@@ -24,4 +24,19 @@
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_add_white_24dp" />
 
+    <ProgressBar
+        android:id="@+id/loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/no_sightings_added_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="@string/no_sightings_added" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

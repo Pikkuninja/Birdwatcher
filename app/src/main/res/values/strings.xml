@@ -15,4 +15,9 @@
     <string name="add_sighting_toolbar_title">Add sighting</string>
 
     <string name="menu_sorting_order">Sorting order</string>
+    <string name="no_sightings_added">No sightings added. Click the + button to add one.</string>
+    <string name="sorting_datetime_desc">Newest</string>
+    <string name="sorting_name_desc">Z-A</string>
+    <string name="sorting_name_asc">A-Z</string>
+    <string name="sorting_datetime_asc">Oldest</string>
 </resources>
