@@ -46,35 +46,7 @@ class SightingsListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sighting_sorting -> {
-                activity?.findViewById<View>(R.id.sighting_sorting)?.let { itemView ->
-                    val popupMenu = PopupMenu(requireContext(), itemView)
-                    popupMenu.inflate(R.menu.sighting_sortings_menu)
-
-                    val curItemId = when (viewModel.currentSorting) {
-                        SightingSorting.TimeDescending -> R.id.sighting_sorting_datetime_desc
-                        SightingSorting.TimeAscending -> R.id.sighting_sorting_datetime_asc
-                        SightingSorting.NameAscending -> R.id.sighting_sorting_name_asc
-                        SightingSorting.NameDescending -> R.id.sighting_sorting_name_desc
-                    }
-                    popupMenu.menu.findItem(curItemId).isChecked = true
-                    popupMenu.setOnMenuItemClickListener { sortingMenuItem ->
-                        val newSorting = when (sortingMenuItem.itemId) {
-                            R.id.sighting_sorting_datetime_desc -> SightingSorting.TimeDescending
-                            R.id.sighting_sorting_datetime_asc -> SightingSorting.TimeAscending
-                            R.id.sighting_sorting_name_asc -> SightingSorting.NameAscending
-                            R.id.sighting_sorting_name_desc -> SightingSorting.NameDescending
-                            else -> null
-                        }
-
-                        newSorting?.let { viewModel.currentSorting = it }
-                        popupMenu.dismiss()
-
-                        true
-                    }
-
-                    popupMenu.show()
-
-                }
+                showSortingOrderPopup()
                 return true
             }
         }
@@ -103,4 +75,38 @@ class SightingsListFragment : Fragment() {
             }
         })
     }
+
+    private fun showSortingOrderPopup() {
+        activity?.findViewById<View>(R.id.sighting_sorting)?.let { itemView ->
+            val popupMenu = PopupMenu(requireContext(), itemView)
+            popupMenu.inflate(R.menu.sighting_sortings_menu)
+
+            popupMenu.menu.findItem(sortingToMenuId(viewModel.currentSorting)).isChecked = true
+
+            popupMenu.setOnMenuItemClickListener { sortingMenuItem ->
+                menuIdToSorting(sortingMenuItem.itemId)?.let {
+                    viewModel.currentSorting = it
+                }
+                popupMenu.dismiss()
+                true
+            }
+
+            popupMenu.show()
+        }
+    }
+}
+
+private fun sortingToMenuId(sorting: SightingSorting): Int = when (sorting) {
+    SightingSorting.TimeDescending -> R.id.sighting_sorting_datetime_desc
+    SightingSorting.TimeAscending -> R.id.sighting_sorting_datetime_asc
+    SightingSorting.NameAscending -> R.id.sighting_sorting_name_asc
+    SightingSorting.NameDescending -> R.id.sighting_sorting_name_desc
+}
+
+private fun menuIdToSorting(id: Int): SightingSorting? = when (id) {
+    R.id.sighting_sorting_datetime_desc -> SightingSorting.TimeDescending
+    R.id.sighting_sorting_datetime_asc -> SightingSorting.TimeAscending
+    R.id.sighting_sorting_name_asc -> SightingSorting.NameAscending
+    R.id.sighting_sorting_name_desc -> SightingSorting.NameDescending
+    else -> null
 }
