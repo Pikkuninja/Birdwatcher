@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -13,6 +12,12 @@ android {
         versionCode versions.versionCode
         versionName versions.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {
@@ -26,6 +31,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation deps.kotlinStdLib
+    implementation deps.kotlinCoroutines
 
     implementation deps.appCompat
     implementation deps.androidKtx
@@ -34,10 +40,8 @@ dependencies {
     implementation deps.viewmodelKtx
     implementation deps.navigationKtx
     implementation deps.navigationUIKtx
-
-    implementation deps.rxJava
-    implementation deps.rxKotlin
-    implementation deps.rxAndroid
+    implementation deps.room
+    kapt deps.roomKapt
 
     implementation deps.materialDesign
     implementation deps.constraintLayout
@@ -47,4 +51,6 @@ dependencies {
     testImplementation deps.junit
     androidTestImplementation deps.androidTestRunner
     androidTestImplementation deps.espresso
+    androidTestImplementation deps.lifecycleTesting
+    androidTestImplementation deps.liveDataTesting
 }
