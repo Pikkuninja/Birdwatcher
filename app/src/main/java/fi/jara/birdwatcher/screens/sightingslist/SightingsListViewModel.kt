@@ -8,18 +8,18 @@ import fi.jara.birdwatcher.sightings.SightingSorting
 
 class SightingsListViewModel : ViewModel() {
 
-    private val sorting = MutableLiveData<SightingSorting>(SightingSorting.TimeDescending)
+    private val sorting = MutableLiveData<SightingSorting>().apply { value = SightingSorting.TimeAscending }
     var currentSorting: SightingSorting
         get() = sorting.value!! // Sorting is initialized with a value, so there's one always present
         set(value) {
             sorting.value = value
         }
 
-    private val _showLoading = MutableLiveData<Boolean>(false)
+    private val _showLoading = MutableLiveData<Boolean>().apply { value = false }
     val showLoading: LiveData<Boolean>
         get() = _showLoading
 
-    private val _showNoSightings = MutableLiveData<Boolean>(false)
+    private val _showNoSightings = MutableLiveData<Boolean>().apply { value = false }
     val showNoSightings: LiveData<Boolean>
         get() = _showNoSightings
 
@@ -33,19 +33,19 @@ class SightingsListViewModel : ViewModel() {
         val sightingLoadingStatuses = Transformations.switchMap(sorting) {
             when (it) {
                 SightingSorting.TimeAscending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>(StatusLoading())
+                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
                 }
                 SightingSorting.TimeDescending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>(StatusLoading())
+                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
                 }
                 SightingSorting.NameAscending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>(StatusLoading())
+                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
                 }
                 SightingSorting.NameDescending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>(StatusLoading())
+                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
                 }
                 null -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>(StatusError("Null sorting"))
+                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusError("Null sorting") }
                 }
             }
         }
