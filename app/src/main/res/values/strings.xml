@@ -20,4 +20,7 @@
     <string name="sorting_name_desc">Z-A</string>
     <string name="sorting_name_asc">A-Z</string>
     <string name="sorting_datetime_asc">Oldest</string>
+
+    <string name="location_lat_lon">lat %1$.3f, lon %2$.3f</string>
+    <string name="location_no_data">No location data</string>
 </resources>

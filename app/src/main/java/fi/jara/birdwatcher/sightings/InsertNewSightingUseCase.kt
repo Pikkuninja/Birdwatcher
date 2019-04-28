@@ -1,5 +1,6 @@
 package fi.jara.birdwatcher.sightings
 
+import fi.jara.birdwatcher.common.Coordinate
 import fi.jara.birdwatcher.common.SingleResultUseCase
 import fi.jara.birdwatcher.data.*
 import java.util.*
@@ -44,7 +45,7 @@ class InsertNewSightingUseCase(private val sightingRepository: SightingRepositor
 
 data class InsertNewSightingUseCaseParams(
     val species: String,
-    val location: String,
+    val location: Coordinate?,
     val rarity: SightingRarity?,
     val description: String?
 )

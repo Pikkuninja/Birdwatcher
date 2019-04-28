@@ -37,9 +37,12 @@ class SightingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bindToSighting(sighting: Sighting) {
         title.text = sighting.species
         datetime.text = sighting.timestamp.toString()
-        location.text = sighting.location
         rarity.text = sighting.rarity.toString()
         description.text = sighting.description
+
+        location.text = sighting.location?.let {
+            itemView.resources.getString(R.string.location_lat_lon, it.latitude, it.longitude)
+        } ?: itemView.resources.getString(R.string.location_no_data)
     }
 }
 

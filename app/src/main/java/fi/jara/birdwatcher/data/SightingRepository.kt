@@ -1,6 +1,7 @@
 package fi.jara.birdwatcher.data
 
 import androidx.lifecycle.LiveData
+import fi.jara.birdwatcher.common.Coordinate
 import fi.jara.birdwatcher.sightings.Sighting
 import fi.jara.birdwatcher.sightings.SightingRarity
 import fi.jara.birdwatcher.sightings.SightingSorting
@@ -25,7 +26,7 @@ interface SightingRepository {
 data class NewSightingData(
     val species: String,
     val timestamp: Date,
-    val location: String,
+    val location: Coordinate?,
     val rarity: SightingRarity,
     val imageName: String?,
     val description: String?

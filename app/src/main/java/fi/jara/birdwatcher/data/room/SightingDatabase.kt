@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [SightingEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true)
 @TypeConverters(RoomTypeConverters::class)
 abstract class SightingDatabase: RoomDatabase() {
