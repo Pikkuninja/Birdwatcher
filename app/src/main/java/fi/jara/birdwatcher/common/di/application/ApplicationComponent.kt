@@ -5,7 +5,7 @@ import fi.jara.birdwatcher.common.di.presentation.PresentationComponent
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ApplicationModule::class, RepositoryModule::class])
+@Component(modules = [ApplicationModule::class, LocationModule::class, RepositoryModule::class])
 interface ApplicationComponent {
     fun newPresentationComponent(): PresentationComponent
 }
