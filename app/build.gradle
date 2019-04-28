@@ -47,6 +47,7 @@ dependencies {
     implementation deps.dagger
     kapt deps.daggerKapt
 
+    implementation deps.picasso
     implementation deps.materialDesign
     implementation deps.constraintLayout
     implementation deps.recyclerView

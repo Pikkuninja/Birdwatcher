@@ -79,13 +79,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_sighting_location_title" />
 
+
+        <TextView
+            android:id="@+id/add_sighting_image_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:text="@string/add_sighting_image_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_location_toggle" />
+
+        <CheckBox
+            android:id="@+id/add_sighting_image_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_sighting_image_toggle_hint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_image_title" />
+
+        <ImageView
+            android:id="@+id/add_sighting_image_preview"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/add_sighting_imagepreview_height"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:contentDescription="@string/no_image_attached"
+            android:src="@drawable/ic_imageplaceholder_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/add_sighting_image_toggle"
+            app:layout_constraintTop_toTopOf="@id/add_sighting_image_title" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_sighting_description_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/add_sighting_description_hint"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_sighting_location_toggle">
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_image_preview">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_sighting_description"

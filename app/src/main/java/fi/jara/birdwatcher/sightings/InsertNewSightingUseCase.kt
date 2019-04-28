@@ -1,6 +1,7 @@
 package fi.jara.birdwatcher.sightings
 
 import fi.jara.birdwatcher.common.SingleResultUseCase
+import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.common.location.LocationSource
 import fi.jara.birdwatcher.data.*
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,8 @@ import java.util.*
 
 class InsertNewSightingUseCase(
     private val sightingRepository: SightingRepository,
-    private val locationSource: LocationSource
+    private val locationSource: LocationSource,
+    private val imageStorage: ImageStorage
 ) :
     SingleResultUseCase<InsertNewSightingUseCaseParams, Unit, String>() {
     override suspend fun execute(
@@ -28,6 +30,8 @@ class InsertNewSightingUseCase(
             return
         }
 
+        val timestamp = Date()
+
         val coordinate = try {
              if (params.addLocation) {
                 withContext(Dispatchers.Default) {
@@ -41,14 +45,24 @@ class InsertNewSightingUseCase(
             return
         }
 
+        val imagePath = params.imageBytes?.let {
+            try {
+                withContext(Dispatchers.IO) {
+                    imageStorage.saveImageBytes(it, "${params.species}-$timestamp.jpg")
+                }
+            } catch (e: Exception) {
+                onError("Error storing image")
+                return
+            }
+        }
+
         val insertResult = withContext(Dispatchers.IO) {
-            val timestamp = Date()
             val newSightingData = NewSightingData(
                 params.species,
                 timestamp,
                 coordinate,
                 params.rarity,
-                null,
+                imagePath,
                 params.description
             )
 
@@ -67,9 +81,10 @@ class InsertNewSightingUseCase(
     }
 }
 
-data class InsertNewSightingUseCaseParams(
+class InsertNewSightingUseCaseParams(
     val species: String,
     val addLocation: Boolean,
     val rarity: SightingRarity?,
-    val description: String?
+    val description: String?,
+    val imageBytes: ByteArray?
 )

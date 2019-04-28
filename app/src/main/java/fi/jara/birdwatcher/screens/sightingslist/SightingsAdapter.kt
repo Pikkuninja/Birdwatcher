@@ -4,17 +4,21 @@ import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import fi.jara.birdwatcher.R
+import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.sightings.Sighting
 import fi.jara.birdwatcher.sightings.SightingRarity
 import java.text.DateFormat
 
 
-class SightingsAdapter : ListAdapter<Sighting, SightingViewHolder>(SightingDiffChecker()) {
+class SightingsAdapter(private val imageStorage: ImageStorage) :
+    ListAdapter<Sighting, SightingViewHolder>(SightingDiffChecker()) {
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SightingViewHolder =
@@ -27,7 +31,7 @@ class SightingsAdapter : ListAdapter<Sighting, SightingViewHolder>(SightingDiffC
         )
 
     override fun onBindViewHolder(holder: SightingViewHolder, position: Int) {
-        holder.bindToSighting(getItem(position), dateFormat)
+        holder.bindToSighting(getItem(position), dateFormat, imageStorage)
     }
 
 }
@@ -38,8 +42,9 @@ class SightingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val location = itemView.findViewById<TextView>(R.id.sighting_listitem_location)
     private val rarity = itemView.findViewById<TextView>(R.id.sighting_listitem_rarity)
     private val description = itemView.findViewById<TextView>(R.id.sighting_listitem_description)
+    private val image = itemView.findViewById<ImageView>(R.id.sighting_listitem_image)
 
-    fun bindToSighting(sighting: Sighting, dateFormat: DateFormat) {
+    fun bindToSighting(sighting: Sighting, dateFormat: DateFormat, imageStorage: ImageStorage) {
         title.text = sighting.species
         datetime.text = dateFormat.format(sighting.timestamp)
         rarity.text = itemView.resources.getString(rarityToResourceId(sighting.rarity))
@@ -48,6 +53,15 @@ class SightingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         location.text = sighting.location?.let {
             itemView.resources.getString(R.string.location_lat_lon, it.latitude, it.longitude)
         } ?: itemView.resources.getString(R.string.location_no_data)
+
+        sighting.imageName?.let {
+            Picasso.get().load(imageStorage.getUriFor(sighting.imageName))
+                .placeholder(R.drawable.ic_imageplaceholder_black_24dp)
+                .error(R.drawable.ic_error_outline_black_24dp)
+                .into(image)
+        } ?: run {
+            image.setImageResource(R.drawable.ic_imageplaceholder_black_24dp)
+        }
     }
 }
 

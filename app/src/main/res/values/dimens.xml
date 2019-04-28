@@ -12,4 +12,7 @@
 
     <dimen name="sighting_listitem_image_width">120dp</dimen>
     <dimen name="sighting_listitem_height">140dp</dimen>
+
+
+    <dimen name="add_sighting_imagepreview_height">100dp</dimen>
 </resources>
