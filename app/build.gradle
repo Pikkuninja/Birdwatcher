@@ -32,6 +32,7 @@ dependencies {
 
     implementation deps.kotlinStdLib
     implementation deps.kotlinCoroutines
+    implementation deps.kotlinCoroutinesAndroid
 
     implementation deps.appCompat
     implementation deps.androidKtx

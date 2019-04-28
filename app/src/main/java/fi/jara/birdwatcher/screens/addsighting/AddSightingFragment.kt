@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
+import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.screens.common.BaseFragment
 import fi.jara.birdwatcher.screens.common.ViewModelFactory
+import fi.jara.birdwatcher.sightings.SightingRarity
+import kotlinx.android.synthetic.main.add_sighting_fragment.*
 import javax.inject.Inject
 
 class AddSightingFragment : BaseFragment() {
@@ -25,18 +26,47 @@ class AddSightingFragment : BaseFragment() {
         getPresentationComponent().inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.add_sighting_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
+            = inflater.inflate(R.layout.add_sighting_fragment, container, false)
 
-
-        view.findViewById<Button>(R.id.add_sighting_save_button).setOnClickListener {
-            Navigation.findNavController(it).navigateUp()
-        }
-
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        subscribeToViewModel()
     }
 
     private fun subscribeToViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(AddSightingViewModel::class.java)
+
+        viewModel.addLocationToSighting.observe(viewLifecycleOwner, Observer {
+            add_sighting_location_toggle.isChecked = it
+        })
+
+        viewModel.saveButtonEnabled.observe(viewLifecycleOwner, Observer {
+            add_sighting_save_button.isEnabled = it
+        })
+
+
+        viewModel.displayMessages.observe(viewLifecycleOwner, Observer { message ->
+            view?.let { v ->
+                Snackbar.make(v, message, Snackbar.LENGTH_LONG).show()
+            }
+        })
+
+        add_sighting_location_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.onAddLocationToSightingToggled(isChecked)
+        }
+
+        add_sighting_save_button.setOnClickListener {
+            val name = add_sighting_species.text?.toString() ?: ""
+            val rarity = when (add_sighting_rarity_radiogroup.checkedRadioButtonId) {
+                R.id.add_sighting_rarity_common -> SightingRarity.Common
+                R.id.add_sighting_rarity_rare -> SightingRarity.Rare
+                R.id.add_sighting_rarity_extremely_rare -> SightingRarity.ExtremelyRare
+                else -> null
+            }
+            val description = add_sighting_description.text?.toString() ?: ""
+
+            viewModel.onSaveSightingClicked(name, rarity, description)
+        }
     }
 }

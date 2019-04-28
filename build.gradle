@@ -35,35 +35,36 @@ buildscript {
     ]
 
     ext.deps = [
-            'android_gradle_plugin': "com.android.tools.build:gradle:$versions.android_gradle_plugin",
-            'kotlin_gradle_plugin' : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+            'android_gradle_plugin'  : "com.android.tools.build:gradle:$versions.android_gradle_plugin",
+            'kotlin_gradle_plugin'   : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
 
-            'kotlinStdLib'         : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin",
-            'kotlinCoroutines'     : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
+            'kotlinStdLib'           : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin",
+            'kotlinCoroutines'       : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
+            'kotlinCoroutinesAndroid': "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines",
 
-            'appCompat'            : "androidx.appcompat:appcompat:$versions.appCompat",
-            'androidKtx'           : "androidx.core:core-ktx:$versions.androidKtx",
+            'appCompat'              : "androidx.appcompat:appcompat:$versions.appCompat",
+            'androidKtx'             : "androidx.core:core-ktx:$versions.androidKtx",
 
-            'lifecycleKtx'         : "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
-            'viewmodelKtx'         : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
-            'navigationKtx'        : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
-            'navigationUIKtx'      : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
-            'room'                 : "androidx.room:room-runtime:$versions.room",
-            'roomKapt'             : "androidx.room:room-compiler:$versions.room",
+            'lifecycleKtx'           : "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
+            'viewmodelKtx'           : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
+            'navigationKtx'          : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
+            'navigationUIKtx'        : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
+            'room'                   : "androidx.room:room-runtime:$versions.room",
+            'roomKapt'               : "androidx.room:room-compiler:$versions.room",
 
-            'dagger'               : "com.google.dagger:dagger:$versions.dagger",
-            'daggerKapt'           : "com.google.dagger:dagger-compiler:$versions.dagger",
+            'dagger'                 : "com.google.dagger:dagger:$versions.dagger",
+            'daggerKapt'             : "com.google.dagger:dagger-compiler:$versions.dagger",
 
-            'materialDesign'       : "com.google.android.material:material:$versions.materialDesign",
-            'constraintLayout'     : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
-            'recyclerView'         : "androidx.recyclerview:recyclerview:$versions.recyclerView",
-            'cardView'             : "androidx.cardview:cardview:$versions.cardView",
+            'materialDesign'         : "com.google.android.material:material:$versions.materialDesign",
+            'constraintLayout'       : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
+            'recyclerView'           : "androidx.recyclerview:recyclerview:$versions.recyclerView",
+            'cardView'               : "androidx.cardview:cardview:$versions.cardView",
 
-            'junit'                : "junit:junit:$versions.junit",
-            'androidTestRunner'    : "androidx.test:runner:$versions.androidTestRunner",
-            'espresso'             : "androidx.test.espresso:espresso-core:$versions.espresso",
-            'lifecycleTesting'     : "androidx.arch.core:core-testing:$versions.archCore",
-            'liveDataTesting'      : "com.jraska.livedata:testing-ktx:$versions.liveDataTesting",
+            'junit'                  : "junit:junit:$versions.junit",
+            'androidTestRunner'      : "androidx.test:runner:$versions.androidTestRunner",
+            'espresso'               : "androidx.test.espresso:espresso-core:$versions.espresso",
+            'lifecycleTesting'       : "androidx.arch.core:core-testing:$versions.archCore",
+            'liveDataTesting'        : "com.jraska.livedata:testing-ktx:$versions.liveDataTesting",
     ]
 
     repositories {

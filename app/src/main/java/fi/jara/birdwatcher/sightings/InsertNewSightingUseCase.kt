@@ -1,8 +1,9 @@
 package fi.jara.birdwatcher.sightings
 
-import fi.jara.birdwatcher.common.Coordinate
 import fi.jara.birdwatcher.common.SingleResultUseCase
 import fi.jara.birdwatcher.data.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class InsertNewSightingUseCase(private val sightingRepository: SightingRepository) :
@@ -14,6 +15,7 @@ class InsertNewSightingUseCase(private val sightingRepository: SightingRepositor
     ) {
         if (!checkSpeciesNameIsValid(params.species)) {
             onError("Species name is empty")
+            return
         }
 
         if (params.rarity == null) {
@@ -21,19 +23,23 @@ class InsertNewSightingUseCase(private val sightingRepository: SightingRepositor
             return
         }
 
-        val timestamp = Date()
-        val newSightingData = NewSightingData(
-            params.species,
-            timestamp,
-            params.location,
-            params.rarity,
-            null,
-            params.description
-        )
+        val insertResult = withContext(Dispatchers.IO) {
+            val timestamp = Date()
+            val newSightingData = NewSightingData(
+                params.species,
+                timestamp,
+                null,
+                params.rarity,
+                null,
+                params.description
+            )
 
-        when (val result = sightingRepository.addSighting(newSightingData)) {
+            sightingRepository.addSighting(newSightingData)
+        }
+
+        when (insertResult) {
             is StatusSuccess -> onSuccess(Unit)
-            is StatusError -> onError(result.message)
+            is StatusError -> onError(insertResult.message)
             else -> onError("Unknown error while saving sighting")
         }
     }
@@ -45,7 +51,7 @@ class InsertNewSightingUseCase(private val sightingRepository: SightingRepositor
 
 data class InsertNewSightingUseCaseParams(
     val species: String,
-    val location: Coordinate?,
+    val addLocation: Boolean,
     val rarity: SightingRarity?,
     val description: String?
 )
