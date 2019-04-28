@@ -1,5 +1,6 @@
 package fi.jara.birdwatcher.screens.sightingslist
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.sightings.Sighting
+import fi.jara.birdwatcher.sightings.SightingRarity
+import java.text.DateFormat
 
 
 class SightingsAdapter : ListAdapter<Sighting, SightingViewHolder>(SightingDiffChecker()) {
+    private val dateFormat: DateFormat = DateFormat.getDateTimeInstance()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SightingViewHolder =
         SightingViewHolder(
             LayoutInflater.from(parent.context).inflate(
@@ -22,7 +27,7 @@ class SightingsAdapter : ListAdapter<Sighting, SightingViewHolder>(SightingDiffC
         )
 
     override fun onBindViewHolder(holder: SightingViewHolder, position: Int) {
-        holder.bindToSighting(getItem(position))
+        holder.bindToSighting(getItem(position), dateFormat)
     }
 
 }
@@ -34,10 +39,10 @@ class SightingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val rarity = itemView.findViewById<TextView>(R.id.sighting_listitem_rarity)
     private val description = itemView.findViewById<TextView>(R.id.sighting_listitem_description)
 
-    fun bindToSighting(sighting: Sighting) {
+    fun bindToSighting(sighting: Sighting, dateFormat: DateFormat) {
         title.text = sighting.species
-        datetime.text = sighting.timestamp.toString()
-        rarity.text = sighting.rarity.toString()
+        datetime.text = dateFormat.format(sighting.timestamp)
+        rarity.text = itemView.resources.getString(rarityToResourceId(sighting.rarity))
         description.text = sighting.description
 
         location.text = sighting.location?.let {
@@ -54,3 +59,8 @@ class SightingDiffChecker : DiffUtil.ItemCallback<Sighting>() {
     override fun areContentsTheSame(oldItem: Sighting, newItem: Sighting): Boolean = oldItem == newItem
 }
 
+private fun rarityToResourceId(rarity: SightingRarity) = when (rarity) {
+    SightingRarity.Common -> R.string.rarity_common
+    SightingRarity.Rare -> R.string.rarity_rare
+    SightingRarity.ExtremelyRare -> R.string.rarity_extremely_rare
+}
