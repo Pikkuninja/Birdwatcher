@@ -79,25 +79,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_sighting_location_title" />
 
-
-        <TextView
-            android:id="@+id/add_sighting_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_large"
-            android:text="@string/add_sighting_location_waiting"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_sighting_location_toggle" />
-
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/add_sighting_description_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/add_sighting_description_hint"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_sighting_location">
+            app:layout_constraintTop_toBottomOf="@id/add_sighting_location_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_sighting_description"
