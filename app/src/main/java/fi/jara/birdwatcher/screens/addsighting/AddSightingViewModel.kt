@@ -8,8 +8,6 @@ import fi.jara.birdwatcher.sightings.InsertNewSightingUseCase
 import fi.jara.birdwatcher.sightings.InsertNewSightingUseCaseParams
 import fi.jara.birdwatcher.sightings.SightingRarity
 import kotlinx.coroutines.*
-import kotlin.coroutines.suspendCoroutine
-import kotlin.system.measureTimeMillis
 
 class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSightingUseCase) : ViewModel() {
     private val viewModelJob = SupervisorJob()
@@ -47,6 +45,7 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
     }
 
     fun onLocationPermissionRequestFinished(hasPermission: Boolean) {
+        hasLocationPermission = hasPermission
         if (!hasPermission) {
             _addLocationToSighting.value = false
         }
@@ -57,10 +56,10 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
         sightingRarity: SightingRarity?,
         sightingDescription: String
     ) {
-        //All of the LiveDatas are initialized with non nulls
         uiScope.launch {
             _saveButtonEnabled.value = false
 
+            //All of the LiveDatas are initialized with non nulls
             insertNewSightingUseCase.execute(
                 InsertNewSightingUseCaseParams(
                     sightingName,
