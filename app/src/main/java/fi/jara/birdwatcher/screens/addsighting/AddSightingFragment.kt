@@ -1,6 +1,8 @@
 package fi.jara.birdwatcher.screens.addsighting
 
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +54,10 @@ class AddSightingFragment : BaseFragment() {
             }
         })
 
+        viewModel.requestLocationPermission.observe(viewLifecycleOwner, Observer {
+            requestLocationPermission()
+        })
+
         add_sighting_location_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.onAddLocationToSightingToggled(isChecked)
         }
@@ -68,5 +74,20 @@ class AddSightingFragment : BaseFragment() {
 
             viewModel.onSaveSightingClicked(name, rarity, description)
         }
+    }
+
+    private fun requestLocationPermission() {
+        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            val granted = grantResults.getOrNull(0) ?: PackageManager.PERMISSION_DENIED
+            viewModel.onLocationPermissionRequestFinished(granted == PackageManager.PERMISSION_GRANTED)
+        }
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 4321
     }
 }

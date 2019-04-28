@@ -17,7 +17,6 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private var hasLocationPermission: Boolean = false
-    private var setAddLocationToAfterPermissionCheck: Boolean = false
 
     private val _displayMessages = LiveEvent<String>()
     val displayMessages: LiveData<String>
@@ -38,23 +37,15 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
 
     fun onAddLocationToSightingToggled(value: Boolean) {
         if (value && !hasLocationPermission) {
-            setAddLocationToAfterPermissionCheck = true
             _requestLocationPermission.postValue(Unit)
-        } else {
-            setAddLocationToAfterPermissionCheck = value
-            _addLocationToSighting.value = value
         }
+
+        _addLocationToSighting.value = value
     }
 
     fun onLocationPermissionRequestFinished(hasPermission: Boolean) {
-        val valueToSet = if (hasPermission) {
-            setAddLocationToAfterPermissionCheck
-        } else {
-            false
-        }
-
-        if (_addLocationToSighting.value != valueToSet) {
-            _addLocationToSighting.value = valueToSet
+        if (!hasPermission) {
+            _addLocationToSighting.value = false
         }
     }
 
