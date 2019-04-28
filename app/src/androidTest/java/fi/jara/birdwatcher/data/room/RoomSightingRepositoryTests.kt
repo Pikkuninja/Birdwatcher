@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.jraska.livedata.test
+import fi.jara.birdwatcher.common.Coordinate
 import fi.jara.birdwatcher.data.NewSightingData
 import fi.jara.birdwatcher.data.StatusEmpty
 import fi.jara.birdwatcher.data.StatusLoading
@@ -124,7 +125,7 @@ class RoomSightingRepositoryTests {
             1,
             "Albratross",
             Date.from(Instant.ofEpochMilli(100000)),
-            "Helsinki",
+            Coordinate(60.0, 20.0),
             SightingRarity.ExtremelyRare,
             "somename.jpg",
             "Lorem ipsum"
@@ -133,7 +134,7 @@ class RoomSightingRepositoryTests {
             2,
             "Eagle",
             Date.from(Instant.ofEpochMilli(200000)),
-            "Tampere",
+            null,
             SightingRarity.Rare,
             null,
             null
@@ -142,7 +143,7 @@ class RoomSightingRepositoryTests {
             3,
             "Owl",
             Date.from(Instant.ofEpochMilli(300000)),
-            "Pori",
+            Coordinate(61.0, 23.0),
             SightingRarity.Common,
             "othername.jpg",
             null
@@ -151,7 +152,7 @@ class RoomSightingRepositoryTests {
             4,
             "Falcon",
             Date.from(Instant.ofEpochMilli(400000)),
-            "Turku",
+            Coordinate(50.0, 20.0),
             SightingRarity.Rare,
             null,
             "Dolor sit amet"
@@ -162,7 +163,7 @@ class RoomSightingRepositoryTests {
         NewSightingData(
             "Albratross",
             Date.from(Instant.ofEpochMilli(100000)),
-            "Helsinki",
+            Coordinate(60.0, 20.0),
             SightingRarity.ExtremelyRare,
             "somename.jpg",
             "Lorem ipsum"
@@ -170,7 +171,7 @@ class RoomSightingRepositoryTests {
         NewSightingData(
             "Eagle",
             Date.from(Instant.ofEpochMilli(200000)),
-            "Tampere",
+            null,
             SightingRarity.Rare,
             null,
             null
@@ -178,7 +179,7 @@ class RoomSightingRepositoryTests {
         NewSightingData(
             "Owl",
             Date.from(Instant.ofEpochMilli(300000)),
-            "Pori",
+            Coordinate(61.0, 23.0),
             SightingRarity.Common,
             "othername.jpg",
             null
@@ -186,7 +187,7 @@ class RoomSightingRepositoryTests {
         NewSightingData(
             "Falcon",
             Date.from(Instant.ofEpochMilli(400000)),
-            "Turku",
+            Coordinate(50.0, 20.0),
             SightingRarity.Rare,
             null,
             "Dolor sit amet"

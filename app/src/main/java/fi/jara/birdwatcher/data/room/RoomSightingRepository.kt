@@ -3,6 +3,7 @@ package fi.jara.birdwatcher.data.room
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
+import fi.jara.birdwatcher.common.Coordinate
 import fi.jara.birdwatcher.data.*
 import fi.jara.birdwatcher.sightings.Sighting
 import fi.jara.birdwatcher.sightings.SightingSorting
@@ -11,25 +12,15 @@ class RoomSightingRepository(private val database: SightingDatabase) : SightingR
     private val dao = database.sightingDao()
 
     override fun allSightings(sorting: SightingSorting): LiveData<RepositoryLoadingStatus<List<Sighting>>> {
-        val liveData= when (sorting) {
+        val liveData = when (sorting) {
             SightingSorting.TimeDescending -> dao.loadAllSightingsTimestampDesc()
             SightingSorting.TimeAscending -> dao.loadAllSightingsTimestampAsc()
             SightingSorting.NameDescending -> dao.loadAllSightingsSpeciesDesc()
             SightingSorting.NameAscending -> dao.loadAllSightingsSpeciesAsc()
         }
 
-        val sightingLists =  Transformations.map(liveData) { sightings ->
-            sightings.map {
-                Sighting(
-                    it.id,
-                    it.species,
-                    it.timestamp,
-                    it.location,
-                    it.rarity,
-                    it.imageName,
-                    it.description
-                )
-            }
+        val sightingLists = Transformations.map(liveData) { entities ->
+            entities.map { it.toSightingModel() }
         }
 
         return MediatorLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply {
@@ -45,15 +36,7 @@ class RoomSightingRepository(private val database: SightingDatabase) : SightingR
     }
 
     override suspend fun addSighting(sightingData: NewSightingData): RepositoryLoadingStatus<Sighting> {
-        val entity = SightingEntity(
-            0,
-            sightingData.species,
-            sightingData.timestamp,
-            sightingData.location,
-            sightingData.rarity,
-            sightingData.imageName,
-            sightingData.description
-        )
+        val entity = SightingEntity.fromNewSightingData(sightingData)
 
         val id = dao.insertSighting(entity)
 
