@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import javax.inject.Provider
 
-
 class ViewModelFactory(private val providerMap: Map<Class<out ViewModel>, Provider<ViewModel>>) :
     ViewModelProvider.Factory {
 

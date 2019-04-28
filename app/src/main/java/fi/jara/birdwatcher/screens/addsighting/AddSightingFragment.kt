@@ -1,6 +1,5 @@
 package fi.jara.birdwatcher.screens.addsighting
 
-
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -20,8 +19,6 @@ import fi.jara.birdwatcher.sightings.SightingRarity
 import kotlinx.android.synthetic.main.add_sighting_fragment.*
 import javax.inject.Inject
 
-
-
 class AddSightingFragment : BaseFragment() {
     private lateinit var viewModel: AddSightingViewModel
 
@@ -33,8 +30,8 @@ class AddSightingFragment : BaseFragment() {
         getPresentationComponent().inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
-            = inflater.inflate(R.layout.add_sighting_fragment, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+        inflater.inflate(R.layout.add_sighting_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -112,7 +109,10 @@ class AddSightingFragment : BaseFragment() {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, resources.getString(R.string.select_image)), IMAGE_FROM_GALLERY_REQUEST_CODE)
+        startActivityForResult(
+            Intent.createChooser(intent, resources.getString(R.string.select_image)),
+            IMAGE_FROM_GALLERY_REQUEST_CODE
+        )
     }
 
     private fun gotoListScreen() {

@@ -11,7 +11,6 @@ import fi.jara.birdwatcher.sightings.InsertNewSightingUseCase
 import fi.jara.birdwatcher.sightings.ObserveAllSightingsUseCase
 import javax.inject.Provider
 
-
 @Module
 class ViewModelModule {
     // TODO: Switch to multibinding the providers into a map instead of doing this by hand,
