@@ -15,12 +15,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
+import fi.jara.birdwatcher.screens.common.BaseFragment
+import fi.jara.birdwatcher.screens.common.ViewModelFactory
 import fi.jara.birdwatcher.sightings.SightingSorting
 import kotlinx.android.synthetic.main.sightings_list_fragment.*
+import javax.inject.Inject
 
-class SightingsListFragment : Fragment() {
+class SightingsListFragment : BaseFragment() {
     private lateinit var viewModel: SightingsListViewModel
     private val sightingsAdapter = SightingsAdapter()
+
+    @Inject lateinit var viewModelFactory: ViewModelFactory
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getPresentationComponent().inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.sightings_list_fragment, container, false)
@@ -55,7 +65,7 @@ class SightingsListFragment : Fragment() {
     }
 
     private fun subscribeToViewModel() {
-        viewModel = ViewModelProviders.of(this).get(SightingsListViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(SightingsListViewModel::class.java)
 
         viewModel.sightings.observe(viewLifecycleOwner, Observer {
             sightingsAdapter.submitList(it)

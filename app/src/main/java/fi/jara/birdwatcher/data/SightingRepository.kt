@@ -17,7 +17,7 @@ import java.util.*
 
 interface SightingRepository {
     // TODO: Use Kotlin Flows when out of early access
-    fun allSightings(sorting: SightingSorting): LiveData<List<Sighting>>
+    fun allSightings(sorting: SightingSorting): LiveData<RepositoryLoadingStatus<List<Sighting>>>
 
     suspend fun addSighting(sightingData: NewSightingData): RepositoryLoadingStatus<Sighting>
 }

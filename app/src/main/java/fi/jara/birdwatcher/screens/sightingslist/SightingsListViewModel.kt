@@ -1,14 +1,13 @@
 package fi.jara.birdwatcher.screens.sightingslist
 
 import androidx.lifecycle.*
-import fi.jara.birdwatcher.LiveEvent
+import fi.jara.birdwatcher.common.LiveEvent
 import fi.jara.birdwatcher.data.*
-import fi.jara.birdwatcher.sightings.Sighting
-import fi.jara.birdwatcher.sightings.SightingSorting
+import fi.jara.birdwatcher.sightings.*
 
-class SightingsListViewModel : ViewModel() {
+class SightingsListViewModel(private val observeAllSightingsUseCase: ObserveAllSightingsUseCase) : ViewModel() {
 
-    private val sorting = MutableLiveData<SightingSorting>().apply { value = SightingSorting.TimeAscending }
+    private val sorting = MutableLiveData<SightingSorting>().apply { value = SightingSorting.TimeDescending }
     var currentSorting: SightingSorting
         get() = sorting.value!! // Sorting is initialized with a value, so there's one always present
         set(value) {
@@ -31,34 +30,20 @@ class SightingsListViewModel : ViewModel() {
 
     init {
         val sightingLoadingStatuses = Transformations.switchMap(sorting) {
-            when (it) {
-                SightingSorting.TimeAscending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
-                }
-                SightingSorting.TimeDescending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
-                }
-                SightingSorting.NameAscending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
-                }
-                SightingSorting.NameDescending -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusLoading() }
-                }
-                null -> {
-                    MutableLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply { value = StatusError("Null sorting") }
-                }
-            }
+            observeAllSightingsUseCase.execute(it)
         }
 
         val sightingsMediator = MediatorLiveData<List<Sighting>>()
-        sightingsMediator.addSource(sightingLoadingStatuses) {
-            _showLoading.value = it is StatusLoading
-            _showNoSightings.value = it is StatusEmpty
-            if (it is StatusSuccess) {
-                sightingsMediator.value = it.value
-            } else if (it is StatusError) {
-                _sightingLoadErrors.value = it.message
+        sightingsMediator.addSource(sightingLoadingStatuses) { resultOrError ->
+            resultOrError.result?.let {
+                _showLoading.value = it is Loading
+                _showNoSightings.value = it is NoSightings
+                if (it is SightingsFound) {
+                    sightingsMediator.value = it.sightings
+                }
             }
+
+            resultOrError.errorMessage?.let { _sightingLoadErrors.value = it }
         }
         sightings = sightingsMediator
     }

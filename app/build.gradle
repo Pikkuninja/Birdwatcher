@@ -43,6 +43,9 @@ dependencies {
     implementation deps.room
     kapt deps.roomKapt
 
+    implementation deps.dagger
+    kapt deps.daggerKapt
+
     implementation deps.materialDesign
     implementation deps.constraintLayout
     implementation deps.recyclerView
