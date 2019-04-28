@@ -1,4 +1,4 @@
-package fi.jara.birdwatcher
+package fi.jara.birdwatcher.common
 
 /**
  * https://github.com/hadilq/LiveEvent

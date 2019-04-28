@@ -6,11 +6,12 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.jraska.livedata.test
 import fi.jara.birdwatcher.data.NewSightingData
+import fi.jara.birdwatcher.data.StatusEmpty
+import fi.jara.birdwatcher.data.StatusLoading
+import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.sightings.Sighting
 import fi.jara.birdwatcher.sightings.SightingRarity
 import fi.jara.birdwatcher.sightings.SightingSorting
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -24,9 +25,9 @@ import org.junit.Rule
 
 
 /**
- * Instrumented test, which will execute on an Android device.
- *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * The LiveData testing library used doesn't seem to catch the Loading status being emitted as the
+ * results are emitted so fast in tests, so tests not interested in it can ignore it. Tests that want to
+ * ensure that the Loading is emitted need to check the value of the LiveData immediately with the .value property
  */
 @RunWith(AndroidJUnit4::class)
 class RoomSightingRepositoryTests {
@@ -57,22 +58,29 @@ class RoomSightingRepositoryTests {
     }
 
     @Test
-    fun insertToRepository_emitsLiveDataWithAutoincrementedId() {
+    fun observeEmptyRepository_emitsLoadingAndEmpty() {
         val liveData = repository.allSightings(SightingSorting.TimeAscending)
+        val initialValue = liveData.value
+        assert(initialValue is StatusLoading)
 
-        liveData.test().assertValue(emptyList())
+        liveData.test().assertValue { it is StatusEmpty }
+    }
+
+    @Test
+    fun insertToRepository_emitsLiveDataWithAutoincrementedId() {
+        val liveData = repository.allSightings(SightingSorting.TimeAscending).test()
 
         runBlocking {
             repository.addSighting(newSightingDatasInDatetimeAsc[0])
         }
 
-        liveData.test().assertValue(listOf(sightingsSamplesInDatetimeAsc[0]))
+        liveData.assertValue(StatusSuccess(listOf(sightingsSamplesInDatetimeAsc[0])))
 
         runBlocking {
             repository.addSighting(newSightingDatasInDatetimeAsc[1])
         }
 
-        liveData.test().assertValue(listOf(sightingsSamplesInDatetimeAsc[0], sightingsSamplesInDatetimeAsc[1]))
+        liveData.assertValue(StatusSuccess(listOf(sightingsSamplesInDatetimeAsc[0], sightingsSamplesInDatetimeAsc[1])))
     }
 
     @Test
@@ -81,7 +89,7 @@ class RoomSightingRepositoryTests {
 
         repository.allSightings(SightingSorting.TimeAscending)
             .test()
-            .assertValue(sightingsSamplesInDatetimeAsc)
+            .assertValue(StatusSuccess(sightingsSamplesInDatetimeAsc))
     }
 
     @Test
@@ -90,7 +98,7 @@ class RoomSightingRepositoryTests {
 
         repository.allSightings(SightingSorting.TimeDescending)
             .test()
-            .assertValue(sightingSamplesInDatetimeDesc)
+            .assertValue(StatusSuccess(sightingSamplesInDatetimeDesc))
     }
 
     @Test
@@ -99,7 +107,7 @@ class RoomSightingRepositoryTests {
 
         repository.allSightings(SightingSorting.NameAscending)
             .test()
-            .assertValue(sightingSamplesInNameAsc)
+            .assertValue(StatusSuccess(sightingSamplesInNameAsc))
     }
 
     @Test
@@ -108,7 +116,7 @@ class RoomSightingRepositoryTests {
 
         repository.allSightings(SightingSorting.NameDescending)
             .test()
-            .assertValue(sightingSamplesInNameDesc)
+            .assertValue(StatusSuccess(sightingSamplesInNameDesc))
     }
 
     private val sightingsSamplesInDatetimeAsc = listOf(

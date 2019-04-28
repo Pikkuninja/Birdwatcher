@@ -1,18 +1,16 @@
 package fi.jara.birdwatcher.data.room
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
-import fi.jara.birdwatcher.data.NewSightingData
-import fi.jara.birdwatcher.data.RepositoryLoadingStatus
-import fi.jara.birdwatcher.data.SightingRepository
-import fi.jara.birdwatcher.data.StatusSuccess
+import fi.jara.birdwatcher.data.*
 import fi.jara.birdwatcher.sightings.Sighting
 import fi.jara.birdwatcher.sightings.SightingSorting
 
 class RoomSightingRepository(private val database: SightingDatabase) : SightingRepository {
     private val dao = database.sightingDao()
 
-    override fun allSightings(sorting: SightingSorting): LiveData<List<Sighting>> {
+    override fun allSightings(sorting: SightingSorting): LiveData<RepositoryLoadingStatus<List<Sighting>>> {
         val liveData= when (sorting) {
             SightingSorting.TimeDescending -> dao.loadAllSightingsTimestampDesc()
             SightingSorting.TimeAscending -> dao.loadAllSightingsTimestampAsc()
@@ -20,7 +18,7 @@ class RoomSightingRepository(private val database: SightingDatabase) : SightingR
             SightingSorting.NameAscending -> dao.loadAllSightingsSpeciesAsc()
         }
 
-        return Transformations.map(liveData) { sightings ->
+        val sightingLists =  Transformations.map(liveData) { sightings ->
             sightings.map {
                 Sighting(
                     it.id,
@@ -31,6 +29,17 @@ class RoomSightingRepository(private val database: SightingDatabase) : SightingR
                     it.imageName,
                     it.description
                 )
+            }
+        }
+
+        return MediatorLiveData<RepositoryLoadingStatus<List<Sighting>>>().apply {
+            postValue(StatusLoading())
+            addSource(sightingLists) { sightings ->
+                if (sightings.isNotEmpty()) {
+                    postValue(StatusSuccess(sightings))
+                } else {
+                    postValue(StatusEmpty())
+                }
             }
         }
     }
