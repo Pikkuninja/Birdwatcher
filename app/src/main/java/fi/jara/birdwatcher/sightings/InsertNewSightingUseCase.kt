@@ -1,12 +1,17 @@
 package fi.jara.birdwatcher.sightings
 
 import fi.jara.birdwatcher.common.SingleResultUseCase
+import fi.jara.birdwatcher.common.location.LocationSource
 import fi.jara.birdwatcher.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.util.*
 
-class InsertNewSightingUseCase(private val sightingRepository: SightingRepository) :
+class InsertNewSightingUseCase(
+    private val sightingRepository: SightingRepository,
+    private val locationSource: LocationSource
+) :
     SingleResultUseCase<InsertNewSightingUseCaseParams, Unit, String>() {
     override suspend fun execute(
         params: InsertNewSightingUseCaseParams,
@@ -23,12 +28,25 @@ class InsertNewSightingUseCase(private val sightingRepository: SightingRepositor
             return
         }
 
+        val coordinate = try {
+             if (params.addLocation) {
+                withContext(Dispatchers.Default) {
+                    locationSource.getCurrentLocation()
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            onError("Error fetching location")
+            return
+        }
+
         val insertResult = withContext(Dispatchers.IO) {
             val timestamp = Date()
             val newSightingData = NewSightingData(
                 params.species,
                 timestamp,
-                null,
+                coordinate,
                 params.rarity,
                 null,
                 params.description

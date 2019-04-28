@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import fi.jara.birdwatcher.common.location.LocationSource
 import fi.jara.birdwatcher.data.SightingRepository
 import fi.jara.birdwatcher.data.room.RoomSightingRepository
 import fi.jara.birdwatcher.sightings.InsertNewSightingUseCase
@@ -20,6 +21,9 @@ class ApplicationModule(private val application: Application) {
 
 
     @Provides
-    fun provideInsertNewSightingsUseCase(sightingRepository: SightingRepository): InsertNewSightingUseCase =
-        InsertNewSightingUseCase(sightingRepository)
+    fun provideInsertNewSightingsUseCase(
+        sightingRepository: SightingRepository,
+        locationSource: LocationSource
+    ): InsertNewSightingUseCase =
+        InsertNewSightingUseCase(sightingRepository, locationSource)
 }
