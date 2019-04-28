@@ -3,6 +3,7 @@ package fi.jara.birdwatcher.common.di.presentation
 import dagger.Module
 import androidx.lifecycle.ViewModel
 import dagger.Provides
+import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.screens.addsighting.AddSightingViewModel
 import fi.jara.birdwatcher.screens.common.ViewModelFactory
 import fi.jara.birdwatcher.screens.sightingslist.SightingsListViewModel
@@ -33,7 +34,10 @@ class ViewModelModule {
         SightingsListViewModel(observeAllSightingsUseCase)
 
     @Provides
-    fun provideAddSightingViewModel(insertNewSightingUseCase: InsertNewSightingUseCase): AddSightingViewModel =
-        AddSightingViewModel(insertNewSightingUseCase)
+    fun provideAddSightingViewModel(
+        insertNewSightingUseCase: InsertNewSightingUseCase,
+        bitmapResolver: BitmapResolver
+    ): AddSightingViewModel =
+        AddSightingViewModel(insertNewSightingUseCase, bitmapResolver)
 
 }

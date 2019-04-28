@@ -1,19 +1,25 @@
 package fi.jara.birdwatcher.screens.addsighting
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.graphics.Bitmap
+import android.net.Uri
+import androidx.lifecycle.*
 import fi.jara.birdwatcher.common.LiveEvent
+import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.sightings.InsertNewSightingUseCase
 import fi.jara.birdwatcher.sightings.InsertNewSightingUseCaseParams
 import fi.jara.birdwatcher.sightings.SightingRarity
 import kotlinx.coroutines.*
+import java.lang.Exception
 
-class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSightingUseCase) : ViewModel() {
+class AddSightingViewModel(
+    private val insertNewSightingUseCase: InsertNewSightingUseCase,
+    private val bitmapResolver: BitmapResolver
+) : ViewModel() {
     private val viewModelJob = SupervisorJob()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private var hasLocationPermission: Boolean = false
+    private var imageResolvingJob: Job? = null
 
     private val _displayMessages = LiveEvent<String>()
     val displayMessages: LiveData<String>
@@ -31,10 +37,32 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
     val addLocationToSighting: LiveData<Boolean>
         get() = _addLocationToSighting
 
-    private val _saveButtonEnabled = MutableLiveData<Boolean>().apply { value = true }
-    val saveButtonEnabled: LiveData<Boolean>
-        get() = _saveButtonEnabled
+    private val _userImageBitmap = MutableLiveData<Bitmap?>().apply { value = null }
+    val userImageBitmap: LiveData<Bitmap?>
+        get() = _userImageBitmap
 
+    private val isResolvingBitmap = MutableLiveData<Boolean>().apply { value = false }
+    private val isSavingSighting = MutableLiveData<Boolean>().apply { value = false }
+
+    val saveButtonEnabled: LiveData<Boolean>
+
+    init {
+        saveButtonEnabled = MediatorLiveData<Boolean>().apply {
+            fun resolve() {
+                val resolvingBitmap = isResolvingBitmap.value ?: true
+                val saving = isSavingSighting.value ?: true
+                value = !resolvingBitmap && !saving
+            }
+
+            addSource(isResolvingBitmap) {
+                resolve()
+            }
+
+            addSource(isSavingSighting) {
+                resolve()
+            }
+        }
+    }
 
     fun onAddLocationToSightingToggled(value: Boolean) {
         if (value && !hasLocationPermission) {
@@ -57,15 +85,18 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
         sightingDescription: String
     ) {
         uiScope.launch {
-            _saveButtonEnabled.value = false
+            isSavingSighting.value = true
 
-            //All of the LiveDatas are initialized with non nulls
+            val addLocation = addLocationToSighting.value!! //addLocation LiveData was initialized with nonnull
+            val imageBytes = userImageBitmap.value?.let { bitmapResolver.getBytes(it) }
+
             insertNewSightingUseCase.execute(
                 InsertNewSightingUseCaseParams(
                     sightingName,
-                    addLocationToSighting.value!!,
+                    addLocation,
                     sightingRarity,
-                    sightingDescription
+                    sightingDescription,
+                    imageBytes
                 ),
                 { saveSightingSuccess() },
                 { saveSightingFailed(it) }
@@ -81,9 +112,30 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
         }
     }
 
+    fun setImage(uri: Uri) {
+        imageResolvingJob?.cancel()
+        imageResolvingJob = uiScope.launch {
+            isResolvingBitmap.value = true
+            try {
+                val bitmap = bitmapResolver.getBitmap(uri)
+                _userImageBitmap.value = bitmap
+            } catch (e: Exception) {
+                _displayMessages.postValue("Error reading image")
+                _userImageBitmap.value = null
+            }
+            isResolvingBitmap.value = false
+        }
+    }
+
+    fun removeImage() {
+        imageResolvingJob?.cancel()
+        _userImageBitmap.value = null
+        isResolvingBitmap.value = false
+    }
+
     private fun saveSightingFailed(errorMessage: String) {
         _displayMessages.value = errorMessage
-        _saveButtonEnabled.value = true
+        isSavingSighting.value = false
     }
 
     override fun onCleared() {

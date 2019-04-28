@@ -23,4 +23,9 @@
 
     <string name="location_lat_lon">lat %1$.3f, lon %2$.3f</string>
     <string name="location_no_data">No location data</string>
+    <string name="add_sighting_image_toggle_hint">Attach image</string>
+    <string name="add_sighting_image_title">Image</string>
+    <string name="select_image">Select image</string>
+    <string name="user_image_attached">Your image for the sighting</string>
+    <string name="no_image_attached">No image given for the sighting</string>
 </resources>

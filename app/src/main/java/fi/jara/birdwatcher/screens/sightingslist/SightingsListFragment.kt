@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
+import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.screens.common.BaseFragment
 import fi.jara.birdwatcher.screens.common.ViewModelFactory
 import fi.jara.birdwatcher.sightings.SightingSorting
@@ -23,13 +24,15 @@ import javax.inject.Inject
 
 class SightingsListFragment : BaseFragment() {
     private lateinit var viewModel: SightingsListViewModel
-    private val sightingsAdapter = SightingsAdapter()
+    lateinit var sightingsAdapter: SightingsAdapter
 
     @Inject lateinit var viewModelFactory: ViewModelFactory
+    @Inject lateinit var imageStorage: ImageStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresentationComponent().inject(this)
+        sightingsAdapter = SightingsAdapter(imageStorage)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
