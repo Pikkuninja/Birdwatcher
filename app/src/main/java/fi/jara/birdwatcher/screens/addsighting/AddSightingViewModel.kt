@@ -7,10 +7,9 @@ import fi.jara.birdwatcher.common.LiveEvent
 import fi.jara.birdwatcher.sightings.InsertNewSightingUseCase
 import fi.jara.birdwatcher.sightings.InsertNewSightingUseCaseParams
 import fi.jara.birdwatcher.sightings.SightingRarity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlin.coroutines.suspendCoroutine
+import kotlin.system.measureTimeMillis
 
 class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSightingUseCase) : ViewModel() {
     private val viewModelJob = SupervisorJob()
@@ -25,6 +24,10 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
     private val _requestLocationPermission = LiveEvent<Unit>()
     val requestLocationPermission: LiveData<Unit>
         get() = _requestLocationPermission
+
+    private val _gotoListScreen = LiveEvent<Unit>()
+    val gotoListScreen: LiveData<Unit>
+        get() = _gotoListScreen
 
     private val _addLocationToSighting = MutableLiveData<Boolean>().apply { value = false }
     val addLocationToSighting: LiveData<Boolean>
@@ -49,9 +52,11 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
         }
     }
 
-    fun onSaveSightingClicked(sightingName: String,
-                              sightingRarity: SightingRarity?,
-                              sightingDescription: String) {
+    fun onSaveSightingClicked(
+        sightingName: String,
+        sightingRarity: SightingRarity?,
+        sightingDescription: String
+    ) {
         //All of the LiveDatas are initialized with non nulls
         uiScope.launch {
             _saveButtonEnabled.value = false
@@ -71,6 +76,10 @@ class AddSightingViewModel(private val insertNewSightingUseCase: InsertNewSighti
 
     private fun saveSightingSuccess() {
         _displayMessages.value = "Successfully saved sighting"
+        uiScope.launch {
+            delay(1000)
+            _gotoListScreen.postValue(Unit)
+        }
     }
 
     private fun saveSightingFailed(errorMessage: String) {

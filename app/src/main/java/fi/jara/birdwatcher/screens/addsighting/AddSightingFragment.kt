@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.screens.common.BaseFragment
@@ -58,6 +59,10 @@ class AddSightingFragment : BaseFragment() {
             requestLocationPermission()
         })
 
+        viewModel.gotoListScreen.observe(viewLifecycleOwner, Observer {
+            gotoListScreen()
+        })
+
         add_sighting_location_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
             viewModel.onAddLocationToSightingToggled(isChecked)
         }
@@ -78,6 +83,12 @@ class AddSightingFragment : BaseFragment() {
 
     private fun requestLocationPermission() {
         requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+    }
+
+    private fun gotoListScreen() {
+        view?.let {
+            Navigation.findNavController(it).navigateUp()
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
