@@ -1,6 +1,5 @@
 package fi.jara.birdwatcher.screens.sightingslist
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,11 +64,10 @@ class SightingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-// Sightings have only simple data types and they can't be modified after they have been created
-// so the DiffChecker implementation is trivial
 class SightingDiffChecker : DiffUtil.ItemCallback<Sighting>() {
-    override fun areItemsTheSame(oldItem: Sighting, newItem: Sighting): Boolean = oldItem == newItem
+    override fun areItemsTheSame(oldItem: Sighting, newItem: Sighting): Boolean = oldItem.id == newItem.id
 
+    // This could also use just the IDs as the sightings can't be changed after being stored
     override fun areContentsTheSame(oldItem: Sighting, newItem: Sighting): Boolean = oldItem == newItem
 }
 

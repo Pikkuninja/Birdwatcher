@@ -12,11 +12,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import android.graphics.Bitmap.CompressFormat
-import android.R.attr.bitmap
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
 import java.io.ByteArrayOutputStream
-
 
 interface BitmapResolver {
     suspend fun getBitmap(uri: Uri): Bitmap

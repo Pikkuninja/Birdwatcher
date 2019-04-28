@@ -1,6 +1,5 @@
 package fi.jara.birdwatcher.screens.sightingslist
 
-
 import android.os.Bundle
 import android.view.*
 import android.widget.PopupMenu
@@ -18,25 +17,34 @@ import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.screens.common.BaseFragment
 import fi.jara.birdwatcher.screens.common.ViewModelFactory
+import fi.jara.birdwatcher.sightings.Sighting
 import fi.jara.birdwatcher.sightings.SightingSorting
 import kotlinx.android.synthetic.main.sightings_list_fragment.*
 import javax.inject.Inject
 
 class SightingsListFragment : BaseFragment() {
     private lateinit var viewModel: SightingsListViewModel
-    lateinit var sightingsAdapter: SightingsAdapter
 
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-    @Inject lateinit var imageStorage: ImageStorage
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var sightingsAdapter: ListAdapter<Sighting, *>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getPresentationComponent().inject(this)
-        sightingsAdapter = SightingsAdapter(imageStorage)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.sightings_list_fragment, container, false)
+
+        setHasOptionsMenu(true)
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.sightings_recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -46,10 +54,7 @@ class SightingsListFragment : BaseFragment() {
             Navigation.createNavigateOnClickListener(R.id.addSightingFragment, null)
         )
 
-        setHasOptionsMenu(true)
-
         subscribeToViewModel()
-        return view
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

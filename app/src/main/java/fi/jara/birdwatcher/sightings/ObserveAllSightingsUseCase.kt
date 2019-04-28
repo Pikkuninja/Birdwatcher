@@ -6,7 +6,6 @@ import fi.jara.birdwatcher.common.ObservableUseCase
 import fi.jara.birdwatcher.common.ResultOrError
 import fi.jara.birdwatcher.data.*
 
-
 class ObserveAllSightingsUseCase(private val sightingRepository: SightingRepository) :
     ObservableUseCase<SightingSorting, AllSightingsLoadingStatus, String>() {
 

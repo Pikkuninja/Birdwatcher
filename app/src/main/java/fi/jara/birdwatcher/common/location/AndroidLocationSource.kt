@@ -16,8 +16,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-
-// Implemented with basic LocationManager instead of FusedLocationProvider so there's no need for Google Services
+// Implemented with basic LocationManager instead of FusedLocationProvider so there's no need for Google Services.
+// LocationManager by itself can be slow when using GPS, so consider switching to FusedLocationProvider if
+// other Google Services are added to the project
 class AndroidLocationSource(private val context: Context) : LocationSource {
     override suspend fun getCurrentLocation(): Coordinate {
         if (ContextCompat.checkSelfPermission(
@@ -52,7 +53,7 @@ class AndroidLocationSource(private val context: Context) : LocationSource {
                 }
 
                 timeoutJob = CoroutineScope(cont.context).launch {
-                    delay(10_000)
+                    delay(20_000)
                     locationManager.removeUpdates(locationListener)
                     cont.resumeWithException(TimeoutException())
                 }
