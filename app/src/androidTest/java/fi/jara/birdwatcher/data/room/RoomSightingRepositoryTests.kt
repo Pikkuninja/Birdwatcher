@@ -19,7 +19,6 @@ import org.junit.Before
 
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.Instant
 import java.util.*
 import org.junit.rules.TestRule
 import org.junit.Rule
@@ -32,7 +31,8 @@ import org.junit.Rule
  */
 @RunWith(AndroidJUnit4::class)
 class RoomSightingRepositoryTests {
-    @Rule @JvmField
+    @Rule
+    @JvmField
     var rule: TestRule = InstantTaskExecutorRule()
 
     private lateinit var database: SightingDatabase
@@ -124,7 +124,7 @@ class RoomSightingRepositoryTests {
         Sighting(
             1,
             "Albratross",
-            Date.from(Instant.ofEpochMilli(100000)),
+            Date(100000),
             Coordinate(60.0, 20.0),
             SightingRarity.ExtremelyRare,
             "somename.jpg",
@@ -133,7 +133,7 @@ class RoomSightingRepositoryTests {
         Sighting(
             2,
             "Eagle",
-            Date.from(Instant.ofEpochMilli(200000)),
+            Date(200000),
             null,
             SightingRarity.Rare,
             null,
@@ -142,7 +142,7 @@ class RoomSightingRepositoryTests {
         Sighting(
             3,
             "Owl",
-            Date.from(Instant.ofEpochMilli(300000)),
+            Date(300000),
             Coordinate(61.0, 23.0),
             SightingRarity.Common,
             "othername.jpg",
@@ -151,7 +151,7 @@ class RoomSightingRepositoryTests {
         Sighting(
             4,
             "Falcon",
-            Date.from(Instant.ofEpochMilli(400000)),
+            Date(400000),
             Coordinate(50.0, 20.0),
             SightingRarity.Rare,
             null,
@@ -162,7 +162,7 @@ class RoomSightingRepositoryTests {
     private val newSightingDatasInDatetimeAsc = listOf(
         NewSightingData(
             "Albratross",
-            Date.from(Instant.ofEpochMilli(100000)),
+            Date(100000),
             Coordinate(60.0, 20.0),
             SightingRarity.ExtremelyRare,
             "somename.jpg",
@@ -170,7 +170,7 @@ class RoomSightingRepositoryTests {
         ),
         NewSightingData(
             "Eagle",
-            Date.from(Instant.ofEpochMilli(200000)),
+            Date(200000),
             null,
             SightingRarity.Rare,
             null,
@@ -178,7 +178,7 @@ class RoomSightingRepositoryTests {
         ),
         NewSightingData(
             "Owl",
-            Date.from(Instant.ofEpochMilli(300000)),
+            Date(300000),
             Coordinate(61.0, 23.0),
             SightingRarity.Common,
             "othername.jpg",
@@ -186,7 +186,7 @@ class RoomSightingRepositoryTests {
         ),
         NewSightingData(
             "Falcon",
-            Date.from(Instant.ofEpochMilli(400000)),
+            Date(400000),
             Coordinate(50.0, 20.0),
             SightingRarity.Rare,
             null,
