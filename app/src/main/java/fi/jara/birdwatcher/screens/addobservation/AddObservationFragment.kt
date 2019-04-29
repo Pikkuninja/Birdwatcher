@@ -1,4 +1,4 @@
-package fi.jara.birdwatcher.screens.addsighting
+package fi.jara.birdwatcher.screens.addobservation
 
 import android.Manifest
 import android.app.Activity
@@ -15,12 +15,12 @@ import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.screens.common.BaseFragment
 import fi.jara.birdwatcher.screens.common.ViewModelFactory
-import fi.jara.birdwatcher.sightings.SightingRarity
-import kotlinx.android.synthetic.main.add_sighting_fragment.*
+import fi.jara.birdwatcher.observations.ObservationRarity
+import kotlinx.android.synthetic.main.add_observation_fragment.*
 import javax.inject.Inject
 
-class AddSightingFragment : BaseFragment() {
-    private lateinit var viewModel: AddSightingViewModel
+class AddObservationFragment : BaseFragment() {
+    private lateinit var viewModel: AddObservationViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -31,7 +31,7 @@ class AddSightingFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        inflater.inflate(R.layout.add_sighting_fragment, container, false)
+        inflater.inflate(R.layout.add_observation_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,26 +39,26 @@ class AddSightingFragment : BaseFragment() {
     }
 
     private fun subscribeToViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(AddSightingViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(AddObservationViewModel::class.java)
 
-        viewModel.addLocationToSighting.observe(viewLifecycleOwner, Observer {
-            add_sighting_location_toggle.isChecked = it
+        viewModel.addLocationToObservation.observe(viewLifecycleOwner, Observer {
+            add_observation_location_toggle.isChecked = it
         })
 
         viewModel.userImageBitmap.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                add_sighting_image_preview.setImageBitmap(it)
-                add_sighting_image_preview.contentDescription = resources.getString(R.string.user_image_attached)
-                add_sighting_image_toggle.isChecked = true
+                add_observation_image_preview.setImageBitmap(it)
+                add_observation_image_preview.contentDescription = resources.getString(R.string.user_image_attached)
+                add_observation_image_toggle.isChecked = true
             } else {
-                add_sighting_image_preview.setImageResource(R.drawable.ic_imageplaceholder_black_24dp)
-                add_sighting_image_preview.contentDescription = resources.getString(R.string.no_image_attached)
-                add_sighting_image_toggle.isChecked = false
+                add_observation_image_preview.setImageResource(R.drawable.ic_imageplaceholder_black_24dp)
+                add_observation_image_preview.contentDescription = resources.getString(R.string.no_image_attached)
+                add_observation_image_toggle.isChecked = false
             }
         })
 
         viewModel.saveButtonEnabled.observe(viewLifecycleOwner, Observer {
-            add_sighting_save_button.isEnabled = it
+            add_observation_save_button.isEnabled = it
         })
 
         viewModel.displayMessages.observe(viewLifecycleOwner, Observer { message ->
@@ -75,11 +75,11 @@ class AddSightingFragment : BaseFragment() {
             gotoListScreen()
         })
 
-        add_sighting_location_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.onAddLocationToSightingToggled(isChecked)
+        add_observation_location_toggle.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.onAddLocationToObservationToggled(isChecked)
         }
 
-        add_sighting_image_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        add_observation_image_toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 requestImageFromGallery()
             } else {
@@ -87,17 +87,17 @@ class AddSightingFragment : BaseFragment() {
             }
         }
 
-        add_sighting_save_button.setOnClickListener {
-            val name = add_sighting_species.text?.toString() ?: ""
-            val rarity = when (add_sighting_rarity_radiogroup.checkedRadioButtonId) {
-                R.id.add_sighting_rarity_common -> SightingRarity.Common
-                R.id.add_sighting_rarity_rare -> SightingRarity.Rare
-                R.id.add_sighting_rarity_extremely_rare -> SightingRarity.ExtremelyRare
+        add_observation_save_button.setOnClickListener {
+            val name = add_observation_species.text?.toString() ?: ""
+            val rarity = when (add_observation_rarity_radiogroup.checkedRadioButtonId) {
+                R.id.add_observation_rarity_common -> ObservationRarity.Common
+                R.id.add_observation_rarity_rare -> ObservationRarity.Rare
+                R.id.add_observation_rarity_extremely_rare -> ObservationRarity.ExtremelyRare
                 else -> null
             }
-            val description = add_sighting_description.text?.toString() ?: ""
+            val description = add_observation_description.text?.toString() ?: ""
 
-            viewModel.onSaveSightingClicked(name, rarity, description)
+            viewModel.onSaveObservationClicked(name, rarity, description)
         }
     }
 

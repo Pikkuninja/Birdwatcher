@@ -11,19 +11,19 @@ import androidx.room.Query
  */
 
 @Dao
-interface SightingDao {
+interface ObservationDao {
     @Query("SELECT * FROM entities ORDER BY species DESC")
-    fun loadAllSightingsSpeciesDesc(): LiveData<List<SightingEntity>>
+    fun loadAllObservationsSpeciesDesc(): LiveData<List<ObservationEntity>>
 
     @Query("SELECT * FROM entities ORDER BY species ASC")
-    fun loadAllSightingsSpeciesAsc(): LiveData<List<SightingEntity>>
+    fun loadAllObservationsSpeciesAsc(): LiveData<List<ObservationEntity>>
 
     @Query("SELECT * FROM entities ORDER BY timestamp DESC")
-    fun loadAllSightingsTimestampDesc(): LiveData<List<SightingEntity>>
+    fun loadAllObservationsTimestampDesc(): LiveData<List<ObservationEntity>>
 
     @Query("SELECT * FROM entities ORDER BY timestamp ASC")
-    fun loadAllSightingsTimestampAsc(): LiveData<List<SightingEntity>>
+    fun loadAllObservationsTimestampAsc(): LiveData<List<ObservationEntity>>
 
     @Insert
-    fun insertSighting(sighting: SightingEntity): Long
+    fun insertObservation(observation: ObservationEntity): Long
 }

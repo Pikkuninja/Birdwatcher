@@ -2,9 +2,9 @@ package fi.jara.birdwatcher.data
 
 import androidx.lifecycle.LiveData
 import fi.jara.birdwatcher.common.Coordinate
-import fi.jara.birdwatcher.sightings.Sighting
-import fi.jara.birdwatcher.sightings.SightingRarity
-import fi.jara.birdwatcher.sightings.SightingSorting
+import fi.jara.birdwatcher.observations.Observation
+import fi.jara.birdwatcher.observations.ObservationRarity
+import fi.jara.birdwatcher.observations.ObservationSorting
 import java.util.*
 
 /*
@@ -16,18 +16,18 @@ import java.util.*
     that has been used to full extent
  */
 
-interface SightingRepository {
+interface ObservationRepository {
     // TODO: Use Kotlin Flows when out of early access
-    fun allSightings(sorting: SightingSorting): LiveData<RepositoryLoadingStatus<List<Sighting>>>
+    fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>>
 
-    suspend fun addSighting(sightingData: NewSightingData): RepositoryLoadingStatus<Sighting>
+    suspend fun addObservation(observationData: NewObservationData): RepositoryLoadingStatus<Observation>
 }
 
-data class NewSightingData(
+data class NewObservationData(
     val species: String,
     val timestamp: Date,
     val location: Coordinate?,
-    val rarity: SightingRarity,
+    val rarity: ObservationRarity,
     val imageName: String?,
     val description: String?
 )

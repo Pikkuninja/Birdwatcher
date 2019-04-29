@@ -1,4 +1,4 @@
-package fi.jara.birdwatcher.sightings
+package fi.jara.birdwatcher.observations
 
 import fi.jara.birdwatcher.common.SingleResultUseCase
 import fi.jara.birdwatcher.common.filesystem.ImageStorage
@@ -9,14 +9,14 @@ import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.util.*
 
-class InsertNewSightingUseCase(
-    private val sightingRepository: SightingRepository,
+class InsertNewObservationUseCase(
+    private val observationRepository: ObservationRepository,
     private val locationSource: LocationSource,
     private val imageStorage: ImageStorage
 ) :
-    SingleResultUseCase<InsertNewSightingUseCaseParams, Unit, String>() {
+    SingleResultUseCase<InsertNewObservationUseCaseParams, Unit, String>() {
     override suspend fun execute(
-        params: InsertNewSightingUseCaseParams,
+        params: InsertNewObservationUseCaseParams,
         onSuccess: (Unit) -> Unit,
         onError: (String) -> Unit
     ) {
@@ -57,7 +57,7 @@ class InsertNewSightingUseCase(
         }
 
         val insertResult = withContext(Dispatchers.IO) {
-            val newSightingData = NewSightingData(
+            val newObservationData = NewObservationData(
                 params.species,
                 timestamp,
                 coordinate,
@@ -66,13 +66,13 @@ class InsertNewSightingUseCase(
                 params.description
             )
 
-            sightingRepository.addSighting(newSightingData)
+            observationRepository.addObservation(newObservationData)
         }
 
         when (insertResult) {
             is StatusSuccess -> onSuccess(Unit)
             is StatusError -> onError(insertResult.message)
-            else -> onError("Unknown error while saving sighting")
+            else -> onError("Unknown error while saving observation")
         }
     }
 
@@ -81,10 +81,10 @@ class InsertNewSightingUseCase(
     }
 }
 
-class InsertNewSightingUseCaseParams(
+class InsertNewObservationUseCaseParams(
     val species: String,
     val addLocation: Boolean,
-    val rarity: SightingRarity?,
+    val rarity: ObservationRarity?,
     val description: String?,
     val imageBytes: ByteArray?
 )
