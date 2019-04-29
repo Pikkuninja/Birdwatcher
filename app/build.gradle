@@ -25,6 +25,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    }
 }
 
 dependencies {
@@ -58,4 +61,5 @@ dependencies {
     androidTestImplementation deps.espresso
     androidTestImplementation deps.lifecycleTesting
     androidTestImplementation deps.liveDataTesting
+    androidTestImplementation deps.roomTesting
 }

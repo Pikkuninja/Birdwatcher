@@ -10,7 +10,7 @@ import fi.jara.birdwatcher.observations.ObservationRarity
 import java.util.*
 
 
-@Entity(tableName = "entities")
+@Entity(tableName = "observations")
 data class ObservationEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = idColumnName) val id: Long = 0,
     @ColumnInfo(name = speciesNameColumnName) val species: String,
