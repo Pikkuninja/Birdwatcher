@@ -40,7 +40,7 @@ Keep track of bird observations
 - Update the App theme (colors, etc.) from defaults and make an app icon
 
 # Running tests
-Unit tests (to be added)
+Unit tests
 1. Run ``./gradlew test``
 
 Android tests (currently has Room tests, UI tests to be added)
