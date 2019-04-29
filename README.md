@@ -19,7 +19,7 @@ Keep track of bird sightings
   - I wanted to test using these, as I haven't had used them in any projects before
 - Asynchronity handled with Kotlin Coroutines
   - Again, some tech I hadn't used in earlier projects.
-  - Especially with Flows coming soon Coroutines can be used to replace RxJava, and they even have multiplatform support (though multitheading isn't supported on non-JVM targets yet)
+  - Especially with Flows coming soon Coroutines can be used to replace RxJava, and they even have multiplatform support (though multithreading isn't supported on non-JVM targets yet)
 - Dependency injection with Dagger
   - Dagger graph includes e.g. UseCases & their dependencies, ViewModelProviders
   - Dagger.Android extension wasn't used, my current project at work uses it and I wanted to return to the roots for a change.
