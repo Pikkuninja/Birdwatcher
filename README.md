@@ -39,11 +39,18 @@ Keep track of bird observations
   - Overall more Coroutine experimentation, maybe replace saveButtonEnabled MediatorLiveData with Channels / Flows?
 - Update the App theme (colors, etc.) from defaults and make an app icon
 
+# Building and running
+Project uses gradle and doesn't require anything out of your regular Android app building pipeline.
+Easiest way to build and run is through Android Studio
+Building from command line can be done with commands like ``./gradlew assembleDebug``
+To install a debug build to a connected device through command line, run ``./gradlew installDebug``, and then you can start the app from the device
+
 # Running tests
-Unit tests
+You can run tests either through Android Studio or from the command line
+Unit tests from command line
 1. Run ``./gradlew test``
 
-Android tests (currently has Room tests, UI tests to be added)
+Android tests from command line (currently has Room tests, UI tests to be added)
 1. Make sure that an Android emulator is running (or a real device with USB debug setup is connected)
 2. Run ``./gradlew connectedAndroidTest``
 
