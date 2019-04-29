@@ -34,6 +34,7 @@ Keep track of bird observations
   - Maybe add a cancelation option too?
 - Remove LiveData from repository layer and replace it with Kotlin Flows
   - Might need switching to SQLDelight
+- Remove all other Android dependencies from business layer (ImageStorage is used in an UseCase, and that exposes Android Uris)
 - Try making ViewModels run their Coroutines on a background thread by default, updating the UI through LiveData should handle moving to UI thread already
   - Overall more Coroutine experimentation, maybe replace saveButtonEnabled MediatorLiveData with Channels / Flows?
 - Update the App theme (colors, etc.) from defaults and make an app icon
