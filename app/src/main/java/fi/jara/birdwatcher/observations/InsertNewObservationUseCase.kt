@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.util.*
 
+// TODO: make the failure states do something better than send hardcoded english messages
 class InsertNewObservationUseCase(
     private val observationRepository: ObservationRepository,
     private val locationSource: LocationSource,
