@@ -52,6 +52,7 @@ buildscript {
             'navigationUIKtx'        : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
             'room'                   : "androidx.room:room-runtime:$versions.room",
             'roomKapt'               : "androidx.room:room-compiler:$versions.room",
+            'roomTesting'            : "androidx.room:room-testing:$versions.room",
 
             'dagger'                 : "com.google.dagger:dagger:$versions.dagger",
             'daggerKapt'             : "com.google.dagger:dagger-compiler:$versions.dagger",

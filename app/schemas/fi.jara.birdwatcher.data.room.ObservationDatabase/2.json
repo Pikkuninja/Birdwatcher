@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "8bc15c63e8cd0963cb716fddf71fcece",
+    "version": 2,
+    "identityHash": "ba5e6e8a3ebc2a08187dfea98c5326b2",
     "entities": [
       {
         "tableName": "entities",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `species` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `location` TEXT NOT NULL, `rarity` TEXT NOT NULL, `image` TEXT, `description` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `species` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `latitude` REAL, `longitude` REAL, `rarity` TEXT NOT NULL, `image` TEXT, `description` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -27,10 +27,16 @@
             "notNull": true
           },
           {
-            "fieldPath": "location",
-            "columnName": "location",
-            "affinity": "TEXT",
-            "notNull": true
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": false
           },
           {
             "fieldPath": "rarity",
@@ -64,7 +70,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8bc15c63e8cd0963cb716fddf71fcece\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ba5e6e8a3ebc2a08187dfea98c5326b2\")"
     ]
   }
 }

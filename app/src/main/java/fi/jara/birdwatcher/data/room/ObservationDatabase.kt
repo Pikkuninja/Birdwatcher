@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [ObservationEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = true)
 @TypeConverters(RoomTypeConverters::class)
 abstract class ObservationDatabase: RoomDatabase() {
