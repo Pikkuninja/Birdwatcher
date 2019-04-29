@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/birdwatcher_nav_graph.xml"
-    app:startDestination="@id/sightingsListFragment">
+    app:startDestination="@id/observationsListFragment">
 
     <fragment
-        android:id="@+id/sightingsListFragment"
-        android:name="fi.jara.birdwatcher.screens.sightingslist.SightingsListFragment"
+        android:id="@+id/observationsListFragment"
+        android:name="fi.jara.birdwatcher.screens.observationslist.ObservationsListFragment"
         android:label="@string/app_name">
         <action
-            android:id="@+id/action_sightingsListFragment_to_addSightingFragment"
-            app:destination="@id/addSightingFragment"
+            android:id="@+id/action_observationsListFragment_to_addObservationFragment"
+            app:destination="@id/addObservationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/addSightingFragment"
-        android:name="fi.jara.birdwatcher.screens.addsighting.AddSightingFragment"
-        android:label="@string/add_sighting_toolbar_title" />
+        android:id="@+id/addObservationFragment"
+        android:name="fi.jara.birdwatcher.screens.addobservation.AddObservationFragment"
+        android:label="@string/add_observation_toolbar_title" />
 </navigation>

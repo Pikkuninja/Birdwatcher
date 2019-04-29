@@ -1,21 +1,21 @@
 <resources>
     <string name="app_name">Birdwatcher</string>
 
-    <string name="sighting_image_description">Image you added to this sighting</string>
-    <string name="add_sighting_species_hint">Species</string>
+    <string name="observation_image_description">Image you added to this observation</string>
+    <string name="add_observation_species_hint">Species</string>
     <string name="rarity_extremely_rare">Extremely rare</string>
     <string name="rarity_common">Common</string>
     <string name="rarity_rare">Rare</string>
-    <string name="add_sighting_rarity_title">Rarity</string>
-    <string name="add_sighting_description_hint">Notes</string>
-    <string name="add_sighting_location_title">Location</string>
-    <string name="add_sighting_location_toggle_hint">Add current location to sighting</string>
-    <string name="add_sighting_location_waiting">Waiting for location…</string>
-    <string name="add_sighting_save">Save</string>
-    <string name="add_sighting_toolbar_title">Add sighting</string>
+    <string name="add_observation_rarity_title">Rarity</string>
+    <string name="add_observation_description_hint">Notes</string>
+    <string name="add_observation_location_title">Location</string>
+    <string name="add_observation_location_toggle_hint">Add current location to observation</string>
+    <string name="add_observation_location_waiting">Waiting for location…</string>
+    <string name="add_observation_save">Save</string>
+    <string name="add_observation_toolbar_title">Add observation</string>
 
     <string name="menu_sorting_order">Sorting order</string>
-    <string name="no_sightings_added">No sightings added. Click the + button to add one.</string>
+    <string name="no_observations_added">No observations added. Click the + button to add one.</string>
     <string name="sorting_datetime_desc">Newest</string>
     <string name="sorting_name_desc">Z-A</string>
     <string name="sorting_name_asc">A-Z</string>
@@ -23,9 +23,9 @@
 
     <string name="location_lat_lon">lat %1$.3f, lon %2$.3f</string>
     <string name="location_no_data">No location data</string>
-    <string name="add_sighting_image_toggle_hint">Attach image</string>
-    <string name="add_sighting_image_title">Image</string>
+    <string name="add_observation_image_toggle_hint">Attach image</string>
+    <string name="add_observation_image_title">Image</string>
     <string name="select_image">Select image</string>
-    <string name="user_image_attached">Your image for the sighting</string>
-    <string name="no_image_attached">No image given for the sighting</string>
+    <string name="user_image_attached">Your image for the observation</string>
+    <string name="no_image_attached">No image given for the observation</string>
 </resources>

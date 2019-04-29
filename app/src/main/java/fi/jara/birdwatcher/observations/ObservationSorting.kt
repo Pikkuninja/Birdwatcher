@@ -1,6 +1,6 @@
-package fi.jara.birdwatcher.sightings
+package fi.jara.birdwatcher.observations
 
-enum class SightingSorting {
+enum class ObservationSorting {
     TimeAscending,
     TimeDescending,
     NameAscending,

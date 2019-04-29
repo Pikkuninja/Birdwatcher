@@ -1,7 +1,7 @@
 package fi.jara.birdwatcher.data.room
 
 import androidx.room.TypeConverter
-import fi.jara.birdwatcher.sightings.SightingRarity
+import fi.jara.birdwatcher.observations.ObservationRarity
 import java.util.*
 
 // Enums are stored to db as strings instead of ordinal ints so
@@ -15,9 +15,9 @@ class RoomTypeConverters {
     fun fromDate(date: Date): Long = date.time
 
     @TypeConverter
-    fun fromSightingRarity(rarity: SightingRarity): String = rarity.name
+    fun fromObservationRarity(rarity: ObservationRarity): String = rarity.name
 
     @TypeConverter
-    fun fromSightingRarityName(name: String): SightingRarity = SightingRarity.valueOf(name)
+    fun fromObservationRarityName(name: String): ObservationRarity = ObservationRarity.valueOf(name)
 }
 

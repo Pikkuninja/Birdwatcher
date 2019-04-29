@@ -10,9 +10,9 @@
 
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="sighting_listitem_image_width">120dp</dimen>
-    <dimen name="sighting_listitem_height">140dp</dimen>
+    <dimen name="observation_listitem_image_width">120dp</dimen>
+    <dimen name="observation_listitem_height">140dp</dimen>
 
 
-    <dimen name="add_sighting_imagepreview_height">100dp</dimen>
+    <dimen name="add_observation_imagepreview_height">100dp</dimen>
 </resources>

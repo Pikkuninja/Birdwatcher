@@ -6,10 +6,10 @@ import androidx.room.TypeConverters
 
 
 @Database(
-    entities = [SightingEntity::class],
+    entities = [ObservationEntity::class],
     version = 2,
     exportSchema = true)
 @TypeConverters(RoomTypeConverters::class)
-abstract class SightingDatabase: RoomDatabase() {
-    abstract fun sightingDao(): SightingDao
+abstract class ObservationDatabase: RoomDatabase() {
+    abstract fun observationDao(): ObservationDao
 }

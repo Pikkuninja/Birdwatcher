@@ -1,18 +1,18 @@
 # Birdwatcher
-Keep track of bird sightings
+Keep track of bird observations
 
 [![Build Status](https://app.bitrise.io/app/c2780485f7d3438f/status.svg?token=VdZoib3KvUAL-JrokQI1yQ&branch=master)](https://app.bitrise.io/app/c2780485f7d3438f)
 
 # Features
-- Store bird sightings locally, sighting information includes:
+- Store bird observations locally, observation information includes:
   - Bird species name
   - Rarity of the bird
-  - Timestamp for when the sighting was stored
+  - Timestamp for when the observation was stored
   - Optional user location at the time of storing
   - Optional picture from device's gallery
   - Optional notes
-- View stored sightings
-  - Can be ordered by time or species names
+- View stored observations
+  - Can be ordered by timestamp or species names
 
 # Implementation notes
 - Uses AndroidX and Jetpack libraries heavily: LiveData, Navigation, ViewModel
@@ -25,12 +25,12 @@ Keep track of bird sightings
   - Dagger.Android extension wasn't used, my current project at work uses it and I wanted to return to the roots for a change.
 
 # TODOs
-- A screen for viewing single sighting's details
+- A screen for viewing single observation's details
 - Better tests coverage, both unit and instrumentation
 - Add an About screen with notes and licenses of libraries used
 - Animate moving between screens
-- Better form error handling: currently errors in filling the add sighting form are reported 1 at a time
-- Better feedback when saving the sighting is in progress, getting user's location with GPS can take a while
+- Better form error handling: currently errors in filling the add observation form are reported 1 at a time
+- Better feedback when saving the observation is in progress, getting user's location with GPS can take a while
   - Maybe add a cancelation option too?
 - Remove LiveData from repository layer and replace it with Kotlin Flows
   - Might need switching to SQLDelight

@@ -6,13 +6,13 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.jraska.livedata.test
 import fi.jara.birdwatcher.common.Coordinate
-import fi.jara.birdwatcher.data.NewSightingData
+import fi.jara.birdwatcher.data.NewObservationData
 import fi.jara.birdwatcher.data.StatusEmpty
 import fi.jara.birdwatcher.data.StatusLoading
 import fi.jara.birdwatcher.data.StatusSuccess
-import fi.jara.birdwatcher.sightings.Sighting
-import fi.jara.birdwatcher.sightings.SightingRarity
-import fi.jara.birdwatcher.sightings.SightingSorting
+import fi.jara.birdwatcher.observations.Observation
+import fi.jara.birdwatcher.observations.ObservationRarity
+import fi.jara.birdwatcher.observations.ObservationSorting
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -30,19 +30,19 @@ import org.junit.Rule
  * ensure that the Loading is emitted need to check the value of the LiveData immediately with the .value property
  */
 @RunWith(AndroidJUnit4::class)
-class RoomSightingRepositoryTests {
+class RoomObservationRepositoryTests {
     @Rule
     @JvmField
     var rule: TestRule = InstantTaskExecutorRule()
 
-    private lateinit var database: SightingDatabase
-    private lateinit var repository: RoomSightingRepository
+    private lateinit var database: ObservationDatabase
+    private lateinit var repository: RoomObservationRepository
 
     @Before
     fun createRepository() {
         val context = InstrumentationRegistry.getTargetContext()
-        database = Room.inMemoryDatabaseBuilder(context, SightingDatabase::class.java).build()
-        repository = RoomSightingRepository(database)
+        database = Room.inMemoryDatabaseBuilder(context, ObservationDatabase::class.java).build()
+        repository = RoomObservationRepository(database)
     }
 
     @After
@@ -52,15 +52,15 @@ class RoomSightingRepositoryTests {
 
     private fun insertAllTestData() {
         runBlocking {
-            newSightingDatasInDatetimeAsc.forEach {
-                repository.addSighting(it)
+            newObservationDatasInDatetimeAsc.forEach {
+                repository.addObservation(it)
             }
         }
     }
 
     @Test
     fun observeEmptyRepository_emitsLoadingAndEmpty() {
-        val liveData = repository.allSightings(SightingSorting.TimeAscending)
+        val liveData = repository.allObservations(ObservationSorting.TimeAscending)
         val initialValue = liveData.value
         assert(initialValue is StatusLoading)
 
@@ -69,143 +69,143 @@ class RoomSightingRepositoryTests {
 
     @Test
     fun insertToRepository_emitsLiveDataWithAutoincrementedId() {
-        val liveData = repository.allSightings(SightingSorting.TimeAscending).test()
+        val liveData = repository.allObservations(ObservationSorting.TimeAscending).test()
 
         runBlocking {
-            repository.addSighting(newSightingDatasInDatetimeAsc[0])
+            repository.addObservation(newObservationDatasInDatetimeAsc[0])
         }
 
-        liveData.assertValue(StatusSuccess(listOf(sightingsSamplesInDatetimeAsc[0])))
+        liveData.assertValue(StatusSuccess(listOf(obsevationSamplesInDatetimeAsc[0])))
 
         runBlocking {
-            repository.addSighting(newSightingDatasInDatetimeAsc[1])
+            repository.addObservation(newObservationDatasInDatetimeAsc[1])
         }
 
-        liveData.assertValue(StatusSuccess(listOf(sightingsSamplesInDatetimeAsc[0], sightingsSamplesInDatetimeAsc[1])))
+        liveData.assertValue(StatusSuccess(listOf(obsevationSamplesInDatetimeAsc[0], obsevationSamplesInDatetimeAsc[1])))
     }
 
     @Test
     fun getAllInDatetimeAsc_correctOrder() {
         insertAllTestData()
 
-        repository.allSightings(SightingSorting.TimeAscending)
+        repository.allObservations(ObservationSorting.TimeAscending)
             .test()
-            .assertValue(StatusSuccess(sightingsSamplesInDatetimeAsc))
+            .assertValue(StatusSuccess(obsevationSamplesInDatetimeAsc))
     }
 
     @Test
     fun getAllInDatetimeDesc_correctOrder() {
         insertAllTestData()
 
-        repository.allSightings(SightingSorting.TimeDescending)
+        repository.allObservations(ObservationSorting.TimeDescending)
             .test()
-            .assertValue(StatusSuccess(sightingSamplesInDatetimeDesc))
+            .assertValue(StatusSuccess(observationSamplesInDatetimeDesc))
     }
 
     @Test
     fun getAllInNameAsc_correctOrder() {
         insertAllTestData()
 
-        repository.allSightings(SightingSorting.NameAscending)
+        repository.allObservations(ObservationSorting.NameAscending)
             .test()
-            .assertValue(StatusSuccess(sightingSamplesInNameAsc))
+            .assertValue(StatusSuccess(observationSamplesInNameAsc))
     }
 
     @Test
     fun getAllInNameDesc_correctOrder() {
         insertAllTestData()
 
-        repository.allSightings(SightingSorting.NameDescending)
+        repository.allObservations(ObservationSorting.NameDescending)
             .test()
-            .assertValue(StatusSuccess(sightingSamplesInNameDesc))
+            .assertValue(StatusSuccess(observationSamplesInNameDesc))
     }
 
-    private val sightingsSamplesInDatetimeAsc = listOf(
-        Sighting(
+    private val obsevationSamplesInDatetimeAsc = listOf(
+        Observation(
             1,
             "Albratross",
             Date(100000),
             Coordinate(60.0, 20.0),
-            SightingRarity.ExtremelyRare,
+            ObservationRarity.ExtremelyRare,
             "somename.jpg",
             "Lorem ipsum"
         ),
-        Sighting(
+        Observation(
             2,
             "Eagle",
             Date(200000),
             null,
-            SightingRarity.Rare,
+            ObservationRarity.Rare,
             null,
             null
         ),
-        Sighting(
+        Observation(
             3,
             "Owl",
             Date(300000),
             Coordinate(61.0, 23.0),
-            SightingRarity.Common,
+            ObservationRarity.Common,
             "othername.jpg",
             null
         ),
-        Sighting(
+        Observation(
             4,
             "Falcon",
             Date(400000),
             Coordinate(50.0, 20.0),
-            SightingRarity.Rare,
+            ObservationRarity.Rare,
             null,
             "Dolor sit amet"
         )
     )
 
-    private val newSightingDatasInDatetimeAsc = listOf(
-        NewSightingData(
+    private val newObservationDatasInDatetimeAsc = listOf(
+        NewObservationData(
             "Albratross",
             Date(100000),
             Coordinate(60.0, 20.0),
-            SightingRarity.ExtremelyRare,
+            ObservationRarity.ExtremelyRare,
             "somename.jpg",
             "Lorem ipsum"
         ),
-        NewSightingData(
+        NewObservationData(
             "Eagle",
             Date(200000),
             null,
-            SightingRarity.Rare,
+            ObservationRarity.Rare,
             null,
             null
         ),
-        NewSightingData(
+        NewObservationData(
             "Owl",
             Date(300000),
             Coordinate(61.0, 23.0),
-            SightingRarity.Common,
+            ObservationRarity.Common,
             "othername.jpg",
             null
         ),
-        NewSightingData(
+        NewObservationData(
             "Falcon",
             Date(400000),
             Coordinate(50.0, 20.0),
-            SightingRarity.Rare,
+            ObservationRarity.Rare,
             null,
             "Dolor sit amet"
         )
     )
 
-    private val sightingSamplesInDatetimeDesc: List<Sighting>
-        get() = sightingsSamplesInDatetimeAsc.reversed()
+    private val observationSamplesInDatetimeDesc: List<Observation>
+        get() = obsevationSamplesInDatetimeAsc.reversed()
 
-    private val sightingSamplesInNameAsc: List<Sighting>
+    private val observationSamplesInNameAsc: List<Observation>
         get() = listOf(
-            sightingsSamplesInDatetimeAsc[0],
-            sightingsSamplesInDatetimeAsc[1],
-            sightingsSamplesInDatetimeAsc[3],
-            sightingsSamplesInDatetimeAsc[2]
+            obsevationSamplesInDatetimeAsc[0],
+            obsevationSamplesInDatetimeAsc[1],
+            obsevationSamplesInDatetimeAsc[3],
+            obsevationSamplesInDatetimeAsc[2]
         )
 
-    private val sightingSamplesInNameDesc: List<Sighting>
-        get() = sightingSamplesInNameAsc.reversed()
+    private val observationSamplesInNameDesc: List<Observation>
+        get() = observationSamplesInNameAsc.reversed()
 }
 

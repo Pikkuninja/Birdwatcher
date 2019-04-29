@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/sighting_listitem_height"
+    android:layout_height="@dimen/observation_listitem_height"
     android:layout_margin="@dimen/card_margin"
     android:orientation="vertical">
 
@@ -13,59 +13,59 @@
         android:padding="@dimen/card_padding">
 
         <TextView
-            android:id="@+id/sighting_listitem_title"
+            android:id="@+id/observation_listitem_title"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/card_text_margin"
-            android:layout_toStartOf="@+id/sighting_listitem_image"
+            android:layout_toStartOf="@+id/observation_listitem_image"
             android:ellipsize="end"
             android:maxLines="1"
             tools:text="@sample/birds" />
 
         <TextView
-            android:id="@+id/sighting_listitem_datetime"
+            android:id="@+id/observation_listitem_datetime"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sighting_listitem_title"
+            android:layout_below="@id/observation_listitem_title"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="@dimen/card_text_margin"
-            android:layout_toStartOf="@+id/sighting_listitem_image"
+            android:layout_toStartOf="@+id/observation_listitem_image"
             android:maxLines="1"
             tools:text="@sample/datetimes" />
 
 
         <TextView
-            android:id="@+id/sighting_listitem_location"
+            android:id="@+id/observation_listitem_location"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sighting_listitem_datetime"
+            android:layout_below="@id/observation_listitem_datetime"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="@dimen/card_text_margin"
-            android:layout_toStartOf="@+id/sighting_listitem_image"
+            android:layout_toStartOf="@+id/observation_listitem_image"
             android:maxLines="1"
             tools:text="@sample/locations" />
 
         <TextView
-            android:id="@+id/sighting_listitem_rarity"
+            android:id="@+id/observation_listitem_rarity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sighting_listitem_location"
-            android:layout_alignStart="@id/sighting_listitem_datetime"
+            android:layout_below="@id/observation_listitem_location"
+            android:layout_alignStart="@id/observation_listitem_datetime"
             android:layout_marginEnd="@dimen/card_text_margin"
             android:maxLines="1"
             android:textStyle="italic"
             tools:text="@sample/bird_rarities" />
 
         <TextView
-            android:id="@+id/sighting_listitem_description"
+            android:id="@+id/observation_listitem_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/sighting_listitem_image"
+            android:layout_below="@id/observation_listitem_image"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:ellipsize="end"
@@ -73,12 +73,12 @@
             tools:text="@tools:sample/lorem/random" />
 
         <ImageView
-            android:id="@+id/sighting_listitem_image"
-            android:layout_width="@dimen/sighting_listitem_image_width"
+            android:id="@+id/observation_listitem_image"
+            android:layout_width="@dimen/observation_listitem_image_width"
             android:layout_height="0dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_alignBottom="@id/sighting_listitem_rarity"
+            android:layout_alignBottom="@id/observation_listitem_rarity"
             tools:src="@tools:sample/avatars" />
 
     </RelativeLayout>

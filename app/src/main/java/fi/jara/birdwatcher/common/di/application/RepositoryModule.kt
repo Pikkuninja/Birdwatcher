@@ -4,17 +4,17 @@ import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import fi.jara.birdwatcher.data.SightingRepository
-import fi.jara.birdwatcher.data.room.RoomSightingRepository
-import fi.jara.birdwatcher.data.room.SightingDatabase
+import fi.jara.birdwatcher.data.ObservationRepository
+import fi.jara.birdwatcher.data.room.RoomObservationRepository
+import fi.jara.birdwatcher.data.room.ObservationDatabase
 import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
     @Singleton
     @Provides
-    fun provideSightingRepository(context: Context): SightingRepository {
-        val database = Room.databaseBuilder(context, SightingDatabase::class.java, "sightings.sqlite").build()
-        return RoomSightingRepository(database)
+    fun provideObservationRepository(context: Context): ObservationRepository {
+        val database = Room.databaseBuilder(context, ObservationDatabase::class.java, "observations.sqlite").build()
+        return RoomObservationRepository(database)
     }
 }

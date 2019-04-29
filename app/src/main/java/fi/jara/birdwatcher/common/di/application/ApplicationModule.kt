@@ -9,9 +9,9 @@ import fi.jara.birdwatcher.common.filesystem.AndroidImageSaver
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.common.location.LocationSource
-import fi.jara.birdwatcher.data.SightingRepository
-import fi.jara.birdwatcher.sightings.InsertNewSightingUseCase
-import fi.jara.birdwatcher.sightings.ObserveAllSightingsUseCase
+import fi.jara.birdwatcher.data.ObservationRepository
+import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
+import fi.jara.birdwatcher.observations.ObserveAllObservationsUseCase
 import javax.inject.Singleton
 
 @Module
@@ -20,16 +20,16 @@ class ApplicationModule(private val application: Application) {
     fun provideContext(): Context = application
 
     @Provides
-    fun provideObserveAllSightingsUseCase(sightingRepository: SightingRepository): ObserveAllSightingsUseCase =
-        ObserveAllSightingsUseCase(sightingRepository)
+    fun provideObserveAllObservationsUseCase(observationRepository: ObservationRepository): ObserveAllObservationsUseCase =
+        ObserveAllObservationsUseCase(observationRepository)
 
     @Provides
-    fun provideInsertNewSightingsUseCase(
-        sightingRepository: SightingRepository,
+    fun provideInsertNewObservationsUseCase(
+        observationRepository: ObservationRepository,
         locationSource: LocationSource,
         imageStorage: ImageStorage
-    ): InsertNewSightingUseCase =
-        InsertNewSightingUseCase(sightingRepository, locationSource, imageStorage)
+    ): InsertNewObservationUseCase =
+        InsertNewObservationUseCase(observationRepository, locationSource, imageStorage)
 
     @Provides
     @Singleton

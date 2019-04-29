@@ -4,20 +4,20 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import fi.jara.birdwatcher.common.Coordinate
-import fi.jara.birdwatcher.data.NewSightingData
-import fi.jara.birdwatcher.sightings.Sighting
-import fi.jara.birdwatcher.sightings.SightingRarity
+import fi.jara.birdwatcher.data.NewObservationData
+import fi.jara.birdwatcher.observations.Observation
+import fi.jara.birdwatcher.observations.ObservationRarity
 import java.util.*
 
 
 @Entity(tableName = "entities")
-data class SightingEntity(
+data class ObservationEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = idColumnName) val id: Long = 0,
     @ColumnInfo(name = speciesNameColumnName) val species: String,
     @ColumnInfo(name = timestampColumnName) val timestamp: Date,
     @ColumnInfo(name = latitudeColumnName) val latitude: Double?,
     @ColumnInfo(name = longitudeColumnName) val longitude: Double?,
-    @ColumnInfo(name = rarityColumnName) val rarity: SightingRarity,
+    @ColumnInfo(name = rarityColumnName) val rarity: ObservationRarity,
     @ColumnInfo(name = imageColumnName) val imageName: String?,
     @ColumnInfo(name = descriptionColumnName) val description: String?
 ) {
@@ -31,8 +31,8 @@ data class SightingEntity(
         const val imageColumnName = "image"
         const val descriptionColumnName = "description"
 
-        fun fromNewSightingData(data: NewSightingData): SightingEntity =
-            SightingEntity(
+        fun fromNewObservationData(data: NewObservationData): ObservationEntity =
+            ObservationEntity(
                 0,
                 data.species,
                 data.timestamp,
@@ -44,13 +44,13 @@ data class SightingEntity(
             )
     }
 
-    fun toSightingModel(): Sighting {
+    fun toObservationModel(): Observation {
         val coordinate =
             if (latitude != null && longitude != null)
                 Coordinate(latitude, longitude)
             else null
 
-        return Sighting(
+        return Observation(
             id,
             species,
             timestamp,
