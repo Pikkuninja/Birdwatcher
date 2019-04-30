@@ -41,12 +41,16 @@ Keep track of bird observations
 
 # Building and running
 Project uses gradle and doesn't require anything out of your regular Android app building pipeline.
+
 Easiest way to build and run is through Android Studio
+
 Building from command line can be done with commands like ``./gradlew assembleDebug``
+
 To install a debug build to a connected device through command line, run ``./gradlew installDebug``, and then you can start the app from the device
 
 # Running tests
 You can run tests either through Android Studio or from the command line
+
 Unit tests from command line
 1. Run ``./gradlew test``
 
