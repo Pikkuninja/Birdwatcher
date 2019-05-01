@@ -37,12 +37,18 @@ class ObservationsListViewModel(private val observeAllObservationsUseCase: Obser
             resultOrError.result?.let {
                 _showLoading.value = it is Loading
                 _showNoObservations.value = it is NoObservations
+
                 if (it is ObservationsFound) {
                     observationsMediator.value = it.observations
+                } else if (it is NoObservations) {
+                    observationsMediator.value = emptyList()
                 }
             }
 
-            resultOrError.errorMessage?.let { _observationLoadErrors.value = it }
+            resultOrError.errorMessage?.let {
+                _showLoading.value = false
+                _observationLoadErrors.value = it
+            }
         }
         observations = observationsMediator
     }
