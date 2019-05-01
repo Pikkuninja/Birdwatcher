@@ -57,6 +57,7 @@ dependencies {
     implementation deps.cardView
 
     testImplementation deps.junit
+    testImplementation deps.mockk
     testImplementation deps.lifecycleTesting
     testImplementation deps.liveDataTesting
     androidTestImplementation deps.androidTestRunner
