@@ -58,6 +58,7 @@ dependencies {
 
     testImplementation deps.junit
     testImplementation deps.mockk
+    testImplementation deps.kotlinCoroutinesTesting
     testImplementation deps.lifecycleTesting
     testImplementation deps.liveDataTesting
     androidTestImplementation deps.androidTestRunner
