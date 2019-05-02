@@ -66,6 +66,7 @@ buildscript {
 
             'junit'                  : "junit:junit:$versions.junit",
             'mockk'                  : "io.mockk:mockk:$versions.mockk",
+            'kotlinCoroutinesTesting'       : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines",
             'androidTestRunner'      : "androidx.test:runner:$versions.androidTestRunner",
             'espresso'               : "androidx.test.espresso:espresso-core:$versions.espresso",
             'lifecycleTesting'       : "androidx.arch.core:core-testing:$versions.archCore",
