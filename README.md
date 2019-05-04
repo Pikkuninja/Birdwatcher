@@ -15,10 +15,10 @@ Keep track of bird observations
   - Can be ordered by timestamp or species names
 
 # Implementation notes
-- Uses AndroidX and Jetpack libraries heavily: LiveData, Navigation, ViewModel
-  - I wanted to test using these, as I haven't had used them in any projects before
+- Uses AndroidX and Jetpack libraries heavily: LiveData, Navigation, Room, ViewModel
+  - I wanted to test using these, as Room was the only one I had previously used
 - Asynchronity handled with Kotlin Coroutines
-  - Again, some tech I hadn't used in earlier projects.
+  - Again, some tech I hadn't used in earlier projects
   - Especially with Flows coming soon Coroutines can be used to replace RxJava, and they even have multiplatform support (though multithreading isn't supported on non-JVM targets yet)
 - Dependency injection with Dagger
   - Dagger graph includes e.g. UseCases & their dependencies, ViewModelProviders
@@ -27,7 +27,6 @@ Keep track of bird observations
 # TODOs
 - A screen for viewing single observation's details
 - Better tests coverage, both unit and instrumentation
-- Add an About screen with notes and licenses of libraries used
 - Animate moving between screens
 - Better form error handling: currently errors in filling the add observation form are reported 1 at a time
 - Better feedback when saving the observation is in progress, getting user's location with GPS can take a while
@@ -40,8 +39,7 @@ Keep track of bird observations
 - Update the App theme (colors, etc.) from defaults and make an app icon
 
 # Building and running
-Project uses gradle and doesn't require anything out of your regular Android app building pipeline.
-
+Project uses gradle and doesn't require anything out of your regular Android app building pipeline. The Gradle warning about 'variant.getPreBuild' is expected and caused by the gradle plugin used to automatically generate open source licenses listings (https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin).
 Easiest way to build and run is through Android Studio
 
 Building from command line can be done with commands like ``./gradlew assembleDebug``

@@ -28,4 +28,8 @@
     <string name="select_image">Select image</string>
     <string name="user_image_attached">Your image for the observation</string>
     <string name="no_image_attached">No image given for the observation</string>
+    <string name="show_third_party_licenses">Show third party licenses</string>
+    <string name="open_source_code_repository">Show source code in GitHub</string>
+    <string name="about_app">About</string>
+    <string name="about_explanation">Keep track of bird observations. App created to study AndroidX libraries and Kotlin coroutines.</string>
 </resources>

@@ -8,4 +8,8 @@
         app:showAsAction="always"
         android:title="@string/menu_sorting_order"/>
 
+    <item android:id="@+id/show_about_app"
+        android:icon="@drawable/ic_about_outline_white_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/about_app" />
 </menu>

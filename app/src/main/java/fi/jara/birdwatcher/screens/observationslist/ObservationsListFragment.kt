@@ -64,6 +64,10 @@ class ObservationsListFragment : BaseFragment() {
                 showSortingOrderPopup()
                 return true
             }
+            R.id.show_about_app -> {
+                showAboutPage()
+                return true
+            }
         }
 
         return false
@@ -107,6 +111,12 @@ class ObservationsListFragment : BaseFragment() {
             }
 
             popupMenu.show()
+        }
+    }
+
+    private fun showAboutPage() {
+        view?.let {
+            Navigation.findNavController(it).navigate(R.id.aboutFragment)
         }
     }
 }

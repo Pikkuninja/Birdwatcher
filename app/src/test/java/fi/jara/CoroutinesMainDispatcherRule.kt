@@ -6,7 +6,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
-import java.util.concurrent.Executors
 
 class CoroutinesMainDispatcherRule : TestWatcher() {
     @ExperimentalCoroutinesApi
