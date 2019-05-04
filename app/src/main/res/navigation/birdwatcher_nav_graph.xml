@@ -12,9 +12,16 @@
             app:destination="@id/addObservationFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_observationsListFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/addObservationFragment"
         android:name="fi.jara.birdwatcher.screens.addobservation.AddObservationFragment"
         android:label="@string/add_observation_toolbar_title" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="fi.jara.birdwatcher.screens.about.AboutFragment"
+        android:label="About" />
 </navigation>
