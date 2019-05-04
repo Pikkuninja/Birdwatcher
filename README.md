@@ -40,6 +40,7 @@ Keep track of bird observations
 
 # Building and running
 Project uses gradle and doesn't require anything out of your regular Android app building pipeline. The Gradle warning about 'variant.getPreBuild' is expected and caused by the gradle plugin used to automatically generate open source licenses listings (https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin).
+
 Easiest way to build and run is through Android Studio
 
 Building from command line can be done with commands like ``./gradlew assembleDebug``
