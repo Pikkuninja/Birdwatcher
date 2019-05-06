@@ -12,6 +12,7 @@ import fi.jara.birdwatcher.common.location.LocationSource
 import fi.jara.birdwatcher.data.ObservationRepository
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
 import fi.jara.birdwatcher.observations.ObserveAllObservationsUseCase
+import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
 import javax.inject.Singleton
 
 @Module
@@ -22,6 +23,10 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun provideObserveAllObservationsUseCase(observationRepository: ObservationRepository): ObserveAllObservationsUseCase =
         ObserveAllObservationsUseCase(observationRepository)
+
+    @Provides
+    fun provideObserveSingleObservationsUseCase(observationRepository: ObservationRepository): ObserveSingleObservationsUseCase =
+        ObserveSingleObservationsUseCase(observationRepository)
 
     @Provides
     fun provideInsertNewObservationsUseCase(

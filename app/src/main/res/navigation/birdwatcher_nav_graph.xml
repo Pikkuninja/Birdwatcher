@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_observationsListFragment_to_aboutFragment"
             app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_observationsListFragment_to_observationDetailsFragment"
+            app:destination="@id/observationDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addObservationFragment"
@@ -24,4 +27,12 @@
         android:id="@+id/aboutFragment"
         android:name="fi.jara.birdwatcher.screens.about.AboutFragment"
         android:label="About" />
+    <fragment
+        android:id="@+id/observationDetailsFragment"
+        android:name="fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragment"
+        android:label="ObservationDetailsFragment" >
+        <argument
+            android:name="observationId"
+            app:argType="long" />
+    </fragment>
 </navigation>

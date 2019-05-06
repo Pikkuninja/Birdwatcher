@@ -9,6 +9,9 @@ import fi.jara.birdwatcher.screens.common.ViewModelFactory
 import fi.jara.birdwatcher.screens.observationslist.ObservationsListViewModel
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
 import fi.jara.birdwatcher.observations.ObserveAllObservationsUseCase
+import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
+import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragment
+import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsViewModelFactory
 import javax.inject.Provider
 
 @Module
@@ -38,5 +41,4 @@ class ViewModelModule {
         bitmapResolver: BitmapResolver
     ): AddObservationViewModel =
         AddObservationViewModel(insertNewObservationUseCase, bitmapResolver)
-
 }
