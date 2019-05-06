@@ -6,15 +6,13 @@ import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.jraska.livedata.test
 import fi.jara.birdwatcher.common.Coordinate
-import fi.jara.birdwatcher.data.NewObservationData
-import fi.jara.birdwatcher.data.StatusEmpty
-import fi.jara.birdwatcher.data.StatusLoading
-import fi.jara.birdwatcher.data.StatusSuccess
+import fi.jara.birdwatcher.data.*
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationRarity
 import fi.jara.birdwatcher.observations.ObservationSorting
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 
 import org.junit.Test
@@ -22,6 +20,7 @@ import org.junit.runner.RunWith
 import java.util.*
 import org.junit.rules.TestRule
 import org.junit.Rule
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -59,7 +58,7 @@ class RoomObservationRepositoryTests {
     }
 
     @Test
-    fun observeEmptyRepository_emitsLoadingAndEmpty() {
+    fun observeAllFromEmptyRepository_emitsLoadingAndEmpty() {
         val liveData = repository.allObservations(ObservationSorting.TimeAscending)
         val initialValue = liveData.value
         assert(initialValue is StatusLoading)
@@ -68,7 +67,7 @@ class RoomObservationRepositoryTests {
     }
 
     @Test
-    fun insertToRepository_emitsLiveDataWithAutoincrementedId() {
+    fun insertToRepository_allObservationsEmitsLiveDataWithAutoincrementedId() {
         val liveData = repository.allObservations(ObservationSorting.TimeAscending).test()
 
         runBlocking {
@@ -118,6 +117,25 @@ class RoomObservationRepositoryTests {
         repository.allObservations(ObservationSorting.NameDescending)
             .test()
             .assertValue(StatusSuccess(observationSamplesInNameDesc))
+    }
+
+    @Test
+    fun singleObservation_observeNonExisting_emitsLoadingAndEmpty() {
+        val liveData = repository.singleObservation(1)
+
+        val initialValue = liveData.value
+        assert(initialValue is StatusLoading)
+
+        liveData.test().assertValue { it is StatusEmpty }
+    }
+
+    @Test
+    fun singleObservation_observeExisting_emitsSuccess() {
+        insertAllTestData()
+
+        repository.singleObservation(1)
+            .test()
+            .assertValue(StatusSuccess(obsevationSamplesInDatetimeAsc[0]))
     }
 
     private val obsevationSamplesInDatetimeAsc = listOf(
