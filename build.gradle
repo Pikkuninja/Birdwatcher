@@ -40,43 +40,44 @@ buildscript {
     ]
 
     ext.deps = [
-            'androidGradlePlugin'    : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
-            'kotlinGradlePlugin'     : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+            'androidGradlePlugin'           : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
+            'kotlinGradlePlugin'            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
 
-            'kotlinStdLib'           : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin",
-            'kotlinCoroutines'       : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
-            'kotlinCoroutinesAndroid': "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines",
+            'kotlinStdLib'                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin",
+            'kotlinCoroutines'              : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
+            'kotlinCoroutinesAndroid'       : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines",
 
-            'appCompat'              : "androidx.appcompat:appcompat:$versions.appCompat",
-            'androidKtx'             : "androidx.core:core-ktx:$versions.androidKtx",
+            'appCompat'                     : "androidx.appcompat:appcompat:$versions.appCompat",
+            'androidKtx'                    : "androidx.core:core-ktx:$versions.androidKtx",
 
-            'lifecycleKtx'           : "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
-            'viewmodelKtx'           : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
-            'navigationKtx'          : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
-            'navigationUIKtx'        : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
-            'room'                   : "androidx.room:room-runtime:$versions.room",
-            'roomKapt'               : "androidx.room:room-compiler:$versions.room",
-            'roomTesting'            : "androidx.room:room-testing:$versions.room",
+            'lifecycleKtx'                  : "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
+            'viewmodelKtx'                  : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
+            'navigationKtx'                 : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
+            'navigationUIKtx'               : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
+            'navigationSageArgsGradlePlugin': "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation",
+            'room'                          : "androidx.room:room-runtime:$versions.room",
+            'roomKapt'                      : "androidx.room:room-compiler:$versions.room",
+            'roomTesting'                   : "androidx.room:room-testing:$versions.room",
 
-            'dagger'                 : "com.google.dagger:dagger:$versions.dagger",
-            'daggerKapt'             : "com.google.dagger:dagger-compiler:$versions.dagger",
+            'dagger'                        : "com.google.dagger:dagger:$versions.dagger",
+            'daggerKapt'                    : "com.google.dagger:dagger-compiler:$versions.dagger",
 
-            'picasso'                : "com.squareup.picasso:picasso:$versions.picasso",
-            'materialDesign'         : "com.google.android.material:material:$versions.materialDesign",
-            'constraintLayout'       : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
-            'recyclerView'           : "androidx.recyclerview:recyclerview:$versions.recyclerView",
-            'cardView'               : "androidx.cardview:cardview:$versions.cardView",
+            'picasso'                       : "com.squareup.picasso:picasso:$versions.picasso",
+            'materialDesign'                : "com.google.android.material:material:$versions.materialDesign",
+            'constraintLayout'              : "androidx.constraintlayout:constraintlayout:$versions.constraintLayout",
+            'recyclerView'                  : "androidx.recyclerview:recyclerview:$versions.recyclerView",
+            'cardView'                      : "androidx.cardview:cardview:$versions.cardView",
 
-            'ossLicenses'            : "com.google.android.gms:play-services-oss-licenses:$versions.ossLicenses",
-            'ossLicensesGradlePlugin': "com.google.android.gms:oss-licenses-plugin:$versions.ossLicensesGradlePlugin",
+            'ossLicenses'                   : "com.google.android.gms:play-services-oss-licenses:$versions.ossLicenses",
+            'ossLicensesGradlePlugin'       : "com.google.android.gms:oss-licenses-plugin:$versions.ossLicensesGradlePlugin",
 
-            'junit'                  : "junit:junit:$versions.junit",
-            'mockk'                  : "io.mockk:mockk:$versions.mockk",
-            'kotlinCoroutinesTesting': "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines",
-            'androidTestRunner'      : "androidx.test:runner:$versions.androidTestRunner",
-            'espresso'               : "androidx.test.espresso:espresso-core:$versions.espresso",
-            'lifecycleTesting'       : "androidx.arch.core:core-testing:$versions.archCore",
-            'liveDataTesting'        : "com.jraska.livedata:testing-ktx:$versions.liveDataTesting",
+            'junit'                         : "junit:junit:$versions.junit",
+            'mockk'                         : "io.mockk:mockk:$versions.mockk",
+            'kotlinCoroutinesTesting'       : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines",
+            'androidTestRunner'             : "androidx.test:runner:$versions.androidTestRunner",
+            'espresso'                      : "androidx.test.espresso:espresso-core:$versions.espresso",
+            'lifecycleTesting'              : "androidx.arch.core:core-testing:$versions.archCore",
+            'liveDataTesting'               : "com.jraska.livedata:testing-ktx:$versions.liveDataTesting",
     ]
 
     repositories {
@@ -88,6 +89,7 @@ buildscript {
         classpath deps.androidGradlePlugin
         classpath deps.kotlinGradlePlugin
         classpath deps.ossLicensesGradlePlugin
+        classpath deps.navigationSageArgsGradlePlugin
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
