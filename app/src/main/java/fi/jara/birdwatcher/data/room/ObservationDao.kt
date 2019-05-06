@@ -13,16 +13,19 @@ import androidx.room.Query
 @Dao
 interface ObservationDao {
     @Query("SELECT * FROM observations ORDER BY species DESC")
-    fun loadAllObservationsSpeciesDesc(): LiveData<List<ObservationEntity>>
+    fun observeAllObservationsSpeciesDesc(): LiveData<List<ObservationEntity>>
 
     @Query("SELECT * FROM observations ORDER BY species ASC")
-    fun loadAllObservationsSpeciesAsc(): LiveData<List<ObservationEntity>>
+    fun observeAllObservationsSpeciesAsc(): LiveData<List<ObservationEntity>>
 
     @Query("SELECT * FROM observations ORDER BY timestamp DESC")
-    fun loadAllObservationsTimestampDesc(): LiveData<List<ObservationEntity>>
+    fun observeAllObservationsTimestampDesc(): LiveData<List<ObservationEntity>>
 
     @Query("SELECT * FROM observations ORDER BY timestamp ASC")
-    fun loadAllObservationsTimestampAsc(): LiveData<List<ObservationEntity>>
+    fun observeAllObservationsTimestampAsc(): LiveData<List<ObservationEntity>>
+
+    @Query("SELECT * FROM observations WHERE id = :id")
+    fun observeObservation(id: Long): LiveData<ObservationEntity?>
 
     @Insert
     fun insertObservation(observation: ObservationEntity): Long

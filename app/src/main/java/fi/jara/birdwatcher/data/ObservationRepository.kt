@@ -20,6 +20,8 @@ interface ObservationRepository {
     // TODO: Use Kotlin Flows when out of early access
     fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>>
 
+    fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>>
+
     suspend fun addObservation(observationData: NewObservationData): RepositoryLoadingStatus<Observation>
 }
 

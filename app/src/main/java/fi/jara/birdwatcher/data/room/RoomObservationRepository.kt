@@ -12,10 +12,10 @@ class RoomObservationRepository(private val database: ObservationDatabase) : Obs
 
     override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
         val liveData = when (sorting) {
-            ObservationSorting.TimeDescending -> dao.loadAllObservationsTimestampDesc()
-            ObservationSorting.TimeAscending -> dao.loadAllObservationsTimestampAsc()
-            ObservationSorting.NameDescending -> dao.loadAllObservationsSpeciesDesc()
-            ObservationSorting.NameAscending -> dao.loadAllObservationsSpeciesAsc()
+            ObservationSorting.TimeDescending -> dao.observeAllObservationsTimestampDesc()
+            ObservationSorting.TimeAscending -> dao.observeAllObservationsTimestampAsc()
+            ObservationSorting.NameDescending -> dao.observeAllObservationsSpeciesDesc()
+            ObservationSorting.NameAscending -> dao.observeAllObservationsSpeciesAsc()
         }
 
         val observationsLists = Transformations.map(liveData) { entities ->
@@ -27,6 +27,23 @@ class RoomObservationRepository(private val database: ObservationDatabase) : Obs
             addSource(observationsLists) { observations ->
                 if (observations.isNotEmpty()) {
                     postValue(StatusSuccess(observations))
+                } else {
+                    postValue(StatusEmpty())
+                }
+            }
+        }
+    }
+
+    override fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>> {
+        val observation = Transformations.map(dao.observeObservation(id)) {
+            it?.toObservationModel()
+        }
+
+        return MediatorLiveData<RepositoryLoadingStatus<Observation>>().apply {
+            postValue(StatusLoading())
+            addSource(observation) {
+                if (it != null) {
+                    postValue(StatusSuccess(it))
                 } else {
                     postValue(StatusEmpty())
                 }
