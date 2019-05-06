@@ -3,6 +3,7 @@ package fi.jara.birdwatcher.mocks
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import fi.jara.birdwatcher.common.NotFound
 import fi.jara.birdwatcher.data.*
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationSorting
@@ -38,6 +39,37 @@ class MockObservationRepository : ObservationRepository {
         }
     }
 
+    override fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>> {
+        return MediatorLiveData<RepositoryLoadingStatus<Observation>>().apply {
+            postValue(StatusLoading())
+            GlobalScope.launch {
+                delay(5)
+                addSource(data) { status ->
+                    when (status) {
+                        is StatusSuccess -> {
+                            val queried = status.value.find { it.id == id }
+                            if (queried != null) {
+                                postValue(StatusSuccess(queried))
+                            } else {
+                                postValue(StatusEmpty())
+                            }
+                        }
+                        is StatusError -> {
+                            postValue(StatusError(status.message))
+                        }
+                        is StatusEmpty -> {
+                            postValue(StatusEmpty())
+                        }
+                        is StatusLoading -> {
+                            // Loading is only for initial, and we manually post it already. This happening would be
+                            // failure in mocking logic
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override suspend fun addObservation(observationData: NewObservationData): RepositoryLoadingStatus<Observation> {
         val curData = data.value
         val prevs = if (curData is StatusSuccess) {
@@ -63,8 +95,19 @@ class MockObservationRepository : ObservationRepository {
 }
 
 class AlwaysFailingMockObservationRepository : ObservationRepository {
-    override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
+   override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
         return MutableLiveData<RepositoryLoadingStatus<List<Observation>>>().apply {
+            postValue(StatusLoading())
+
+            GlobalScope.launch {
+                delay(5)
+                postValue(StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE))
+            }
+        }
+    }
+
+    override fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>> {
+        return MutableLiveData<RepositoryLoadingStatus<Observation>>().apply {
             postValue(StatusLoading())
 
             GlobalScope.launch {
