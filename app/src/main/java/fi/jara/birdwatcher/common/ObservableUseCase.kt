@@ -17,3 +17,8 @@ class ResultOrError<ResultType, ErrorType> private constructor(
         fun <ResultType, ErrorType> error(error: ErrorType): ResultOrError<ResultType, ErrorType> = ResultOrError(null, error)
     }
 }
+
+sealed class ObservationStatus<out ResultType>
+class LoadingInitial<out ResultType>: ObservationStatus<ResultType>()
+class NotFound<out ResultType> : ObservationStatus<ResultType>()
+class ValueFound<out ResultType>(val value: ResultType) : ObservationStatus<ResultType>()

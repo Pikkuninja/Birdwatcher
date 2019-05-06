@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import java.util.*
 
-class ObserveAllObservationsUseCaseTests {
+class ObserveSingleObservationsUseCaseTests {
     // Needed for LiveData
     @Rule
     @JvmField
@@ -25,7 +25,7 @@ class ObserveAllObservationsUseCaseTests {
     fun `emits loading and empty on no results`() {
         val (_, useCase) = succeedingUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue() // goes from loading to empty
+        val liveData = useCase.execute(1).test().awaitNextValue()
         val history = liveData.valueHistory()
 
         assertEquals(2, history.size)
@@ -34,49 +34,44 @@ class ObserveAllObservationsUseCaseTests {
     }
 
     @Test
-    fun `emits loading and value when observations exits`() {
+    fun `emits value if initially found in repository`() {
         val (repo, useCase) = succeedingUseCase
 
         runBlocking {
             repo.addObservation(NewObservationData("Albatross", Date(1000), null, ObservationRarity.Rare, null, null))
-            repo.addObservation(NewObservationData("Eagle", Date(2000), null, ObservationRarity.ExtremelyRare, null, null))
         }
 
-        useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue().assertValue { it.result is ValueFound }
+        val liveData = useCase.execute(1).test().awaitNextValue() // goes from loading to empty
+
+        liveData.assertValue { it.result is ValueFound }
     }
 
     @Test
-    fun `emits new values when added to repository`() {
-
+    fun `emits value if added to repository later`() {
         val (repo, useCase) = succeedingUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue() // goes from loading to empty
+        val liveData = useCase.execute(1).test().awaitNextValue() // goes from loading to empty
 
         runBlocking {
             repo.addObservation(NewObservationData("Albatross", Date(1000), null, ObservationRarity.Rare, null, null))
-            repo.addObservation(NewObservationData("Eagle", Date(2000), null, ObservationRarity.ExtremelyRare, null, null))
         }
 
-        liveData.assertHistorySize(4) // loading, empty, 1 observation, 2 observations
+        liveData.assertHistorySize(3) // loading, empty, found
     }
 
     @Test
     fun `emits error on repository failure`() {
         val useCase = failingUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue()  // goes from loading to error
-        val history = liveData.valueHistory()
-
-        assertEquals(2, history.size)
-        assertNotNull(history[1].errorMessage)
+        useCase.execute(1).test().awaitNextValue().assertValue { it.errorMessage != null }
     }
 
-    private val succeedingUseCase: Pair<MockObservationRepository, ObserveAllObservationsUseCase>
+    private val succeedingUseCase: Pair<MockObservationRepository, ObserveSingleObservationsUseCase>
         get() {
             val repository = MockObservationRepository()
-            return repository to ObserveAllObservationsUseCase(repository)
+            return repository to ObserveSingleObservationsUseCase(repository)
         }
 
-    private val failingUseCase: ObserveAllObservationsUseCase
-        get() = ObserveAllObservationsUseCase(AlwaysFailingMockObservationRepository())
+    private val failingUseCase: ObserveSingleObservationsUseCase
+        get() = ObserveSingleObservationsUseCase(AlwaysFailingMockObservationRepository())
 }

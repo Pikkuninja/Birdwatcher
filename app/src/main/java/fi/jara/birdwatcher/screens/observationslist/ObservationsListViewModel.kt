@@ -2,6 +2,9 @@ package fi.jara.birdwatcher.screens.observationslist
 
 import androidx.lifecycle.*
 import fi.jara.birdwatcher.common.LiveEvent
+import fi.jara.birdwatcher.common.LoadingInitial
+import fi.jara.birdwatcher.common.NotFound
+import fi.jara.birdwatcher.common.ValueFound
 import fi.jara.birdwatcher.observations.*
 
 class ObservationsListViewModel(private val observeAllObservationsUseCase: ObserveAllObservationsUseCase) : ViewModel() {
@@ -35,12 +38,12 @@ class ObservationsListViewModel(private val observeAllObservationsUseCase: Obser
         val observationsMediator = MediatorLiveData<List<Observation>>()
         observationsMediator.addSource(observationLoadingStatuses) { resultOrError ->
             resultOrError.result?.let {
-                _showLoading.value = it is Loading
-                _showNoObservations.value = it is NoObservations
+                _showLoading.value = it is LoadingInitial
+                _showNoObservations.value = it is NotFound
 
-                if (it is ObservationsFound) {
-                    observationsMediator.value = it.observations
-                } else if (it is NoObservations) {
+                if (it is ValueFound) {
+                    observationsMediator.value = it.value
+                } else if (it is NotFound) {
                     observationsMediator.value = emptyList()
                 }
             }
