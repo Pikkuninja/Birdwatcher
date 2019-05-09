@@ -1,7 +1,8 @@
 package fi.jara.birdwatcher.screens.observationdetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import org.junit.Before
+import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.rules.TestRule
 
@@ -9,11 +10,7 @@ class ObservationDetailsViewModelTests {
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    lateinit var SUT: ObservationDetailsViewModel
+    private val observeSingleObservationsUseCaseMock: ObserveSingleObservationsUseCase = mockk()
 
-
-    @Before
-    fun setup() {
-        SUT = ObservationDetailsViewModel()
-    }
+    private val SUT = ObservationDetailsViewModel(observeSingleObservationsUseCaseMock, 1)
 }
