@@ -21,16 +21,13 @@ class ObservationsListViewModelTests {
     var rule: TestRule = InstantTaskExecutorRule()
 
     private val useCaseResults = MutableLiveData<ResultOrError<ObservationStatus<List<Observation>>, String>>()
-
-    private lateinit var observeAllObservationsUseCaseMock: ObserveAllObservationsUseCase
-
+    private val observeAllObservationsUseCaseMock: ObserveAllObservationsUseCase = mockk()
 
     private lateinit var SUT: ObservationsListViewModel
 
     @Before
     fun setup() {
         useCaseResults.postValue(ResultOrError.result(LoadingInitial()))
-        observeAllObservationsUseCaseMock = mockk()
         every { observeAllObservationsUseCaseMock.execute(any()) } returns useCaseResults
 
         SUT = ObservationsListViewModel(observeAllObservationsUseCaseMock)
