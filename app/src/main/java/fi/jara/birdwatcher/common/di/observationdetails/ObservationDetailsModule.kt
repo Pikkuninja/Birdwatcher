@@ -1,11 +1,14 @@
 package fi.jara.birdwatcher.common.di.observationdetails
 
+import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
+import fi.jara.birdwatcher.common.di.ViewModelKey
 import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
 import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragment
 import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragmentArgs
-import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsViewModelFactory
+import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsViewModel
 import java.lang.IllegalStateException
 import javax.inject.Named
 
@@ -16,12 +19,12 @@ import javax.inject.Named
 @Module
 class ObservationDetailsModule(private val observationDetailsFragment: ObservationDetailsFragment) {
     @Provides
+    @IntoMap
+    @ViewModelKey(ObservationDetailsViewModel::class)
     fun provideObservationDetailsViewModelFactory(
         observeSingleObservationsUseCase: ObserveSingleObservationsUseCase,
         @Named("observationId") observationId: Long
-    ): ObservationDetailsViewModelFactory {
-        return ObservationDetailsViewModelFactory(observeSingleObservationsUseCase, observationId)
-    }
+    ): ViewModel = ObservationDetailsViewModel(observeSingleObservationsUseCase, observationId)
 
     @Provides
     @Named("observationId")
