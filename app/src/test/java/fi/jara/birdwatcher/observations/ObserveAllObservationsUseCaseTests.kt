@@ -14,6 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class ObserveAllObservationsUseCaseTests {
     // Needed for LiveData
@@ -25,7 +26,7 @@ class ObserveAllObservationsUseCaseTests {
     fun `emits loading and empty on no results`() {
         val (_, useCase) = succeedingUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue() // goes from loading to empty
+        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue(1, TimeUnit.SECONDS) // goes from loading to empty
         val history = liveData.valueHistory()
 
         assertEquals(2, history.size)
@@ -42,7 +43,7 @@ class ObserveAllObservationsUseCaseTests {
             repo.addObservation(NewObservationData("Eagle", Date(2000), null, ObservationRarity.ExtremelyRare, null, null))
         }
 
-        useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue().assertValue { it.result is ValueFound }
+        useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue(1, TimeUnit.SECONDS).assertValue { it.result is ValueFound }
     }
 
     @Test
@@ -50,7 +51,7 @@ class ObserveAllObservationsUseCaseTests {
 
         val (repo, useCase) = succeedingUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue() // goes from loading to empty
+        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue(1, TimeUnit.SECONDS) // goes from loading to empty
 
         runBlocking {
             repo.addObservation(NewObservationData("Albatross", Date(1000), null, ObservationRarity.Rare, null, null))
@@ -64,7 +65,7 @@ class ObserveAllObservationsUseCaseTests {
     fun `emits error on repository failure`() {
         val useCase = failingUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue()  // goes from loading to error
+        val liveData = useCase.execute(ObservationSorting.TimeDescending).test().awaitNextValue(1, TimeUnit.SECONDS)  // goes from loading to error
         val history = liveData.valueHistory()
 
         assertEquals(2, history.size)

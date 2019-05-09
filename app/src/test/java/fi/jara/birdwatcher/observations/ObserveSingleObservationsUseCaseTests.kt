@@ -14,6 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class ObserveSingleObservationsUseCaseTests {
     // Needed for LiveData
@@ -25,7 +26,7 @@ class ObserveSingleObservationsUseCaseTests {
     fun `emits loading and empty on no results`() {
         val (_, useCase) = succeedingUseCase
 
-        val liveData = useCase.execute(1).test().awaitNextValue()
+        val liveData = useCase.execute(1).test().awaitNextValue(1, TimeUnit.SECONDS)
         val history = liveData.valueHistory()
 
         assertEquals(2, history.size)
@@ -41,7 +42,7 @@ class ObserveSingleObservationsUseCaseTests {
             repo.addObservation(NewObservationData("Albatross", Date(1000), null, ObservationRarity.Rare, null, null))
         }
 
-        val liveData = useCase.execute(1).test().awaitNextValue() // goes from loading to empty
+        val liveData = useCase.execute(1).test().awaitNextValue(1, TimeUnit.SECONDS) // goes from loading to empty
 
         liveData.assertValue { it.result is ValueFound }
     }
@@ -50,7 +51,7 @@ class ObserveSingleObservationsUseCaseTests {
     fun `emits value if added to repository later`() {
         val (repo, useCase) = succeedingUseCase
 
-        val liveData = useCase.execute(1).test().awaitNextValue() // goes from loading to empty
+        val liveData = useCase.execute(1).test().awaitNextValue(1, TimeUnit.SECONDS) // goes from loading to empty
 
         runBlocking {
             repo.addObservation(NewObservationData("Albatross", Date(1000), null, ObservationRarity.Rare, null, null))
@@ -63,7 +64,7 @@ class ObserveSingleObservationsUseCaseTests {
     fun `emits error on repository failure`() {
         val useCase = failingUseCase
 
-        useCase.execute(1).test().awaitNextValue().assertValue { it.errorMessage != null }
+        useCase.execute(1).test().awaitNextValue(1, TimeUnit.SECONDS).assertValue { it.errorMessage != null }
     }
 
     private val succeedingUseCase: Pair<MockObservationRepository, ObserveSingleObservationsUseCase>
