@@ -12,12 +12,12 @@ import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsViewMode
 import java.lang.IllegalStateException
 import javax.inject.Named
 
-// Another option would be to make the Fragment to figure out the ID for itself,
+// Another option would be to make the Fragment to figure out the ID for itself and bind that directly,
 // but this way the Fragment doesn't need to know anything about it.
 // This approach can be helpful in tests and mimics the Dagger.Android and the way it is used
 
 @Module
-class ObservationDetailsModule(private val observationDetailsFragment: ObservationDetailsFragment) {
+class ObservationDetailsModule {
     @Provides
     @IntoMap
     @ViewModelKey(ObservationDetailsViewModel::class)
@@ -28,7 +28,7 @@ class ObservationDetailsModule(private val observationDetailsFragment: Observati
 
     @Provides
     @Named("observationId")
-    fun provideObservationId(): Long {
+    fun provideObservationId(observationDetailsFragment: ObservationDetailsFragment): Long {
         observationDetailsFragment.arguments?.let {
             val args = ObservationDetailsFragmentArgs.fromBundle(it)
             return args.observationId

@@ -1,5 +1,6 @@
 package fi.jara.birdwatcher.common.di.observationdetails
 
+import dagger.BindsInstance
 import dagger.Subcomponent
 import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragment
 
@@ -14,7 +15,8 @@ interface ObservationDetailsComponent {
 
     @Subcomponent.Builder
     interface Builder {
-        fun observationDetailsModule(module: ObservationDetailsModule): Builder
+        @BindsInstance
+        fun bindFragment(fragment: ObservationDetailsFragment): Builder
         fun build(): ObservationDetailsComponent
     }
 }
