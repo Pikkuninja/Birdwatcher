@@ -3,6 +3,9 @@ package fi.jara.birdwatcher.common.di.presentation
 import dagger.Module
 import androidx.lifecycle.ViewModel
 import dagger.Provides
+import dagger.multibindings.ClassKey
+import dagger.multibindings.IntoMap
+import fi.jara.birdwatcher.common.di.ViewModelKey
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.screens.addobservation.AddObservationViewModel
 import fi.jara.birdwatcher.screens.common.ViewModelFactory
@@ -20,25 +23,21 @@ class ViewModelModule {
     // didn't work when tested it earlier
     @Suppress("UNCHECKED_CAST")
     @Provides
-    fun provideViewModelFactory(
-        observationsListViewModelProvider: Provider<ObservationsListViewModel>,
-        addObservationViewModelProvider: Provider<AddObservationViewModel>
-    ): ViewModelFactory =
-        ViewModelFactory(
-            mapOf(
-                ObservationsListViewModel::class.java to observationsListViewModelProvider as Provider<ViewModel>,
-                AddObservationViewModel::class.java to addObservationViewModelProvider as Provider<ViewModel>
-            )
-        )
+    fun provideViewModelFactory(viewModelMap: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>): ViewModelFactory =
+        ViewModelFactory(viewModelMap)
 
     @Provides
-    fun provideObservationsListViewModel(observeAllObservationsUseCase: ObserveAllObservationsUseCase): ObservationsListViewModel =
+    @IntoMap
+    @ViewModelKey(ObservationsListViewModel::class)
+    fun provideObservationsListViewModel(observeAllObservationsUseCase: ObserveAllObservationsUseCase): ViewModel =
         ObservationsListViewModel(observeAllObservationsUseCase)
 
     @Provides
+    @IntoMap
+    @ViewModelKey(AddObservationViewModel::class)
     fun provideAddObservationViewModel(
         insertNewObservationUseCase: InsertNewObservationUseCase,
         bitmapResolver: BitmapResolver
-    ): AddObservationViewModel =
+    ): ViewModel =
         AddObservationViewModel(insertNewObservationUseCase, bitmapResolver)
 }
