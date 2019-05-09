@@ -3,7 +3,6 @@ package fi.jara.birdwatcher.screens.observationdetails
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import fi.jara.birdwatcher.common.di.observationdetails.ObservationDetailsModule
 import fi.jara.birdwatcher.screens.common.BaseFragment
 import javax.inject.Inject
 
@@ -18,7 +17,7 @@ class ObservationDetailsFragment: BaseFragment() {
 
         getPresentationComponent()
             .observationDetailsBuilder()
-            .observationDetailsModule(ObservationDetailsModule(this))
+            .bindFragment(this)
             .build()
             .inject(this)
 
