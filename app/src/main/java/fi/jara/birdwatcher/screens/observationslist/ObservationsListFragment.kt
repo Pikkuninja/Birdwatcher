@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.PopupMenu
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +14,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.screens.common.BaseFragment
-import fi.jara.birdwatcher.screens.common.ViewModelFactory
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationSorting
 import kotlinx.android.synthetic.main.observations_list_fragment.*
@@ -23,7 +23,7 @@ class ObservationsListFragment : BaseFragment() {
     private lateinit var viewModel: ObservationsListViewModel
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var observationsAdapter: ListAdapter<Observation, *>
 

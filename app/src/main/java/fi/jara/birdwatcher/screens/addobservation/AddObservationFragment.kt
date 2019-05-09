@@ -9,12 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.screens.common.BaseFragment
-import fi.jara.birdwatcher.screens.common.ViewModelFactory
 import fi.jara.birdwatcher.observations.ObservationRarity
 import kotlinx.android.synthetic.main.add_observation_fragment.*
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class AddObservationFragment : BaseFragment() {
     private lateinit var viewModel: AddObservationViewModel
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
