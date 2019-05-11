@@ -6,9 +6,9 @@ import fi.jara.birdwatcher.common.LoadingInitial
 import fi.jara.birdwatcher.common.NotFound
 import fi.jara.birdwatcher.common.ValueFound
 import fi.jara.birdwatcher.data.StatusEmpty
+import fi.jara.birdwatcher.data.StatusError
 import fi.jara.birdwatcher.data.StatusLoading
 import fi.jara.birdwatcher.data.StatusSuccess
-import fi.jara.birdwatcher.mocks.AlwaysFailingMockObservationRepository
 import fi.jara.birdwatcher.mocks.MockObservationRepository
 import org.junit.Assert.*
 import org.junit.Rule
@@ -25,7 +25,7 @@ class ObserveSingleObservationsUseCaseTests {
 
     @Test
     fun `emits loading and empty on no results`() {
-        val (repo, useCase) = succeedingUseCase
+        val (repo, useCase) = repoAndUseCase
         repo.singleObservationLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(1).test()
@@ -41,7 +41,7 @@ class ObserveSingleObservationsUseCaseTests {
 
     @Test
     fun `emits value if initially found in repository`() {
-        val (repo, useCase) = succeedingUseCase
+        val (repo, useCase) = repoAndUseCase
         repo.singleObservationLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(1).test()
@@ -53,7 +53,7 @@ class ObserveSingleObservationsUseCaseTests {
 
     @Test
     fun `emits value if added to repository later`() {
-        val (repo, useCase) = succeedingUseCase
+        val (repo, useCase) = repoAndUseCase
         repo.singleObservationLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(1).test()
@@ -66,18 +66,22 @@ class ObserveSingleObservationsUseCaseTests {
 
     @Test
     fun `emits error on repository failure`() {
-        val useCase = failingUseCase
+        val (repo, useCase) = repoAndUseCase
+        repo.singleObservationLiveData.value = StatusLoading()
 
-        useCase.execute(1).test().awaitNextValue(1, TimeUnit.SECONDS).assertValue { it.errorMessage != null }
+        val liveData = useCase.execute(1).test()
+
+        repo.singleObservationLiveData.value = StatusError("Error message")
+
+        val history = liveData.valueHistory()
+        assertEquals(2, history.size)
+        assertNotNull(history[1].errorMessage)
     }
 
 
-    private val succeedingUseCase: Pair<MockObservationRepository, ObserveSingleObservationsUseCase>
+    private val repoAndUseCase: Pair<MockObservationRepository, ObserveSingleObservationsUseCase>
         get() {
             val repository = MockObservationRepository()
             return repository to ObserveSingleObservationsUseCase(repository)
         }
-
-    private val failingUseCase: ObserveSingleObservationsUseCase
-        get() = ObserveSingleObservationsUseCase(AlwaysFailingMockObservationRepository())
 }

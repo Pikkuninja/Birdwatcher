@@ -2,6 +2,7 @@ package fi.jara.birdwatcher.observations
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import fi.jara.birdwatcher.common.Coordinate
+import fi.jara.birdwatcher.data.StatusError
 import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.mocks.*
 import io.mockk.mockk
@@ -137,7 +138,7 @@ class InsertNewObservationUseCaseTests {
                 ),
                 { fail("Succeeded when needed to fail") },
                 {
-                    assertEquals(AlwaysFailingMockObservationRepository.MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE, it)
+                    assertEquals(repositoryErrorMessage, it)
                 })
         }
     }
@@ -156,11 +157,15 @@ class InsertNewObservationUseCaseTests {
 
 
     private val repositoryFailingUseCase: InsertNewObservationUseCase
-        get() = InsertNewObservationUseCase(
-            AlwaysFailingMockObservationRepository(),
-            MockLocationSource(Coordinate(60.0, 20.0)),
-            AlwaysSucceedingImageStrorage()
-        )
+        get() {
+            val repo = MockObservationRepository()
+            repo.addObservationReturnValue = StatusError(repositoryErrorMessage)
+            return InsertNewObservationUseCase(
+                repo,
+                MockLocationSource(Coordinate(60.0, 20.0)),
+                AlwaysSucceedingImageStrorage()
+            )
+        }
 
     private val locationFailingUseCase: InsertNewObservationUseCase
         get() = InsertNewObservationUseCase(
@@ -175,4 +180,6 @@ class InsertNewObservationUseCaseTests {
             MockLocationSource(Coordinate(60.0, 20.0)),
             AlwaysFailingImageStorage()
         )
+
+    private val repositoryErrorMessage = "Error message from repository"
 }

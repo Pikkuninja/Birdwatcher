@@ -21,36 +21,3 @@ class MockObservationRepository: ObservationRepository {
 
     override suspend fun addObservation(observationData: NewObservationData) = addObservationReturnValue ?: throw IllegalStateException("Set return value for addObservation before calling it")
 }
-
-class AlwaysFailingMockObservationRepository : ObservationRepository {
-   override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
-        return MutableLiveData<RepositoryLoadingStatus<List<Observation>>>().apply {
-            value = StatusLoading()
-
-            GlobalScope.launch(Dispatchers.IO) {
-                delay(8)
-                value = StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE)
-            }
-        }
-    }
-
-    override fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>> {
-        return MutableLiveData<RepositoryLoadingStatus<Observation>>().apply {
-            value = StatusLoading()
-
-            GlobalScope.launch(Dispatchers.IO) {
-                delay(8)
-                value = StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE)
-            }
-        }
-    }
-
-    override suspend fun addObservation(observationData: NewObservationData): RepositoryLoadingStatus<Observation> {
-        return StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE)
-    }
-
-    companion object {
-        const val MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE =
-            "[AlwaysFailingMockObservationRepository]Error storing observation"
-    }
-}
