@@ -17,7 +17,6 @@ import org.junit.rules.TestRule
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@Ignore("The Mock repository observing is flaky in CI")
 class ObserveAllObservationsUseCaseTests {
     // Needed for LiveData
     @Rule

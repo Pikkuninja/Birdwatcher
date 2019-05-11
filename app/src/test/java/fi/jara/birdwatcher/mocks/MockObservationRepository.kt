@@ -18,7 +18,7 @@ class MockObservationRepository : ObservationRepository {
 
     override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
         return MediatorLiveData<RepositoryLoadingStatus<List<Observation>>>().apply {
-            postValue(StatusLoading())
+            value = StatusLoading()
             GlobalScope.launch {
                 delay(5)
                 addSource(data) { status ->
@@ -30,9 +30,9 @@ class MockObservationRepository : ObservationRepository {
                             ObservationSorting.TimeDescending -> status.value.sortedByDescending { it.timestamp }
                         }
 
-                        postValue(StatusSuccess(sorted))
+                        value = StatusSuccess(sorted)
                     } else {
-                        postValue(status)
+                        value = status
                     }
                 }
             }
@@ -49,16 +49,16 @@ class MockObservationRepository : ObservationRepository {
                         is StatusSuccess -> {
                             val queried = status.value.find { it.id == id }
                             if (queried != null) {
-                                postValue(StatusSuccess(queried))
+                                value = StatusSuccess(queried)
                             } else {
-                                postValue(StatusEmpty())
+                                value = StatusEmpty()
                             }
                         }
                         is StatusError -> {
-                            postValue(StatusError(status.message))
+                            value = StatusError(status.message)
                         }
                         is StatusEmpty -> {
-                            postValue(StatusEmpty())
+                            value = StatusEmpty()
                         }
                         is StatusLoading -> {
                             // Loading is only for initial, and we manually post it already. This happening would be
@@ -97,22 +97,22 @@ class MockObservationRepository : ObservationRepository {
 class AlwaysFailingMockObservationRepository : ObservationRepository {
    override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
         return MutableLiveData<RepositoryLoadingStatus<List<Observation>>>().apply {
-            postValue(StatusLoading())
+            value = StatusLoading()
 
             GlobalScope.launch {
                 delay(5)
-                postValue(StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE))
+                value = StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE)
             }
         }
     }
 
     override fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>> {
         return MutableLiveData<RepositoryLoadingStatus<Observation>>().apply {
-            postValue(StatusLoading())
+            value = StatusLoading()
 
             GlobalScope.launch {
                 delay(5)
-                postValue(StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE))
+                value = StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE)
             }
         }
     }
