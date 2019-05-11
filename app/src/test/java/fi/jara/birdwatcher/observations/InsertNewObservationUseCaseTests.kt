@@ -2,7 +2,10 @@ package fi.jara.birdwatcher.observations
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import fi.jara.birdwatcher.common.Coordinate
+import fi.jara.birdwatcher.data.StatusError
+import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.mocks.*
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -43,20 +46,18 @@ class InsertNewObservationUseCaseTests {
         val useCase = succeedingUseCase
 
         runBlocking {
-            runBlocking {
-                useCase.execute(
-                    InsertNewObservationUseCaseParams(
-                        "",
-                        true,
-                        ObservationRarity.Rare,
-                        "There's no Albatrosses in Finland, right?",
-                        ByteArray(1000) { it.toByte() }
-                    ),
-                    { fail("Succeeded when needed to fail") },
-                    {
-                        assertEquals("Species name is empty", it)
-                    })
-            }
+            useCase.execute(
+                InsertNewObservationUseCaseParams(
+                    "",
+                    true,
+                    ObservationRarity.Rare,
+                    "There's no Albatrosses in Finland, right?",
+                    ByteArray(1000) { it.toByte() }
+                ),
+                { fail("Succeeded when needed to fail") },
+                {
+                    assertEquals("Species name is empty", it)
+                })
         }
     }
 
@@ -137,26 +138,34 @@ class InsertNewObservationUseCaseTests {
                 ),
                 { fail("Succeeded when needed to fail") },
                 {
-                    assertEquals(AlwaysFailingMockObservationRepository.MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE, it)
+                    assertEquals(repositoryErrorMessage, it)
                 })
         }
     }
 
     // TODO: inspect setuping these with Dagger?
     private val succeedingUseCase: InsertNewObservationUseCase
-        get() = InsertNewObservationUseCase(
-            MockObservationRepository(),
-            MockLocationSource(Coordinate(60.0, 20.0)),
-            AlwaysSucceedingImageStrorage()
-        )
+        get() {
+            val repo = MockObservationRepository()
+            repo.addObservationReturnValue = StatusSuccess(mockk())
+            return InsertNewObservationUseCase(
+                repo,
+                MockLocationSource(Coordinate(60.0, 20.0)),
+                AlwaysSucceedingImageStrorage()
+            )
+        }
 
 
     private val repositoryFailingUseCase: InsertNewObservationUseCase
-        get() = InsertNewObservationUseCase(
-            AlwaysFailingMockObservationRepository(),
-            MockLocationSource(Coordinate(60.0, 20.0)),
-            AlwaysSucceedingImageStrorage()
-        )
+        get() {
+            val repo = MockObservationRepository()
+            repo.addObservationReturnValue = StatusError(repositoryErrorMessage)
+            return InsertNewObservationUseCase(
+                repo,
+                MockLocationSource(Coordinate(60.0, 20.0)),
+                AlwaysSucceedingImageStrorage()
+            )
+        }
 
     private val locationFailingUseCase: InsertNewObservationUseCase
         get() = InsertNewObservationUseCase(
@@ -171,4 +180,6 @@ class InsertNewObservationUseCaseTests {
             MockLocationSource(Coordinate(60.0, 20.0)),
             AlwaysFailingImageStorage()
         )
+
+    private val repositoryErrorMessage = "Error message from repository"
 }
