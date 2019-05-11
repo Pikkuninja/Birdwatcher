@@ -6,6 +6,7 @@ import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -48,7 +49,7 @@ class ObservationsListFragment : BaseFragment() {
         recyclerView.adapter = observationsAdapter
 
         view.findViewById<FloatingActionButton>(R.id.add_observation_button).setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.addObservationFragment, null)
+            Navigation.createNavigateOnClickListener(R.id.action_observationsListFragment_to_addObservationFragment, null)
         )
 
         subscribeToViewModel()
@@ -116,7 +117,7 @@ class ObservationsListFragment : BaseFragment() {
 
     private fun showAboutPage() {
         view?.let {
-            Navigation.findNavController(it).navigate(R.id.aboutFragment)
+            Navigation.findNavController(it).navigate(R.id.action_observationsListFragment_to_aboutFragment)
         }
     }
 }
