@@ -17,10 +17,10 @@
         <action
             android:id="@+id/action_observationsListFragment_to_aboutFragment"
             app:destination="@id/aboutFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:enterAnim="@anim/appear_from_bottom"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/disappear_to_bottom" />
         <action
             android:id="@+id/action_observationsListFragment_to_observationDetailsFragment"
             app:destination="@id/observationDetailsFragment"
