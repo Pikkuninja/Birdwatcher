@@ -10,7 +10,7 @@ import fi.jara.birdwatcher.observations.Observation
 @Module
 class PresentationModule {
     @Provides
-    fun provideObservationsAdapter(imageStorage: ImageStorage): ListAdapter<Observation, *> {
+    fun provideObservationsAdapter(imageStorage: ImageStorage): ObservationsAdapter {
         return ObservationsAdapter(imageStorage)
     }
 }

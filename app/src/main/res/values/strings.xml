@@ -32,4 +32,6 @@
     <string name="open_source_code_repository">Show source code in GitHub</string>
     <string name="about_app">About</string>
     <string name="about_explanation">Keep track of bird observations. App created to study AndroidX libraries and Kotlin coroutines.</string>
+
+    <string name="observation_details_placeholder_title">Observation</string>
 </resources>
