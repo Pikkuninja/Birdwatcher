@@ -15,10 +15,13 @@ import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationRarity
 import java.text.DateFormat
 
+typealias OnObservationClickedListener = (Observation) -> Unit
 
 class ObservationsAdapter(private val imageStorage: ImageStorage) :
     ListAdapter<Observation, ObservationViewHolder>(ObservationDiffChecker()) {
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance()
+
+    var clickListener: OnObservationClickedListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ObservationViewHolder =
         ObservationViewHolder(
@@ -30,9 +33,12 @@ class ObservationsAdapter(private val imageStorage: ImageStorage) :
         )
 
     override fun onBindViewHolder(holder: ObservationViewHolder, position: Int) {
-        holder.bindToObservation(getItem(position), dateFormat, imageStorage)
+        holder.bindToObservation(getItem(position), dateFormat, imageStorage, ::onObservationItemClicked)
     }
 
+    private fun onObservationItemClicked(observation: Observation) {
+        clickListener?.invoke(observation)
+    }
 }
 
 class ObservationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -43,7 +49,10 @@ class ObservationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private val description = itemView.findViewById<TextView>(R.id.observation_listitem_description)
     private val image = itemView.findViewById<ImageView>(R.id.observation_listitem_image)
 
-    fun bindToObservation(observation: Observation, dateFormat: DateFormat, imageStorage: ImageStorage) {
+    fun bindToObservation(observation: Observation,
+                          dateFormat: DateFormat,
+                          imageStorage: ImageStorage,
+                          onClickCallback: (Observation) -> Unit) {
         title.text = observation.species
         datetime.text = dateFormat.format(observation.timestamp)
         rarity.text = itemView.resources.getString(rarityToResourceId(observation.rarity))
@@ -61,6 +70,8 @@ class ObservationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         } ?: run {
             image.setImageResource(R.drawable.ic_imageplaceholder_black_24dp)
         }
+
+        itemView.setOnClickListener { onClickCallback(observation) }
     }
 }
 

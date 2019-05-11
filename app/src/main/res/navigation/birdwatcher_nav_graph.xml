@@ -40,7 +40,7 @@
     <fragment
         android:id="@+id/observationDetailsFragment"
         android:name="fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragment"
-        android:label="ObservationDetailsFragment" >
+        android:label="@string/observation_details_placeholder_title">
         <argument
             android:name="observationId"
             app:argType="long" />
