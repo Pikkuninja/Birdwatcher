@@ -3,13 +3,10 @@ package fi.jara.birdwatcher.mocks
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import fi.jara.birdwatcher.common.NotFound
 import fi.jara.birdwatcher.data.*
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationSorting
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 // Google doesn't provide a way to test Room databases on non-device tests
 // https://developer.android.com/training/data-storage/room/testing-db
@@ -19,8 +16,8 @@ class MockObservationRepository : ObservationRepository {
     override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
         return MediatorLiveData<RepositoryLoadingStatus<List<Observation>>>().apply {
             value = StatusLoading()
-            GlobalScope.launch {
-                delay(5)
+            GlobalScope.launch(Dispatchers.IO) {
+                delay(8)
                 addSource(data) { status ->
                     if (status is StatusSuccess) {
                         val sorted = when (sorting) {
@@ -42,8 +39,8 @@ class MockObservationRepository : ObservationRepository {
     override fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>> {
         return MediatorLiveData<RepositoryLoadingStatus<Observation>>().apply {
             postValue(StatusLoading())
-            GlobalScope.launch {
-                delay(5)
+            GlobalScope.launch(Dispatchers.IO) {
+                delay(8)
                 addSource(data) { status ->
                     when (status) {
                         is StatusSuccess -> {
@@ -99,8 +96,8 @@ class AlwaysFailingMockObservationRepository : ObservationRepository {
         return MutableLiveData<RepositoryLoadingStatus<List<Observation>>>().apply {
             value = StatusLoading()
 
-            GlobalScope.launch {
-                delay(5)
+            GlobalScope.launch(Dispatchers.IO) {
+                delay(8)
                 value = StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE)
             }
         }
@@ -110,8 +107,8 @@ class AlwaysFailingMockObservationRepository : ObservationRepository {
         return MutableLiveData<RepositoryLoadingStatus<Observation>>().apply {
             value = StatusLoading()
 
-            GlobalScope.launch {
-                delay(5)
+            GlobalScope.launch(Dispatchers.IO) {
+                delay(8)
                 value = StatusError(MOCK_OBSERVATION_REPOSITORY_ERROR_MESSAGE)
             }
         }
