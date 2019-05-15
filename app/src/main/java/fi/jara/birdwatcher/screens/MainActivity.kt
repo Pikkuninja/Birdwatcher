@@ -1,6 +1,5 @@
-package fi.jara.birdwatcher
+package fi.jara.birdwatcher.screens
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
@@ -8,12 +7,10 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import fi.jara.birdwatcher.R
+import fi.jara.birdwatcher.screens.common.BaseActivity
 
-// TODO: currently DI-setup jumps straight from application level to fragment level,
-// add activity scope if needed. In that case, a BaseActivity is likely needed
-
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : BaseActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
 
