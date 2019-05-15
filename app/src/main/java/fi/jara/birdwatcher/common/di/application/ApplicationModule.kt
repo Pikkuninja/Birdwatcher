@@ -13,6 +13,7 @@ import fi.jara.birdwatcher.data.ObservationRepository
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
 import fi.jara.birdwatcher.observations.ObserveAllObservationsUseCase
 import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
+import java.text.DateFormat
 import javax.inject.Singleton
 
 @Module
@@ -43,4 +44,9 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun provideImageSaver(context: Context): ImageStorage = AndroidImageSaver(context)
+
+
+    @Provides
+    @Singleton
+    fun provideDateFormat(): DateFormat = DateFormat.getDateTimeInstance()
 }

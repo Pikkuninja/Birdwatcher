@@ -12,14 +12,13 @@ import com.squareup.picasso.Picasso
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.observations.Observation
-import fi.jara.birdwatcher.observations.ObservationRarity
+import fi.jara.birdwatcher.screens.common.stringResourceId
 import java.text.DateFormat
 
 typealias OnObservationClickedListener = (Observation) -> Unit
 
-class ObservationsAdapter(private val imageStorage: ImageStorage) :
+class ObservationsAdapter(private val imageStorage: ImageStorage, private val dateFormat: DateFormat) :
     ListAdapter<Observation, ObservationViewHolder>(ObservationDiffChecker()) {
-    private val dateFormat: DateFormat = DateFormat.getDateTimeInstance()
 
     var clickListener: OnObservationClickedListener? = null
 
@@ -55,7 +54,7 @@ class ObservationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                           onClickCallback: (Observation) -> Unit) {
         title.text = observation.species
         datetime.text = dateFormat.format(observation.timestamp)
-        rarity.text = itemView.resources.getString(rarityToResourceId(observation.rarity))
+        rarity.text = itemView.resources.getString(observation.rarity.stringResourceId())
         description.text = observation.description
 
         location.text = observation.location?.let {
@@ -80,10 +79,4 @@ class ObservationDiffChecker : DiffUtil.ItemCallback<Observation>() {
 
     // This could also use just the IDs as the observations can't be changed after being stored
     override fun areContentsTheSame(oldItem: Observation, newItem: Observation): Boolean = oldItem == newItem
-}
-
-private fun rarityToResourceId(rarity: ObservationRarity) = when (rarity) {
-    ObservationRarity.Common -> R.string.rarity_common
-    ObservationRarity.Rare -> R.string.rarity_rare
-    ObservationRarity.ExtremelyRare -> R.string.rarity_extremely_rare
 }
