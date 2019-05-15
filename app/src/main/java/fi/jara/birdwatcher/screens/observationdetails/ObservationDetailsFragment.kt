@@ -22,7 +22,7 @@ class ObservationDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getPresentationComponent()
+        presentationComponent
             .observationDetailsBuilder()
             .bindFragment(this)
             .build()
