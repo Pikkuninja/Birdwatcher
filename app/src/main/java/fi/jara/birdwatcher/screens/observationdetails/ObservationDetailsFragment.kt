@@ -29,16 +29,15 @@ class ObservationDetailsFragment : BaseFragment() {
             .inject(this)
     }
 
+    override fun onStart() {
+        super.onStart()
+        subscribeToViewModel()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(
             R.layout.observation_details_fragment, container, false
         )
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        subscribeToViewModel()
-    }
 
     private fun subscribeToViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ObservationDetailsViewModel::class.java)
