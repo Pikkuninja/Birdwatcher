@@ -1,6 +1,5 @@
 package fi.jara.birdwatcher.screens.observationdetails
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +7,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.squareup.picasso.Picasso
 import fi.jara.birdwatcher.R
+import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.screens.common.BaseFragment
+import fi.jara.birdwatcher.screens.common.stringResourceId
 import kotlinx.android.synthetic.main.observation_details_fragment.*
+import java.text.DateFormat
 import javax.inject.Inject
 
 class ObservationDetailsFragment : BaseFragment() {
@@ -18,6 +21,12 @@ class ObservationDetailsFragment : BaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var dateFormat: DateFormat
+
+    @Inject
+    lateinit var imageStorage: ImageStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,11 +51,26 @@ class ObservationDetailsFragment : BaseFragment() {
     private fun subscribeToViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ObservationDetailsViewModel::class.java)
 
-        viewModel.observation.observe(viewLifecycleOwner, Observer {
-            @SuppressLint("SetTextI18n")
-            observation_info_temp_text.text = "TODO: Actual view. Observation: $it"
-            observation_info_temp_text.visibility = View.VISIBLE
+        viewModel.observation.observe(viewLifecycleOwner, Observer { observation ->
+            observation_species.text = observation.species
+            observation_datetime.text = dateFormat.format(observation.timestamp)
+            observation_rarity.text = resources.getString(observation.rarity.stringResourceId())
+            observation_location.text = observation.location?.let {
+                resources.getString(R.string.location_lat_lon, it.latitude, it.longitude)
+            } ?: resources.getString(R.string.location_no_data)
+            observation_description.text = observation.description
+
+            observation.imageName?.let {
+                Picasso.get().load(imageStorage.getUriFor(observation.imageName))
+                    .placeholder(R.drawable.ic_imageplaceholder_black_24dp)
+                    .error(R.drawable.ic_error_outline_black_24dp)
+                    .into(observation_image)
+            } ?: run {
+                observation_image.setImageDrawable(null)
+            }
+
             observation_loading_error_text.visibility = View.GONE
+            observation_detailscontainer.visibility = View.VISIBLE
         })
 
         viewModel.showLoading.observe(viewLifecycleOwner, Observer {
@@ -54,7 +78,7 @@ class ObservationDetailsFragment : BaseFragment() {
         })
 
         viewModel.observationLoadErrors.observe(viewLifecycleOwner, Observer {
-            if (observation_info_temp_text.visibility != View.VISIBLE) {
+            if (observation_detailscontainer.visibility != View.VISIBLE) {
                 if (it != null) {
                     observation_loading_error_text.visibility = View.GONE
                 } else {
