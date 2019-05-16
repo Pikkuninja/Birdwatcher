@@ -28,25 +28,24 @@ class ObservationDetailsViewModel(
     init {
         observation = MediatorLiveData<Observation>().apply {
             addSource(observeSingleObservationsUseCase.execute(observationId)) { resultOrError ->
-                if (resultOrError.result != null) {
-                    when (val result = resultOrError.result) {
-                        is ValueFound -> {
-                            postValue(result.value)
-                            _observationLoadErrors.postValue(null)
-                            _showLoading.postValue(false)
-                        }
-                        is LoadingInitial -> {
-                            _observationLoadErrors.postValue(null)
-                            _showLoading.postValue(true)
-                        }
-                        is NotFound -> {
-                            _observationLoadErrors.postValue("Observation not found")
-                            _showLoading.postValue(false)
-                        }
+                when (val result = resultOrError.result) {
+                    is ValueFound -> {
+                        postValue(result.value)
+                        _observationLoadErrors.postValue(null)
+                        _showLoading.postValue(false)
                     }
-                } else {
-                    _observationLoadErrors.postValue(resultOrError.errorMessage)
-                    _showLoading.postValue(false)
+                    is LoadingInitial -> {
+                        _observationLoadErrors.postValue(null)
+                        _showLoading.postValue(true)
+                    }
+                    is NotFound -> {
+                        _observationLoadErrors.postValue("Observation not found")
+                        _showLoading.postValue(false)
+                    }
+                    null -> {
+                        _observationLoadErrors.postValue(resultOrError.errorMessage)
+                        _showLoading.postValue(false)
+                    }
                 }
             }
         }
