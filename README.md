@@ -11,8 +11,9 @@ Keep track of bird observations
   - Optional user location at the time of storing
   - Optional picture from device's gallery
   - Optional notes
-- View stored observations
+- View stored observations in a list
   - Can be ordered by timestamp or species names
+- View a single stored observation in more detail
 
 # Implementation notes
 - Uses AndroidX and Jetpack libraries heavily: LiveData, Navigation, Room, ViewModel
@@ -24,18 +25,15 @@ Keep track of bird observations
   - Dagger graph includes e.g. UseCases & their dependencies, ViewModelProviders
   - Dagger.Android extension wasn't used, my current project at work uses it and I wanted to return to the roots for a change.
 
-# TODOs
-- A screen for viewing single observation's details
-- Better tests coverage, both unit and instrumentation
-- Animate moving between screens
+# Things that could be improved
+- UI tests
 - Better form error handling: currently errors in filling the add observation form are reported 1 at a time
 - Better feedback when saving the observation is in progress, getting user's location with GPS can take a while
   - Maybe add a cancelation option too?
+- Better i18n, viewmodels can currently just send hardcoded strings to fragments
 - Remove LiveData from repository layer and replace it with Kotlin Flows
   - Might need switching to SQLDelight
 - Remove all other Android dependencies from business layer (ImageStorage is used in an UseCase, and that exposes Android Uris)
-- Try making ViewModels run their Coroutines on a background thread by default, updating the UI through LiveData should handle moving to UI thread already
-  - Overall more Coroutine experimentation, maybe replace saveButtonEnabled MediatorLiveData with Channels / Flows?
 - Update the App theme (colors, etc.) from defaults and make an app icon
 
 # Building and running

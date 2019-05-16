@@ -6,7 +6,9 @@ import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +18,7 @@ import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.screens.common.BaseFragment
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationSorting
+import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragmentArgs
 import kotlinx.android.synthetic.main.observations_list_fragment.*
 import javax.inject.Inject
 
@@ -25,11 +28,11 @@ class ObservationsListFragment : BaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
-    lateinit var observationsAdapter: ListAdapter<Observation, *>
+    lateinit var observationsAdapter: ObservationsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getPresentationComponent().inject(this)
+        presentationComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,12 +46,17 @@ class ObservationsListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.observations_recyclerview)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recyclerView.adapter = observationsAdapter
+        observations_recyclerview.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        observations_recyclerview.adapter = observationsAdapter
+        observationsAdapter.clickListener = {
+            findNavController().navigate(
+                R.id.action_observationsListFragment_to_observationDetailsFragment,
+                ObservationDetailsFragmentArgs(it.id).toBundle()
+            )
+        }
 
-        view.findViewById<FloatingActionButton>(R.id.add_observation_button).setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.addObservationFragment, null)
+        add_observation_button.setOnClickListener(
+            Navigation.createNavigateOnClickListener(R.id.action_observationsListFragment_to_addObservationFragment, null)
         )
 
         subscribeToViewModel()
@@ -115,9 +123,7 @@ class ObservationsListFragment : BaseFragment() {
     }
 
     private fun showAboutPage() {
-        view?.let {
-            Navigation.findNavController(it).navigate(R.id.aboutFragment)
-        }
+        findNavController().navigate(R.id.action_observationsListFragment_to_aboutFragment)
     }
 }
 
