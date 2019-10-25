@@ -2,6 +2,7 @@ package fi.jara.birdwatcher.observations
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.jraska.livedata.test
+import fi.jara.CoroutinesMainDispatcherRule
 import fi.jara.birdwatcher.common.LoadingInitial
 import fi.jara.birdwatcher.common.NotFound
 import fi.jara.birdwatcher.common.ValueFound
@@ -17,19 +18,22 @@ import org.junit.rules.TestRule
 import java.util.*
 
 class ObserveAllObservationsUseCaseTests {
-    // Needed for LiveData
     @Rule
     @JvmField
-    var rule: TestRule = InstantTaskExecutorRule()
+    var liveDataRule: TestRule = InstantTaskExecutorRule()
+
+    @Rule
+    @JvmField
+    var coroutineRule: TestRule = CoroutinesMainDispatcherRule()
 
     @Test
     fun `emits loading and empty on no results`() {
         val (repo, useCase) = repoAndUseCase
-        repo.allObservationsLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
 
-        repo.allObservationsLiveData.value = StatusEmpty()
+        repo.allObservationsChannel.offer(StatusLoading())
+        repo.allObservationsChannel.offer(StatusEmpty())
 
         val history = liveData.valueHistory()
         assertEquals(2, history.size)
@@ -40,11 +44,11 @@ class ObserveAllObservationsUseCaseTests {
     @Test
     fun `emits loading and value when observations exits`() {
         val (repo, useCase) = repoAndUseCase
-        repo.allObservationsLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
 
-        repo.allObservationsLiveData.value = StatusSuccess(listOf(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null)))
+        repo.allObservationsChannel.offer(StatusLoading())
+        repo.allObservationsChannel.offer(StatusSuccess(listOf(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null))))
 
         val history = liveData.valueHistory()
         assertEquals(2, history.size)
@@ -55,15 +59,15 @@ class ObserveAllObservationsUseCaseTests {
     @Test
     fun `emits new values when added to repository`() {
         val (repo, useCase) = repoAndUseCase
-        repo.allObservationsLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
 
-        repo.allObservationsLiveData.value = StatusSuccess(listOf(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null)))
-        repo.allObservationsLiveData.value = StatusSuccess(listOf(
+        repo.allObservationsChannel.offer(StatusLoading())
+        repo.allObservationsChannel.offer(StatusSuccess(listOf(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null))))
+        repo.allObservationsChannel.offer(StatusSuccess(listOf(
             Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null),
             Observation(2, "Eagle", Date(2000), null, ObservationRarity.Rare, null, null))
-        )
+        ))
 
         val history = liveData.valueHistory()
         assertEquals(3, history.size)
@@ -75,11 +79,11 @@ class ObserveAllObservationsUseCaseTests {
     @Test
     fun `emits error on repository failure`() {
         val (repo, useCase) = repoAndUseCase
-        repo.allObservationsLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
 
-        repo.allObservationsLiveData.value = StatusError("Error message")
+        repo.allObservationsChannel.offer(StatusLoading())
+        repo.allObservationsChannel.offer(StatusError("Error message"))
 
         val history = liveData.valueHistory()
         assertEquals(2, history.size)

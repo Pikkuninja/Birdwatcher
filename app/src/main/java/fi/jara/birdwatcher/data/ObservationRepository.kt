@@ -1,10 +1,10 @@
 package fi.jara.birdwatcher.data
 
-import androidx.lifecycle.LiveData
 import fi.jara.birdwatcher.common.Coordinate
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationRarity
 import fi.jara.birdwatcher.observations.ObservationSorting
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 /*
@@ -18,9 +18,9 @@ import java.util.*
 
 interface ObservationRepository {
     // TODO: Use Kotlin Flows when out of early access
-    fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>>
+    fun allObservations(sorting: ObservationSorting): Flow<RepositoryLoadingStatus<List<Observation>>>
 
-    fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>>
+    fun singleObservation(id: Long): Flow<RepositoryLoadingStatus<Observation>>
 
     suspend fun addObservation(observationData: NewObservationData): RepositoryLoadingStatus<Observation>
 }

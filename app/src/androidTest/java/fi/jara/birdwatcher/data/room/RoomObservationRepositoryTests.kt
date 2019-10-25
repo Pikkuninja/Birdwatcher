@@ -10,9 +10,13 @@ import fi.jara.birdwatcher.data.*
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationRarity
 import fi.jara.birdwatcher.observations.ObservationSorting
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Before
 
 import org.junit.Test
@@ -59,83 +63,129 @@ class RoomObservationRepositoryTests {
 
     @Test
     fun observeAllFromEmptyRepository_emitsLoadingAndEmpty() {
-        val liveData = repository.allObservations(ObservationSorting.TimeAscending)
-        val initialValue = liveData.value
-        assert(initialValue is StatusLoading)
-
-        liveData.test().assertValue { it is StatusEmpty }
+        runBlocking {
+            repository.allObservations(ObservationSorting.TimeAscending)
+                .take(2)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> assertTrue(value is StatusLoading<*>)
+                        else -> assertTrue(value is StatusEmpty<*>)
+                    }
+                }
+        }
     }
 
     @Test
     fun insertToRepository_allObservationsEmitsLiveDataWithAutoincrementedId() {
-        val liveData = repository.allObservations(ObservationSorting.TimeAscending).test()
-
         runBlocking {
             repository.addObservation(newObservationDatasInDatetimeAsc[0])
+            repository.allObservations(ObservationSorting.TimeAscending)
+                .take(3)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> {
+                            assertTrue(value is StatusLoading<*>)
+                        }
+                        1 -> {
+                            assertEquals(StatusSuccess(listOf(obsevationSamplesInDatetimeAsc[0])), value)
+                            repository.addObservation(newObservationDatasInDatetimeAsc[1])
+                        }
+                        2 -> {
+                            assertEquals(StatusSuccess(listOf(obsevationSamplesInDatetimeAsc[0], obsevationSamplesInDatetimeAsc[1])), value)
+                        }
+                    }
+                }
         }
-
-        liveData.assertValue(StatusSuccess(listOf(obsevationSamplesInDatetimeAsc[0])))
-
-        runBlocking {
-            repository.addObservation(newObservationDatasInDatetimeAsc[1])
-        }
-
-        liveData.assertValue(StatusSuccess(listOf(obsevationSamplesInDatetimeAsc[0], obsevationSamplesInDatetimeAsc[1])))
     }
 
     @Test
     fun getAllInDatetimeAsc_correctOrder() {
         insertAllTestData()
 
-        repository.allObservations(ObservationSorting.TimeAscending)
-            .test()
-            .assertValue(StatusSuccess(obsevationSamplesInDatetimeAsc))
+        runBlocking {
+            repository
+                .allObservations(ObservationSorting.TimeAscending)
+                .filter { it is StatusSuccess<*> }
+                .take(1)
+                .collect {
+                    assertEquals(StatusSuccess(obsevationSamplesInDatetimeAsc), it)
+                }
+        }
     }
 
     @Test
     fun getAllInDatetimeDesc_correctOrder() {
         insertAllTestData()
 
-        repository.allObservations(ObservationSorting.TimeDescending)
-            .test()
-            .assertValue(StatusSuccess(observationSamplesInDatetimeDesc))
+        runBlocking {
+            repository
+                .allObservations(ObservationSorting.TimeDescending)
+                .filter { it is StatusSuccess<*> }
+                .take(1)
+                .collect {
+                    assertEquals(StatusSuccess(observationSamplesInDatetimeDesc), it)
+                }
+        }
     }
 
     @Test
     fun getAllInNameAsc_correctOrder() {
         insertAllTestData()
 
-        repository.allObservations(ObservationSorting.NameAscending)
-            .test()
-            .assertValue(StatusSuccess(observationSamplesInNameAsc))
+        runBlocking {
+            repository
+                .allObservations(ObservationSorting.NameAscending)
+                .filter { it is StatusSuccess<*> }
+                .take(1)
+                .collect {
+                    assertEquals(StatusSuccess(observationSamplesInNameAsc), it)
+                }
+        }
     }
 
     @Test
     fun getAllInNameDesc_correctOrder() {
         insertAllTestData()
 
-        repository.allObservations(ObservationSorting.NameDescending)
-            .test()
-            .assertValue(StatusSuccess(observationSamplesInNameDesc))
+        runBlocking {
+            repository
+                .allObservations(ObservationSorting.NameDescending)
+                .filter { it is StatusSuccess<*> }
+                .take(1)
+                .collect {
+                    assertEquals(StatusSuccess(observationSamplesInNameDesc), it)
+                }
+        }
     }
 
     @Test
     fun singleObservation_observeNonExisting_emitsLoadingAndEmpty() {
-        val liveData = repository.singleObservation(1)
-
-        val initialValue = liveData.value
-        assert(initialValue is StatusLoading)
-
-        liveData.test().assertValue { it is StatusEmpty }
+        runBlocking {
+            repository.singleObservation(1)
+                .take(2)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> assertTrue(value is StatusLoading<*>)
+                        else -> assertTrue(value is StatusEmpty<*>)
+                    }
+                }
+        }
     }
 
     @Test
     fun singleObservation_observeExisting_emitsSuccess() {
         insertAllTestData()
 
-        repository.singleObservation(1)
-            .test()
-            .assertValue(StatusSuccess(obsevationSamplesInDatetimeAsc[0]))
+        runBlocking {
+            repository.singleObservation(1)
+                .take(2)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> assertTrue(value is StatusLoading<*>)
+                        else -> assertEquals(StatusSuccess(obsevationSamplesInDatetimeAsc[0]), value)
+                    }
+                }
+        }
     }
 
     private val obsevationSamplesInDatetimeAsc = listOf(

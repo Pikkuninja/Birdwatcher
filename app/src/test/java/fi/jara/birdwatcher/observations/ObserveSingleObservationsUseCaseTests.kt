@@ -2,6 +2,7 @@ package fi.jara.birdwatcher.observations
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.jraska.livedata.test
+import fi.jara.CoroutinesMainDispatcherRule
 import fi.jara.birdwatcher.common.LoadingInitial
 import fi.jara.birdwatcher.common.NotFound
 import fi.jara.birdwatcher.common.ValueFound
@@ -10,6 +11,7 @@ import fi.jara.birdwatcher.data.StatusError
 import fi.jara.birdwatcher.data.StatusLoading
 import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.mocks.MockObservationRepository
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -18,19 +20,22 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ObserveSingleObservationsUseCaseTests {
-    // Needed for LiveData
     @Rule
     @JvmField
-    var rule: TestRule = InstantTaskExecutorRule()
+    var liveDataRule: TestRule = InstantTaskExecutorRule()
+
+    @Rule
+    @JvmField
+    var coroutineRule: TestRule = CoroutinesMainDispatcherRule()
 
     @Test
     fun `emits loading and empty on no results`() {
         val (repo, useCase) = repoAndUseCase
-        repo.singleObservationLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(1).test()
 
-        repo.singleObservationLiveData.value = StatusEmpty()
+        repo.singleObservationChannel.offer(StatusLoading())
+        repo.singleObservationChannel.offer(StatusEmpty())
 
         val history = liveData.valueHistory()
 
@@ -42,11 +47,11 @@ class ObserveSingleObservationsUseCaseTests {
     @Test
     fun `emits value if initially found in repository`() {
         val (repo, useCase) = repoAndUseCase
-        repo.singleObservationLiveData.value = StatusLoading()
+        repo.singleObservationChannel.offer(StatusLoading())
 
         val liveData = useCase.execute(1).test()
 
-        repo.singleObservationLiveData.value = StatusSuccess(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null))
+        repo.singleObservationChannel.offer(StatusSuccess(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null)))
 
         liveData.assertValue { it.result is ValueFound }
     }
@@ -54,12 +59,12 @@ class ObserveSingleObservationsUseCaseTests {
     @Test
     fun `emits value if added to repository later`() {
         val (repo, useCase) = repoAndUseCase
-        repo.singleObservationLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(1).test()
 
-        repo.singleObservationLiveData.value = StatusEmpty()
-        repo.singleObservationLiveData.value = StatusSuccess(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null))
+        repo.singleObservationChannel.offer(StatusLoading())
+        repo.singleObservationChannel.offer(StatusEmpty())
+        repo.singleObservationChannel.offer(StatusSuccess(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null)))
 
         liveData.assertHistorySize(3) // loading, empty, found
     }
@@ -67,11 +72,11 @@ class ObserveSingleObservationsUseCaseTests {
     @Test
     fun `emits error on repository failure`() {
         val (repo, useCase) = repoAndUseCase
-        repo.singleObservationLiveData.value = StatusLoading()
 
         val liveData = useCase.execute(1).test()
 
-        repo.singleObservationLiveData.value = StatusError("Error message")
+        repo.singleObservationChannel.offer(StatusLoading())
+        repo.singleObservationChannel.offer(StatusError("Error message"))
 
         val history = liveData.valueHistory()
         assertEquals(2, history.size)

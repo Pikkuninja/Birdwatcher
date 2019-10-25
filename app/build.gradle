@@ -57,10 +57,12 @@ dependencies {
     implementation deps.androidKtx
 
     implementation deps.lifecycleKtx
+    implementation deps.liveDataKtx
     implementation deps.viewmodelKtx
     implementation deps.navigationKtx
     implementation deps.navigationUIKtx
     implementation deps.room
+    implementation deps.roomKtx
     kapt deps.roomKapt
 
     implementation deps.dagger
