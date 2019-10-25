@@ -18,9 +18,8 @@ Keep track of bird observations
 # Implementation notes
 - Uses AndroidX and Jetpack libraries heavily: LiveData, Navigation, Room, ViewModel
   - I wanted to test using these, as Room was the only one I had previously used
-- Asynchronity handled with Kotlin Coroutines
+- Asynchronity handled with Kotlin Coroutines (including Flows)
   - Again, some tech I hadn't used in earlier projects
-  - Especially with Flows coming soon Coroutines can be used to replace RxJava, and they even have multiplatform support (though multithreading isn't supported on non-JVM targets yet)
 - Dependency injection with Dagger
   - Dagger graph includes e.g. UseCases & their dependencies, ViewModelProviders
 
@@ -30,8 +29,7 @@ Keep track of bird observations
 - Better feedback when saving the observation is in progress, getting user's location with GPS can take a while
   - Maybe add a cancelation option too?
 - Better i18n, viewmodels can currently just send hardcoded strings to fragments
-- Remove LiveData from repository layer and replace it with Kotlin Flows
-  - Might need switching to SQLDelight
+- Better thread handling (the coroutines are currently mostly run on main dispatcher)
 - Remove all other Android dependencies from business layer (ImageStorage is used in an UseCase, and that exposes Android Uris)
 - Update the App theme (colors, etc.) from defaults and make an app icon
 
