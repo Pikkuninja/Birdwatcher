@@ -23,7 +23,6 @@ Keep track of bird observations
   - Especially with Flows coming soon Coroutines can be used to replace RxJava, and they even have multiplatform support (though multithreading isn't supported on non-JVM targets yet)
 - Dependency injection with Dagger
   - Dagger graph includes e.g. UseCases & their dependencies, ViewModelProviders
-  - Dagger.Android extension wasn't used, my current project at work uses it and I wanted to return to the roots for a change.
 
 # Things that could be improved
 - UI tests
@@ -37,7 +36,7 @@ Keep track of bird observations
 - Update the App theme (colors, etc.) from defaults and make an app icon
 
 # Building and running
-Project uses gradle and doesn't require anything out of your regular Android app building pipeline. The Gradle warning about 'variant.getPreBuild' is expected and caused by the gradle plugin used to automatically generate open source licenses listings (https://github.com/google/play-services-plugins/tree/master/oss-licenses-plugin).
+Project uses gradle and doesn't require anything out of your regular Android app building pipeline. The Gradle warnings about 'variant.getPreBuild' and 'variant.getMergeResources' are expected and caused by the gradle plugin used to automatically generate open source licenses listings (https://github.com/google/play-services-plugins/issues/37, issue is closed but people are still reporting having these issues with newest releases).
 
 Easiest way to build and run is through Android Studio
 
