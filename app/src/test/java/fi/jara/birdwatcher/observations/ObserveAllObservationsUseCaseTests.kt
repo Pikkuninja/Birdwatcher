@@ -11,6 +11,9 @@ import fi.jara.birdwatcher.data.StatusError
 import fi.jara.birdwatcher.data.StatusLoading
 import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.mocks.MockObservationRepository
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -30,64 +33,147 @@ class ObserveAllObservationsUseCaseTests {
     fun `emits loading and empty on no results`() {
         val (repo, useCase) = repoAndUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
+        runBlocking {
+            repo.allObservationsChannel.offer(StatusLoading())
+            useCase.execute(ObservationSorting.TimeDescending)
+                .take(2)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> {
+                            assert(value.result is LoadingInitial)
+                            repo.allObservationsChannel.offer(StatusEmpty())
+                        }
+                        1 -> {
+                            assert(value.result is NotFound)
+                        }
+                    }
+                }
 
-        repo.allObservationsChannel.offer(StatusLoading())
-        repo.allObservationsChannel.offer(StatusEmpty())
-
-        val history = liveData.valueHistory()
-        assertEquals(2, history.size)
-        assert(history[0].result is LoadingInitial)
-        assert(history[1].result is NotFound)
+        }
     }
 
     @Test
     fun `emits loading and value when observations exits`() {
         val (repo, useCase) = repoAndUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
-
-        repo.allObservationsChannel.offer(StatusLoading())
-        repo.allObservationsChannel.offer(StatusSuccess(listOf(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null))))
-
-        val history = liveData.valueHistory()
-        assertEquals(2, history.size)
-        assert(history[0].result is LoadingInitial)
-        assert(history[1].result is ValueFound)
+        runBlocking {
+            repo.allObservationsChannel.offer(StatusLoading())
+            useCase.execute(ObservationSorting.TimeDescending)
+                .take(2)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> {
+                            assert(value.result is LoadingInitial)
+                            repo.allObservationsChannel.offer(
+                                StatusSuccess(
+                                    listOf(
+                                        Observation(
+                                            1,
+                                            "Albatross",
+                                            Date(1000),
+                                            null,
+                                            ObservationRarity.Rare,
+                                            null,
+                                            null
+                                        )
+                                    )
+                                )
+                            )
+                        }
+                        1 -> {
+                            assert(value.result is ValueFound)
+                        }
+                    }
+                }
+        }
     }
 
     @Test
     fun `emits new values when added to repository`() {
         val (repo, useCase) = repoAndUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
+        runBlocking {
+            repo.allObservationsChannel.offer(StatusLoading())
 
-        repo.allObservationsChannel.offer(StatusLoading())
-        repo.allObservationsChannel.offer(StatusSuccess(listOf(Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null))))
-        repo.allObservationsChannel.offer(StatusSuccess(listOf(
-            Observation(1, "Albatross", Date(1000), null, ObservationRarity.Rare, null, null),
-            Observation(2, "Eagle", Date(2000), null, ObservationRarity.Rare, null, null))
-        ))
+            useCase.execute(ObservationSorting.TimeDescending)
+                .take(3)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> {
+                            assert(value.result is LoadingInitial)
+                            repo.allObservationsChannel.offer(
+                                StatusSuccess(
+                                    listOf(
+                                        Observation(
+                                            1,
+                                            "Albatross",
+                                            Date(1000),
+                                            null,
+                                            ObservationRarity.Rare,
+                                            null,
+                                            null
+                                        )
+                                    )
+                                )
+                            )
+                        }
+                        1 -> {
+                            assert(value.result is ValueFound)
 
-        val history = liveData.valueHistory()
-        assertEquals(3, history.size)
-        assert(history[0].result is LoadingInitial)
-        assert(history[1].result is ValueFound)
-        assert(history[2].result is ValueFound)
+                            repo.allObservationsChannel.offer(
+                                StatusSuccess(
+                                    listOf(
+                                        Observation(
+                                            1,
+                                            "Albatross",
+                                            Date(1000),
+                                            null,
+                                            ObservationRarity.Rare,
+                                            null,
+                                            null
+                                        ),
+                                        Observation(
+                                            2,
+                                            "Eagle",
+                                            Date(2000),
+                                            null,
+                                            ObservationRarity.Rare,
+                                            null,
+                                            null
+                                        )
+                                    )
+                                )
+                            )
+                        }
+                        2 -> {
+                            assert(value.result is ValueFound)
+                        }
+                    }
+                }
+        }
     }
 
     @Test
     fun `emits error on repository failure`() {
         val (repo, useCase) = repoAndUseCase
 
-        val liveData = useCase.execute(ObservationSorting.TimeDescending).test()
+        runBlocking {
+            repo.allObservationsChannel.offer(StatusLoading())
+            useCase.execute(ObservationSorting.TimeDescending)
+                .take(2)
+                .collectIndexed { index, value ->
+                    when (index) {
+                        0 -> {
+                            assert(value.result is LoadingInitial)
+                            repo.allObservationsChannel.offer(StatusError("Error message"))
+                        }
+                        1 -> {
+                            assertNotNull(value.errorMessage)
+                        }
+                    }
+                }
 
-        repo.allObservationsChannel.offer(StatusLoading())
-        repo.allObservationsChannel.offer(StatusError("Error message"))
-
-        val history = liveData.valueHistory()
-        assertEquals(2, history.size)
-        assertNotNull(history[1].errorMessage)
+        }
     }
 
     private val repoAndUseCase: Pair<MockObservationRepository, ObserveAllObservationsUseCase>

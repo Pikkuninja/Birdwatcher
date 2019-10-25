@@ -6,10 +6,15 @@ import fi.jara.birdwatcher.common.LoadingInitial
 import fi.jara.birdwatcher.common.NotFound
 import fi.jara.birdwatcher.common.ValueFound
 import fi.jara.birdwatcher.observations.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapLatest
 
-class ObservationsListViewModel(private val observeAllObservationsUseCase: ObserveAllObservationsUseCase) : ViewModel() {
+class ObservationsListViewModel(private val observeAllObservationsUseCase: ObserveAllObservationsUseCase) :
+    ViewModel() {
 
-    private val sorting = MutableLiveData<ObservationSorting>().apply { value = ObservationSorting.TimeDescending }
+    private val sorting =
+        MutableLiveData<ObservationSorting>().apply { value = ObservationSorting.TimeDescending }
     var currentSorting: ObservationSorting
         get() = sorting.value!! // Sorting is initialized with a value, so there's one always present
         set(value) {
@@ -31,28 +36,27 @@ class ObservationsListViewModel(private val observeAllObservationsUseCase: Obser
     val observations: LiveData<List<Observation>>
 
     init {
-        val observationLoadingStatuses = Transformations.switchMap(sorting) {
-            observeAllObservationsUseCase.execute(it)
-        }
+        observations = liveData {
+            sorting
+                .asFlow()
+                .flatMapLatest { observeAllObservationsUseCase.execute(it) }
+                .collect { resultOrError ->
+                    resultOrError.result?.let {
+                        _showLoading.value = it is LoadingInitial
+                        _showNoObservations.value = it is NotFound
 
-        val observationsMediator = MediatorLiveData<List<Observation>>()
-        observationsMediator.addSource(observationLoadingStatuses) { resultOrError ->
-            resultOrError.result?.let {
-                _showLoading.value = it is LoadingInitial
-                _showNoObservations.value = it is NotFound
+                        if (it is ValueFound) {
+                            emit(it.value)
+                        } else if (it is NotFound) {
+                            emit(emptyList())
+                        }
+                    }
 
-                if (it is ValueFound) {
-                    observationsMediator.value = it.value
-                } else if (it is NotFound) {
-                    observationsMediator.value = emptyList()
+                    resultOrError.errorMessage?.let {
+                        _showLoading.value = false
+                        _observationLoadErrors.value = it
+                    }
                 }
-            }
-
-            resultOrError.errorMessage?.let {
-                _showLoading.value = false
-                _observationLoadErrors.value = it
-            }
         }
-        observations = observationsMediator
     }
 }
