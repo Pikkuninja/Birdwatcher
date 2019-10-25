@@ -8,6 +8,8 @@ import fi.jara.birdwatcher.common.ValueFound
 import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 
 class ObservationDetailsViewModel(
     private val observeSingleObservationsUseCase: ObserveSingleObservationsUseCase,
@@ -26,28 +28,29 @@ class ObservationDetailsViewModel(
         get() = _observationLoadErrors
 
     init {
-        observation = MediatorLiveData<Observation>().apply {
-            addSource(observeSingleObservationsUseCase.execute(observationId)) { resultOrError ->
-                when (val result = resultOrError.result) {
-                    is ValueFound -> {
-                        postValue(result.value)
-                        _observationLoadErrors.postValue(null)
-                        _showLoading.postValue(false)
-                    }
-                    is LoadingInitial -> {
-                        _observationLoadErrors.postValue(null)
-                        _showLoading.postValue(true)
-                    }
-                    is NotFound -> {
-                        _observationLoadErrors.postValue("Observation not found")
-                        _showLoading.postValue(false)
-                    }
-                    null -> {
-                        _observationLoadErrors.postValue(resultOrError.errorMessage)
-                        _showLoading.postValue(false)
+        observation = liveData {
+            observeSingleObservationsUseCase.execute(observationId)
+                .collect { resultOrError ->
+                    when (val result = resultOrError.result) {
+                        is ValueFound -> {
+                            emit(result.value)
+                            _observationLoadErrors.postValue(null)
+                            _showLoading.postValue(false)
+                        }
+                        is LoadingInitial -> {
+                            _observationLoadErrors.postValue(null)
+                            _showLoading.postValue(true)
+                        }
+                        is NotFound -> {
+                            _observationLoadErrors.postValue("Observation not found")
+                            _showLoading.postValue(false)
+                        }
+                        null -> {
+                            _observationLoadErrors.postValue(resultOrError.errorMessage)
+                            _showLoading.postValue(false)
+                        }
                     }
                 }
-            }
         }
     }
 }

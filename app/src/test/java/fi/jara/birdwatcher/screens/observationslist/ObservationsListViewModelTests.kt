@@ -3,11 +3,16 @@ package fi.jara.birdwatcher.screens.observationslist
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.jraska.livedata.test
+import fi.jara.CoroutinesMainDispatcherRule
 import fi.jara.birdwatcher.common.*
 import fi.jara.birdwatcher.observations.*
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -17,18 +22,24 @@ import java.util.*
 
 class ObservationsListViewModelTests {
 
-    @get:Rule
-    var rule: TestRule = InstantTaskExecutorRule()
+    @Rule
+    @JvmField
+    var liveDataRule: TestRule = InstantTaskExecutorRule()
 
-    private val useCaseResults = MutableLiveData<ResultOrError<ObservationStatus<List<Observation>>, String>>()
+    @Rule
+    @JvmField
+    var coroutineRule: TestRule = CoroutinesMainDispatcherRule()
+
+    private val useCaseResults = Channel<ResultOrError<ObservationStatus<List<Observation>>, String>>(Channel.CONFLATED)
     private val observeAllObservationsUseCaseMock: ObserveAllObservationsUseCase = mockk()
 
     private lateinit var SUT: ObservationsListViewModel
 
     @Before
     fun setup() {
-        useCaseResults.postValue(ResultOrError.result(LoadingInitial()))
-        every { observeAllObservationsUseCaseMock.execute(any()) } returns useCaseResults
+        useCaseResults.offer(ResultOrError.result(LoadingInitial()))
+
+        every { observeAllObservationsUseCaseMock.execute(any()) } answers { useCaseResults.consumeAsFlow() }
 
         SUT = ObservationsListViewModel(observeAllObservationsUseCaseMock)
     }
@@ -46,7 +57,7 @@ class ObservationsListViewModelTests {
     fun `showNoObservations set to true when no observations found`() {
         val observationsLiveData = SUT.observations.test()
 
-        useCaseResults.postValue(ResultOrError.result(NotFound()))
+        useCaseResults.offer(ResultOrError.result(NotFound()))
 
         SUT.showNoObservations.test().assertValue(true)
     }
@@ -55,7 +66,7 @@ class ObservationsListViewModelTests {
     fun `showNoObservations set to false when observations found`() {
         val observationsLiveData = SUT.observations.test()
 
-        useCaseResults.postValue(ResultOrError.result(ValueFound(listOf(observation1))))
+        useCaseResults.offer(ResultOrError.result(ValueFound(listOf(observation1))))
 
         SUT.showNoObservations.test().assertValue(false)
     }
@@ -71,7 +82,7 @@ class ObservationsListViewModelTests {
     fun `showLoading set to false when no observations found`() {
         val observationsLiveData = SUT.observations.test()
 
-        useCaseResults.postValue(ResultOrError.result(NotFound()))
+        useCaseResults.offer(ResultOrError.result(NotFound()))
 
         SUT.showLoading.test().assertValue(false)
     }
@@ -80,7 +91,7 @@ class ObservationsListViewModelTests {
     fun `showLoading set to false when observations found`() {
         val observationsLiveData = SUT.observations.test()
 
-        useCaseResults.postValue(ResultOrError.result(ValueFound(listOf(observation1))))
+        useCaseResults.offer(ResultOrError.result(ValueFound(listOf(observation1))))
 
         SUT.showLoading.test().assertValue(false)
     }
@@ -89,7 +100,7 @@ class ObservationsListViewModelTests {
     fun `observationLoadError is sent on error`() {
         val observationsLiveData = SUT.observations.test()
 
-        useCaseResults.postValue(ResultOrError.error("error"))
+        useCaseResults.offer(ResultOrError.error("error"))
 
         SUT.observationLoadErrors.test().assertHasValue()
     }
@@ -98,7 +109,7 @@ class ObservationsListViewModelTests {
     fun `showLoading set to false on error`() {
         val observationsLiveData = SUT.observations.test()
 
-        useCaseResults.postValue(ResultOrError.error("error"))
+        useCaseResults.offer(ResultOrError.error("error"))
 
         SUT.showLoading.test().assertValue(false)
     }
@@ -108,9 +119,9 @@ class ObservationsListViewModelTests {
         val observationsLiveData = SUT.observations.test()
         val showNoObservationsLiveData = SUT.showNoObservations.test()
 
-        useCaseResults.postValue(ResultOrError.result(NotFound()))
+        useCaseResults.offer(ResultOrError.result(NotFound()))
         val historyBeforeError = showNoObservationsLiveData.valueHistory().size
-        useCaseResults.postValue(ResultOrError.error("error"))
+        useCaseResults.offer(ResultOrError.error("error"))
         val historyAfterError = showNoObservationsLiveData.valueHistory().size
 
         assertEquals(historyBeforeError, historyAfterError)
@@ -121,7 +132,7 @@ class ObservationsListViewModelTests {
         val observationsLiveData = SUT.observations.test()
 
         val foundValue = listOf(observation1)
-        useCaseResults.postValue(ResultOrError.result(ValueFound(foundValue)))
+        useCaseResults.offer(ResultOrError.result(ValueFound(foundValue)))
 
         observationsLiveData.assertValue(foundValue)
     }
@@ -130,8 +141,8 @@ class ObservationsListViewModelTests {
     fun `old observations removed when updated to no observations`() {
         val observationsLiveData = SUT.observations.test()
 
-        useCaseResults.postValue(ResultOrError.result(ValueFound(listOf(observation1))))
-        useCaseResults.postValue(ResultOrError.result(NotFound()))
+        useCaseResults.offer(ResultOrError.result(ValueFound(listOf(observation1))))
+        useCaseResults.offer(ResultOrError.result(NotFound()))
 
         observationsLiveData.assertValue(emptyList())
     }
@@ -141,8 +152,8 @@ class ObservationsListViewModelTests {
         val observationsLiveData = SUT.observations.test()
 
         val foundValue = listOf(observation1)
-        useCaseResults.postValue(ResultOrError.result(ValueFound(foundValue)))
-        useCaseResults.postValue(ResultOrError.error("error"))
+        useCaseResults.offer(ResultOrError.result(ValueFound(foundValue)))
+        useCaseResults.offer(ResultOrError.error("error"))
 
         observationsLiveData.assertValue(foundValue)
     }
@@ -152,8 +163,8 @@ class ObservationsListViewModelTests {
         val observationsLiveData = SUT.observations.test()
 
         val foundValue = listOf(observation1)
-        useCaseResults.postValue(ResultOrError.result(ValueFound(foundValue)))
-        useCaseResults.postValue(ResultOrError.result(LoadingInitial()))
+        useCaseResults.offer(ResultOrError.result(ValueFound(foundValue)))
+        useCaseResults.offer(ResultOrError.result(LoadingInitial()))
 
         observationsLiveData.assertValue(foundValue)
     }

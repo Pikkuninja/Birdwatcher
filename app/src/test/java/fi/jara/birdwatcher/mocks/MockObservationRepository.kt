@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.consumeAsFlow
 // https://developer.android.com/training/data-storage/room/testing-db
 
 class MockObservationRepository: ObservationRepository {
-    val allObservationsChannel = Channel<RepositoryLoadingStatus<List<Observation>>>()
-    val singleObservationChannel = Channel<RepositoryLoadingStatus<Observation>>()
+    val allObservationsChannel = Channel<RepositoryLoadingStatus<List<Observation>>>(Channel.CONFLATED)
+    val singleObservationChannel = Channel<RepositoryLoadingStatus<Observation>>(Channel.CONFLATED)
     var addObservationReturnValue: RepositoryLoadingStatus<Observation>? = null
 
     override fun allObservations(sorting: ObservationSorting): Flow<RepositoryLoadingStatus<List<Observation>>> = allObservationsChannel.consumeAsFlow()

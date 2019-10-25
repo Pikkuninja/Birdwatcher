@@ -9,27 +9,31 @@ import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.consumeAsFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
 class ObservationDetailsViewModelTests {
-    @get:Rule
-    var rule: TestRule = InstantTaskExecutorRule()
+    @Rule
+    @JvmField
+    var liveDataRule: TestRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
+    @Rule
+    @JvmField
+    var coroutineRule: TestRule = CoroutinesMainDispatcherRule()
 
     private val observeSingleObservationsUseCaseMock: ObserveSingleObservationsUseCase = mockk()
-    private val mockUseCaseResults = MutableLiveData<ResultOrError<ObservationStatus<Observation>, String>>()
+    private val mockUseCaseResults = Channel<ResultOrError<ObservationStatus<Observation>, String>>(Channel.CONFLATED)
 
     lateinit var SUT: ObservationDetailsViewModel
 
     @Before
     fun setup() {
-        mockUseCaseResults.value = ResultOrError.result(LoadingInitial())
-        coEvery { observeSingleObservationsUseCaseMock.execute(any()) }.returns(mockUseCaseResults)
+        mockUseCaseResults.offer(ResultOrError.result(LoadingInitial()))
+        coEvery { observeSingleObservationsUseCaseMock.execute(any()) } answers { mockUseCaseResults.consumeAsFlow() }
 
         SUT = ObservationDetailsViewModel(observeSingleObservationsUseCaseMock, 1)
     }
@@ -37,7 +41,7 @@ class ObservationDetailsViewModelTests {
     @Test
     fun `observation has value when found`() {
         val observationSubscription = SUT.observation.test()
-        mockUseCaseResults.value = ResultOrError.result(ValueFound(mockk()))
+        mockUseCaseResults.offer(ResultOrError.result(ValueFound(mockk())))
 
         SUT.showLoading.test().assertValue(false)
     }
@@ -52,7 +56,7 @@ class ObservationDetailsViewModelTests {
     @Test
     fun `showLoading false when observation is found`() {
         val observationSubscription = SUT.observation.test()
-        mockUseCaseResults.value = ResultOrError.result(ValueFound(mockk()))
+        mockUseCaseResults.offer(ResultOrError.result(ValueFound(mockk())))
 
         SUT.showLoading.test().assertValue(false)
     }
@@ -60,7 +64,7 @@ class ObservationDetailsViewModelTests {
     @Test
     fun `showLoading false when observation is not found`() {
         val observationSubscription = SUT.observation.test()
-        mockUseCaseResults.value = ResultOrError.result(NotFound())
+        mockUseCaseResults.offer(ResultOrError.result(NotFound()))
 
         SUT.showLoading.test().assertValue(false)
     }
@@ -68,7 +72,7 @@ class ObservationDetailsViewModelTests {
     @Test
     fun `showLoading false when observation errors`() {
         val observationSubscription = SUT.observation.test()
-        mockUseCaseResults.value = ResultOrError.error("Error")
+        mockUseCaseResults.offer(ResultOrError.error("Error"))
 
         SUT.showLoading.test().assertValue(false)
     }
@@ -83,7 +87,7 @@ class ObservationDetailsViewModelTests {
     @Test
     fun `observationLoadError null when observation is found`() {
         val observationSubscription = SUT.observation.test()
-        mockUseCaseResults.value = ResultOrError.result(ValueFound(mockk()))
+        mockUseCaseResults.offer(ResultOrError.result(ValueFound(mockk())))
 
         SUT.observationLoadErrors.test().assertValue(null)
     }
@@ -91,7 +95,7 @@ class ObservationDetailsViewModelTests {
     @Test
     fun `observationLoadError 'Observation not found' when observation is not found`() {
         val observationSubscription = SUT.observation.test()
-        mockUseCaseResults.value = ResultOrError.result(NotFound())
+        mockUseCaseResults.offer(ResultOrError.result(NotFound()))
 
         SUT.observationLoadErrors.test().assertValue("Observation not found")
     }
@@ -100,7 +104,7 @@ class ObservationDetailsViewModelTests {
     fun `observationLoadError has value when observation errors`() {
         val errorMessage = "Error"
         val observationSubscription = SUT.observation.test()
-        mockUseCaseResults.value = ResultOrError.error(errorMessage)
+        mockUseCaseResults.offer(ResultOrError.error(errorMessage))
 
         SUT.observationLoadErrors.test().assertValue(errorMessage)
     }

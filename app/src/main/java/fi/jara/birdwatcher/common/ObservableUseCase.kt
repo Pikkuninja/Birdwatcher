@@ -1,11 +1,9 @@
 package fi.jara.birdwatcher.common
 
-import androidx.lifecycle.LiveData
-
-// TODO: switch to Kotlin Flows
+import kotlinx.coroutines.flow.Flow
 
 abstract class ObservableUseCase<Params, ResultType, ErrorType> {
-    abstract fun execute(params: Params): LiveData<ResultOrError<ResultType, ErrorType>>
+    abstract fun execute(params: Params): Flow<ResultOrError<ResultType, ErrorType>>
 }
 
 class ResultOrError<ResultType, ErrorType> private constructor(
