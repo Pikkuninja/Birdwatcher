@@ -1,54 +1,47 @@
 package fi.jara.birdwatcher.data.room
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Transformations
 import fi.jara.birdwatcher.data.*
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationSorting
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 
 class RoomObservationRepository(private val database: ObservationDatabase) : ObservationRepository {
     private val dao = database.observationDao()
 
-    override fun allObservations(sorting: ObservationSorting): LiveData<RepositoryLoadingStatus<List<Observation>>> {
-        val liveData = when (sorting) {
+    override fun allObservations(sorting: ObservationSorting): Flow<RepositoryLoadingStatus<List<Observation>>> {
+        val daoFlow = when (sorting) {
             ObservationSorting.TimeDescending -> dao.observeAllObservationsTimestampDesc()
             ObservationSorting.TimeAscending -> dao.observeAllObservationsTimestampAsc()
             ObservationSorting.NameDescending -> dao.observeAllObservationsSpeciesDesc()
             ObservationSorting.NameAscending -> dao.observeAllObservationsSpeciesAsc()
         }
 
-        val observationsLists = Transformations.map(liveData) { entities ->
-            entities.map { it.toObservationModel() }
-        }
-
-        return MediatorLiveData<RepositoryLoadingStatus<List<Observation>>>().apply {
-            postValue(StatusLoading())
-            addSource(observationsLists) { observations ->
-                if (observations.isNotEmpty()) {
-                    postValue(StatusSuccess(observations))
+        return daoFlow
+            .map { entities -> entities.map { it.toObservationModel() } }
+            .map {
+                if (it.isNotEmpty()) {
+                    StatusSuccess(it)
                 } else {
-                    postValue(StatusEmpty())
+                    StatusEmpty<List<Observation>>()
                 }
             }
-        }
+            .onStart { emit(StatusLoading()) }
     }
 
-    override fun singleObservation(id: Long): LiveData<RepositoryLoadingStatus<Observation>> {
-        val observation = Transformations.map(dao.observeObservation(id)) {
-            it?.toObservationModel()
-        }
+    override fun singleObservation(id: Long): Flow<RepositoryLoadingStatus<Observation>> {
 
-        return MediatorLiveData<RepositoryLoadingStatus<Observation>>().apply {
-            postValue(StatusLoading())
-            addSource(observation) {
+        return dao.observeObservation(id)
+            .map { it?.toObservationModel() }
+            .map {
                 if (it != null) {
-                    postValue(StatusSuccess(it))
+                    StatusSuccess(it)
                 } else {
-                    postValue(StatusEmpty())
+                    StatusEmpty<Observation>()
                 }
             }
-        }
+            .onStart { emit(StatusLoading()) }
     }
 
     override suspend fun addObservation(observationData: NewObservationData): RepositoryLoadingStatus<Observation> {

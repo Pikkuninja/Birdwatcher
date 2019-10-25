@@ -17,7 +17,7 @@ buildscript {
             'androidKtx'             : '1.0.1',
 
             'archCore'               : '2.1.0',
-            'lifecycle'              : '2.1.0',
+            'lifecycle'              : '2.2.0-rc01',
             'navigation'             : '2.1.0',
             'room'                   : '2.2.1',
 
@@ -51,11 +51,13 @@ buildscript {
             'androidKtx'                    : "androidx.core:core-ktx:$versions.androidKtx",
 
             'lifecycleKtx'                  : "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle",
+            'liveDataKtx'                   : "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle",
             'viewmodelKtx'                  : "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle",
             'navigationKtx'                 : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
             'navigationUIKtx'               : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
             'navigationSageArgsGradlePlugin': "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation",
             'room'                          : "androidx.room:room-runtime:$versions.room",
+            'roomKtx'                       : "androidx.room:room-ktx:$versions.room",
             'roomKapt'                      : "androidx.room:room-compiler:$versions.room",
             'roomTesting'                   : "androidx.room:room-testing:$versions.room",
 
