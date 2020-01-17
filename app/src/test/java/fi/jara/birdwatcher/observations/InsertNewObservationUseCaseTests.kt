@@ -2,13 +2,13 @@ package fi.jara.birdwatcher.observations
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import fi.jara.birdwatcher.common.Coordinate
+import fi.jara.birdwatcher.common.Either
 import fi.jara.birdwatcher.data.StatusError
 import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.mocks.*
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -26,18 +26,16 @@ class InsertNewObservationUseCaseTests {
         val useCase = succeedingUseCase
 
         runBlocking {
-            useCase.execute(
+            val result = useCase.execute(
                 InsertNewObservationUseCaseParams(
                     "Albatross",
                     true,
                     ObservationRarity.Rare,
                     "There's no Albatrosses in Finland, right?",
                     ByteArray(1000) { it.toByte() }
-                ),
-                { },
-                {
-                    fail(it)
-                })
+                ))
+
+            assertTrue(result is Either.Left)
         }
     }
 
@@ -46,18 +44,16 @@ class InsertNewObservationUseCaseTests {
         val useCase = succeedingUseCase
 
         runBlocking {
-            useCase.execute(
-                InsertNewObservationUseCaseParams(
-                    "",
-                    true,
-                    ObservationRarity.Rare,
-                    "There's no Albatrosses in Finland, right?",
-                    ByteArray(1000) { it.toByte() }
-                ),
-                { fail("Succeeded when needed to fail") },
-                {
-                    assertEquals("Species name is empty", it)
-                })
+            val result = useCase.execute(InsertNewObservationUseCaseParams(
+                "",
+                true,
+                ObservationRarity.Rare,
+                "There's no Albatrosses in Finland, right?",
+                ByteArray(1000) { it.toByte() }
+            ))
+
+            assertTrue(result is Either.Right)
+            assertEquals("Species name is empty", (result as Either.Right).value)
         }
     }
 
@@ -66,20 +62,17 @@ class InsertNewObservationUseCaseTests {
         val useCase = succeedingUseCase
 
         runBlocking {
-            runBlocking {
-                useCase.execute(
-                    InsertNewObservationUseCaseParams(
-                        "Albatross",
-                        true,
-                        null,
-                        "There's no Albatrosses in Finland, right?",
-                        ByteArray(1000) { it.toByte() }
-                    ),
-                    { fail("Succeeded when needed to fail") },
-                    {
-                        assertEquals("No rarity given", it)
-                    })
-            }
+            val result = useCase.execute(
+                InsertNewObservationUseCaseParams(
+                    "Albatross",
+                    true,
+                    null,
+                    "There's no Albatrosses in Finland, right?",
+                    ByteArray(1000) { it.toByte() }
+                ))
+
+            assertTrue(result is Either.Right)
+            assertEquals("No rarity given", (result as Either.Right).value)
         }
     }
 
@@ -88,18 +81,17 @@ class InsertNewObservationUseCaseTests {
         val useCase = locationFailingUseCase
 
         runBlocking {
-            useCase.execute(
+            val result = useCase.execute(
                 InsertNewObservationUseCaseParams(
                     "Albatross",
                     true,
                     ObservationRarity.Rare,
                     "There's no Albatrosses in Finland, right?",
                     ByteArray(1000) { it.toByte() }
-                ),
-                { fail("Succeeded when needed to fail") },
-                {
-                    assertEquals("Error fetching location", it)
-                })
+                ))
+
+            assertTrue(result is Either.Right)
+            assertEquals("Error fetching location", (result as Either.Right).value)
         }
     }
 
@@ -108,18 +100,17 @@ class InsertNewObservationUseCaseTests {
         val useCase = imageStoreFailingUseCase
 
         runBlocking {
-            useCase.execute(
+            val result = useCase.execute(
                 InsertNewObservationUseCaseParams(
                     "Albatross",
                     true,
                     ObservationRarity.Rare,
                     "There's no Albatrosses in Finland, right?",
                     ByteArray(1000) { it.toByte() }
-                ),
-                { fail("Succeeded when needed to fail") },
-                {
-                    assertEquals("Error storing image", it)
-                })
+                ))
+
+            assertTrue(result is Either.Right)
+            assertEquals("Error storing image", (result as Either.Right).value)
         }
     }
 
@@ -128,18 +119,17 @@ class InsertNewObservationUseCaseTests {
         val useCase = repositoryFailingUseCase
 
         runBlocking {
-            useCase.execute(
+            val result = useCase.execute(
                 InsertNewObservationUseCaseParams(
                     "Albatross",
                     true,
                     ObservationRarity.Rare,
                     "There's no Albatrosses in Finland, right?",
                     ByteArray(1000) { it.toByte() }
-                ),
-                { fail("Succeeded when needed to fail") },
-                {
-                    assertEquals(repositoryErrorMessage, it)
-                })
+                ))
+
+            assertTrue(result is Either.Right)
+            assertEquals(repositoryErrorMessage, (result as Either.Right).value)
         }
     }
 

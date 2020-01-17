@@ -122,7 +122,6 @@ class AddObservationViewModel(
                     imageBytes
                 )
 
-
                 when (result) {
                     is Either.Left -> saveObservationSuccess()
                     is Either.Right -> saveObservationFailed(result.value)

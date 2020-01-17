@@ -3,6 +3,7 @@ package fi.jara.birdwatcher.screens.addobservation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.jraska.livedata.test
 import fi.jara.CoroutinesMainDispatcherRule
+import fi.jara.birdwatcher.common.Either
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
 import fi.jara.birdwatcher.observations.ObservationRarity
@@ -14,6 +15,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import org.mockito.ArgumentMatchers.any
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.suspendCoroutine
@@ -208,22 +210,51 @@ class AddObservationViewModelTests {
         liveData.assertValue(false)
     }
 
+    // TODO: Check if this duplication can be removed easily (or just remove the duplicated way of calling the usecase...)
     private fun setupUseCaseSuccess() {
-        coEvery { insertNewObservationUseCaseMock.execute(any(), any(), any()) }.coAnswers {
-            @Suppress("UNCHECKED_CAST") val successCallback = args[1] as (Unit) -> Unit
-            successCallback(Unit)
-        }
+        coEvery { insertNewObservationUseCaseMock.execute(any()) } returns Either.Left(Unit)
+
+        coEvery {
+            insertNewObservationUseCaseMock.invoke(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Either.Left(Unit)
     }
 
     private fun setupUseCaseError() {
-        coEvery { insertNewObservationUseCaseMock.execute(any(), any(), any()) }.coAnswers {
-            @Suppress("UNCHECKED_CAST") val errorCallback = args[2] as (String) -> Unit
-            errorCallback("error message")
-        }
+        coEvery { insertNewObservationUseCaseMock.execute(any()) } returns Either.Right("error message")
+
+        coEvery {
+            insertNewObservationUseCaseMock.invoke(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Either.Right("error message")
     }
 
     private fun setupUseCaseNotReturning() {
-        coEvery { insertNewObservationUseCaseMock.execute(any(), any(), any()) }.coAnswers {
+        coEvery { insertNewObservationUseCaseMock.execute(any()) }.coAnswers {
+            suspendCoroutine {
+                // never continue
+            }
+        }
+
+        coEvery {
+            insertNewObservationUseCaseMock.invoke(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        }.coAnswers {
             suspendCoroutine {
                 // never continue
             }
