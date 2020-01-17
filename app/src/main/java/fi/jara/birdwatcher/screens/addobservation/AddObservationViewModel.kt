@@ -3,6 +3,7 @@ package fi.jara.birdwatcher.screens.addobservation
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.*
+import fi.jara.birdwatcher.common.Either
 import fi.jara.birdwatcher.common.LiveEvent
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
@@ -15,8 +16,7 @@ class AddObservationViewModel(
     private val insertNewObservationUseCase: InsertNewObservationUseCase,
     private val bitmapResolver: BitmapResolver
 ) : ViewModel() {
-    private val viewModelJob = SupervisorJob()
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     private var hasLocationPermission: Boolean = false
     private var imageResolvingJob: Job? = null
@@ -108,22 +108,32 @@ class AddObservationViewModel(
         uiScope.launch {
             isSavingObservation.value = true
 
-            val addLocation = addLocationToObservation.value!! //addLocation LiveData was initialized with nonnull
+            val addLocation =
+                addLocationToObservation.value!! //addLocation LiveData was initialized with nonnull
             val imageBytes = userImageBitmap.value?.let { bitmapResolver.getBytes(it) }
 
-            insertNewObservationUseCase.execute(
-                InsertNewObservationUseCaseParams(
+
+            try {
+                val result = insertNewObservationUseCase(
                     observationName,
                     addLocation,
                     observationRarity,
                     observationDescription,
                     imageBytes
-                ),
-                { saveObservationSuccess() },
-                { saveObservationFailed(it) }
-            )
+                )
+
+
+                when (result) {
+                    is Either.Left -> saveObservationSuccess()
+                    is Either.Right -> saveObservationFailed(result.value)
+                }
+
+            } catch (e: Exception) {
+                saveObservationFailed(e.message ?: "")
+            }
         }
     }
+
 
     private fun saveObservationSuccess() {
         _displayMessages.value = "Successfully saved observation"
@@ -140,6 +150,6 @@ class AddObservationViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        viewModelJob.cancel()
+        uiScope.cancel()
     }
 }

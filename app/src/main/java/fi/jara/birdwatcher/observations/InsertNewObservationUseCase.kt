@@ -1,5 +1,6 @@
 package fi.jara.birdwatcher.observations
 
+import fi.jara.birdwatcher.common.Either
 import fi.jara.birdwatcher.common.SingleResultUseCase
 import fi.jara.birdwatcher.common.filesystem.ImageStorage
 import fi.jara.birdwatcher.common.location.LocationSource
@@ -14,36 +15,45 @@ class InsertNewObservationUseCase(
     private val observationRepository: ObservationRepository,
     private val locationSource: LocationSource,
     private val imageStorage: ImageStorage
-) :
-    SingleResultUseCase<InsertNewObservationUseCaseParams, Unit, String>() {
+) : SingleResultUseCase<InsertNewObservationUseCaseParams, Unit, String>() {
+
+    suspend operator fun invoke(
+        species: String,
+        addLocation: Boolean,
+        rarity: ObservationRarity?,
+        description: String?,
+        imageBytes: ByteArray?
+    ) = execute(
+        InsertNewObservationUseCaseParams(
+            species,
+            addLocation,
+            rarity,
+            description,
+            imageBytes
+        )
+    )
+
     override suspend fun execute(
-        params: InsertNewObservationUseCaseParams,
-        onSuccess: (Unit) -> Unit,
-        onError: (String) -> Unit
-    ) {
+        params: InsertNewObservationUseCaseParams
+    ): Either<Unit, String> = withContext(Dispatchers.Default) {
         if (!checkSpeciesNameIsValid(params.species)) {
-            onError("Species name is empty")
-            return
+            return@withContext Either.Right("Species name is empty")
         }
 
         if (params.rarity == null) {
-            onError("No rarity given")
-            return
+            return@withContext Either.Right("No rarity given")
         }
 
         val timestamp = Date()
 
         val coordinate = try {
-             if (params.addLocation) {
-                withContext(Dispatchers.Default) {
-                    locationSource.getCurrentLocation()
-                }
+            if (params.addLocation) {
+                locationSource.getCurrentLocation()
             } else {
                 null
             }
         } catch (e: Exception) {
-            onError("Error fetching location")
-            return
+            return@withContext Either.Right("Error fetching location")
         }
 
         val imagePath = params.imageBytes?.let {
@@ -52,8 +62,7 @@ class InsertNewObservationUseCase(
                     imageStorage.saveImageBytes(it, "${params.species}-$timestamp.jpg")
                 }
             } catch (e: Exception) {
-                onError("Error storing image")
-                return
+                return@withContext Either.Right("Error storing image")
             }
         }
 
@@ -70,10 +79,10 @@ class InsertNewObservationUseCase(
             observationRepository.addObservation(newObservationData)
         }
 
-        when (insertResult) {
-            is StatusSuccess -> onSuccess(Unit)
-            is StatusError -> onError(insertResult.message)
-            else -> onError("Unknown error while saving observation")
+        return@withContext when (insertResult) {
+            is StatusSuccess -> Either.Left(Unit)
+            is StatusError -> Either.Right(insertResult.message)
+            else -> Either.Right("Unknown error while saving observation")
         }
     }
 
