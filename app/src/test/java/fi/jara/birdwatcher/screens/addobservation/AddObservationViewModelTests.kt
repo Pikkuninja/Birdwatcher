@@ -1,6 +1,7 @@
 package fi.jara.birdwatcher.screens.addobservation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import com.jraska.livedata.test
 import fi.jara.CoroutinesMainDispatcherRule
 import fi.jara.birdwatcher.common.Either
@@ -37,7 +38,7 @@ class AddObservationViewModelTests {
     fun setup() {
         MockKAnnotations.init(this)
 
-        SUT = AddObservationViewModel(insertNewObservationUseCaseMock, bitmapResolverMock)
+        SUT = AddObservationViewModel(SavedStateHandle(), insertNewObservationUseCaseMock, bitmapResolverMock)
         setupUseCaseSuccess()
         setupBitmapResolverSuccess()
     }
