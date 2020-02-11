@@ -1,13 +1,16 @@
 package fi.jara.birdwatcher.common.di.presentation
 
+import androidx.fragment.app.FragmentFactory
 import dagger.Subcomponent
-import fi.jara.birdwatcher.common.di.observationdetails.ObservationDetailsComponent
+import fi.jara.birdwatcher.screens.MainActivity
 import fi.jara.birdwatcher.screens.addobservation.AddObservationFragment
 import fi.jara.birdwatcher.screens.observationslist.ObservationsListFragment
 
-@Subcomponent(modules = [PresentationModule::class, ViewModelModule::class])
+@Subcomponent(modules = [PresentationModule::class, ViewModelFactoryModule::class, FragmentFactoryModule::class])
 interface PresentationComponent {
-    fun observationDetailsBuilder(): ObservationDetailsComponent.Builder
+    fun inject(mainActivity: MainActivity)
     fun inject(observationsListFragment: ObservationsListFragment)
     fun inject(addObservationFragment: AddObservationFragment)
+
+    fun fragmentFactory(): FragmentFactory
 }

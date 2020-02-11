@@ -8,29 +8,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
-import fi.jara.birdwatcher.screens.common.BaseFragment
 import fi.jara.birdwatcher.observations.ObservationRarity
 import kotlinx.android.synthetic.main.add_observation_fragment.*
 import javax.inject.Inject
 
-class AddObservationFragment : BaseFragment() {
-    private lateinit var viewModel: AddObservationViewModel
+class AddObservationFragment @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+) : Fragment() {
+    private val viewModel: AddObservationViewModel by viewModels { viewModelFactory }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        presentationComponent.inject(this)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ) =
         inflater.inflate(R.layout.add_observation_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +38,6 @@ class AddObservationFragment : BaseFragment() {
     }
 
     private fun subscribeToViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(AddObservationViewModel::class.java)
 
         viewModel.addLocationToObservation.observe(viewLifecycleOwner, Observer {
             add_observation_location_toggle.isChecked = it
@@ -48,11 +46,13 @@ class AddObservationFragment : BaseFragment() {
         viewModel.userImageBitmap.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 add_observation_image_preview.setImageBitmap(it)
-                add_observation_image_preview.contentDescription = resources.getString(R.string.user_image_attached)
+                add_observation_image_preview.contentDescription =
+                    resources.getString(R.string.user_image_attached)
                 add_observation_image_toggle.isChecked = true
             } else {
                 add_observation_image_preview.setImageResource(R.drawable.ic_imageplaceholder_black_24dp)
-                add_observation_image_preview.contentDescription = resources.getString(R.string.no_image_attached)
+                add_observation_image_preview.contentDescription =
+                    resources.getString(R.string.no_image_attached)
                 add_observation_image_toggle.isChecked = false
             }
         })
@@ -102,7 +102,10 @@ class AddObservationFragment : BaseFragment() {
     }
 
     private fun requestLocationPermission() {
-        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        requestPermissions(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun requestImageFromGallery() {
@@ -121,7 +124,11 @@ class AddObservationFragment : BaseFragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             val granted = grantResults.getOrNull(0) ?: PackageManager.PERMISSION_DENIED
             viewModel.onLocationPermissionRequestFinished(granted == PackageManager.PERMISSION_GRANTED)

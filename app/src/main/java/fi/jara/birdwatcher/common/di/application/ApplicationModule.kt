@@ -45,7 +45,6 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun provideImageSaver(context: Context): ImageStorage = AndroidImageSaver(context)
 
-
     @Provides
     @Singleton
     fun provideDateFormat(): DateFormat = DateFormat.getDateTimeInstance()

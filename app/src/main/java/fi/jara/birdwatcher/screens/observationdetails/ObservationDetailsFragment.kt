@@ -4,53 +4,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.squareup.picasso.Picasso
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.common.filesystem.ImageStorage
-import fi.jara.birdwatcher.screens.common.BaseFragment
 import fi.jara.birdwatcher.screens.common.stringResourceId
 import kotlinx.android.synthetic.main.observation_details_fragment.*
 import java.text.DateFormat
 import javax.inject.Inject
 
-class ObservationDetailsFragment : BaseFragment() {
-    private lateinit var viewModel: ObservationDetailsViewModel
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var dateFormat: DateFormat
-
-    @Inject
-    lateinit var imageStorage: ImageStorage
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        presentationComponent
-            .observationDetailsBuilder()
-            .bindFragment(this)
-            .build()
-            .inject(this)
-    }
+class ObservationDetailsFragment @Inject constructor(
+    private val viewModelFactoryCreator: (ObservationDetailsFragment) -> ViewModelProvider.Factory,
+    private val dateFormat: DateFormat,
+    private val imageStorage: ImageStorage
+) : Fragment() {
+    private val viewModel: ObservationDetailsViewModel by viewModels { viewModelFactoryCreator(this) }
 
     override fun onStart() {
         super.onStart()
         subscribeToViewModel()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(
             R.layout.observation_details_fragment, container, false
         )
 
     private fun subscribeToViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ObservationDetailsViewModel::class.java)
-
         viewModel.observation.observe(viewLifecycleOwner, Observer { observation ->
             observation_species.text = observation.species
             observation_datetime.text = dateFormat.format(observation.timestamp)

@@ -7,16 +7,15 @@ import fi.jara.birdwatcher.common.Either
 import fi.jara.birdwatcher.common.LiveEvent
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
-import fi.jara.birdwatcher.observations.InsertNewObservationUseCaseParams
 import fi.jara.birdwatcher.observations.ObservationRarity
-import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AddObservationViewModel(
     private val insertNewObservationUseCase: InsertNewObservationUseCase,
     private val bitmapResolver: BitmapResolver
 ) : ViewModel() {
-    private val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     private var hasLocationPermission: Boolean = false
     private var imageResolvingJob: Job? = null
@@ -81,7 +80,7 @@ class AddObservationViewModel(
 
     fun setImage(uri: Uri) {
         imageResolvingJob?.cancel()
-        imageResolvingJob = uiScope.launch {
+        imageResolvingJob = viewModelScope.launch {
             isResolvingBitmap.value = true
             try {
                 val bitmap = bitmapResolver.getBitmap(uri)
@@ -105,7 +104,7 @@ class AddObservationViewModel(
         observationRarity: ObservationRarity?,
         observationDescription: String
     ) {
-        uiScope.launch {
+        viewModelScope.launch {
             isSavingObservation.value = true
 
             val addLocation =
@@ -136,7 +135,7 @@ class AddObservationViewModel(
 
     private fun saveObservationSuccess() {
         _displayMessages.value = "Successfully saved observation"
-        uiScope.launch {
+        viewModelScope.launch {
             delay(1000)
             _gotoListScreen.postValue(Unit)
         }
@@ -145,10 +144,5 @@ class AddObservationViewModel(
     private fun saveObservationFailed(errorMessage: String) {
         _displayMessages.value = errorMessage
         isSavingObservation.value = false
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        uiScope.cancel()
     }
 }

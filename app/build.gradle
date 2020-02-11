@@ -55,6 +55,7 @@ dependencies {
 
     implementation deps.appCompat
     implementation deps.androidKtx
+    implementation deps.fragment
 
     implementation deps.lifecycleKtx
     implementation deps.liveDataKtx
@@ -81,9 +82,12 @@ dependencies {
     testImplementation deps.kotlinCoroutinesTesting
     testImplementation deps.lifecycleTesting
     testImplementation deps.liveDataTesting
+    testImplementation deps.fragmentTesting
     androidTestImplementation deps.androidTestRunner
+    androidTestImplementation deps.androidKtxTesting
     androidTestImplementation deps.espresso
     androidTestImplementation deps.lifecycleTesting
     androidTestImplementation deps.liveDataTesting
     androidTestImplementation deps.roomTesting
+    debugImplementation deps.fragmentTesting
 }

@@ -3,39 +3,32 @@ package fi.jara.birdwatcher.screens.observationslist
 import android.os.Bundle
 import android.view.*
 import android.widget.PopupMenu
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
-import fi.jara.birdwatcher.screens.common.BaseFragment
-import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObservationSorting
 import fi.jara.birdwatcher.screens.observationdetails.ObservationDetailsFragmentArgs
 import kotlinx.android.synthetic.main.observations_list_fragment.*
 import javax.inject.Inject
 
-class ObservationsListFragment : BaseFragment() {
-    private lateinit var viewModel: ObservationsListViewModel
+class ObservationsListFragment @Inject constructor(
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val observationsAdapter: ObservationsAdapter
+) : Fragment() {
+    private val viewModel: ObservationsListViewModel by viewModels { viewModelFactory }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var observationsAdapter: ObservationsAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        presentationComponent.inject(this)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.observations_list_fragment, container, false)
 
         setHasOptionsMenu(true)
@@ -46,7 +39,8 @@ class ObservationsListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observations_recyclerview.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        observations_recyclerview.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         observations_recyclerview.adapter = observationsAdapter
         observationsAdapter.clickListener = {
             findNavController().navigate(
@@ -56,7 +50,10 @@ class ObservationsListFragment : BaseFragment() {
         }
 
         add_observation_button.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_observationsListFragment_to_addObservationFragment, null)
+            Navigation.createNavigateOnClickListener(
+                R.id.action_observationsListFragment_to_addObservationFragment,
+                null
+            )
         )
 
         subscribeToViewModel()
@@ -82,8 +79,6 @@ class ObservationsListFragment : BaseFragment() {
     }
 
     private fun subscribeToViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ObservationsListViewModel::class.java)
-
         viewModel.observations.observe(viewLifecycleOwner, Observer {
             observationsAdapter.submitList(it)
         })
