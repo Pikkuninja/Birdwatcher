@@ -9,8 +9,6 @@ import fi.jara.birdwatcher.screens.observationslist.ObservationsListFragment
 @Subcomponent(modules = [PresentationModule::class, ViewModelFactoryModule::class, FragmentFactoryModule::class])
 interface PresentationComponent {
     fun inject(mainActivity: MainActivity)
-    fun inject(observationsListFragment: ObservationsListFragment)
-    fun inject(addObservationFragment: AddObservationFragment)
 
     fun fragmentFactory(): FragmentFactory
 }

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import fi.jara.birdwatcher.R
 import fi.jara.birdwatcher.common.filesystem.ImageStorage
@@ -17,7 +16,7 @@ import java.text.DateFormat
 import javax.inject.Inject
 
 class ObservationDetailsFragment @Inject constructor(
-    private val viewModelFactoryCreator: (ObservationDetailsFragment) -> ViewModelProvider.Factory,
+    private val viewModelFactoryCreator: ObservationDetailsViewModelFactoryCreator,
     private val dateFormat: DateFormat,
     private val imageStorage: ImageStorage
 ) : Fragment() {

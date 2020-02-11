@@ -19,10 +19,10 @@ import kotlinx.android.synthetic.main.observations_list_fragment.*
 import javax.inject.Inject
 
 class ObservationsListFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
+    private val viewModelFactoryCreator: ObservationsListViewModelFactoryCreator,
     private val observationsAdapter: ObservationsAdapter
 ) : Fragment() {
-    private val viewModel: ObservationsListViewModel by viewModels { viewModelFactory }
+    private val viewModel: ObservationsListViewModel by viewModels { viewModelFactoryCreator(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

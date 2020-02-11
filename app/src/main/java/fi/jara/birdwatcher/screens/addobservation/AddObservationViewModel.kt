@@ -1,13 +1,14 @@
 package fi.jara.birdwatcher.screens.addobservation
 
 import android.net.Uri
+import android.os.Bundle
 import androidx.lifecycle.*
+import androidx.savedstate.SavedStateRegistryOwner
 import fi.jara.birdwatcher.common.Either
 import fi.jara.birdwatcher.common.LiveEvent
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
 import fi.jara.birdwatcher.observations.ObservationRarity
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
