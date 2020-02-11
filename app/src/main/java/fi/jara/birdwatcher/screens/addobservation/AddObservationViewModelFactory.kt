@@ -29,6 +29,6 @@ class AddObservationViewModelFactory(
         handle: SavedStateHandle
     ): T {
         @Suppress("UNCHECKED_CAST")
-        return AddObservationViewModel(insertNewObservationUseCase, bitmapResolver) as T
+        return AddObservationViewModel(handle, insertNewObservationUseCase, bitmapResolver) as T
     }
 }

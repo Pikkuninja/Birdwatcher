@@ -2,6 +2,7 @@ package fi.jara.birdwatcher.screens.addobservation
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import fi.jara.birdwatcher.common.Either
@@ -13,10 +14,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddObservationViewModel(
+    private val savedStateHandle: SavedStateHandle,
     private val insertNewObservationUseCase: InsertNewObservationUseCase,
     private val bitmapResolver: BitmapResolver
 ) : ViewModel() {
-
+    private val imageUriObserver: Observer<Uri?>
     private var hasLocationPermission: Boolean = false
 
     private val _displayMessages = LiveEvent<String>()
@@ -39,7 +41,7 @@ class AddObservationViewModel(
     val addLocationToObservation: LiveData<Boolean>
         get() = _addLocationToObservation
 
-    private val _userImageUri = MutableLiveData<Uri?>().apply { value = null }
+    private val _userImageUri = MutableLiveData<Uri?>()
     val userImageUri: LiveData<Uri?>
         get() = _userImageUri
 
@@ -48,6 +50,15 @@ class AddObservationViewModel(
     val saveButtonEnabled: LiveData<Boolean>
 
     init {
+        (savedStateHandle.get<Uri>(SAVED_STATE_IMAGE_URI))?.let {
+            _userImageUri.value = it
+        }
+
+        imageUriObserver = Observer {
+            savedStateHandle.set(SAVED_STATE_IMAGE_URI, it)
+        }
+        _userImageUri.observeForever(imageUriObserver)
+
         saveButtonEnabled = MediatorLiveData<Boolean>().apply {
             fun resolve() {
                 val saving = isSavingObservation.value ?: true
@@ -58,6 +69,11 @@ class AddObservationViewModel(
                 resolve()
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _userImageUri.removeObserver(imageUriObserver)
     }
 
     fun onAddLocationToObservationToggled(value: Boolean) {
@@ -77,7 +93,10 @@ class AddObservationViewModel(
 
     fun onAttachImageToggled(value: Boolean) {
         if (value) {
-            _requestImageUri.postValue(Unit)
+            // Require removing old image before requesting new one
+            if (_userImageUri.value == null) {
+                _requestImageUri.postValue(Unit)
+            }
         } else {
             _userImageUri.postValue(null)
         }
@@ -122,7 +141,6 @@ class AddObservationViewModel(
         }
     }
 
-
     private fun saveObservationSuccess() {
         _displayMessages.value = "Successfully saved observation"
         viewModelScope.launch {
@@ -134,5 +152,9 @@ class AddObservationViewModel(
     private fun saveObservationFailed(errorMessage: String) {
         _displayMessages.value = errorMessage
         isSavingObservation.value = false
+    }
+
+    companion object {
+        const val SAVED_STATE_IMAGE_URI = "add_observation_image_uri"
     }
 }
