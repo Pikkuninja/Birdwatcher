@@ -1,6 +1,5 @@
 package fi.jara.birdwatcher.screens.addobservation
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.*
 import fi.jara.birdwatcher.common.Either
@@ -28,6 +27,10 @@ class AddObservationViewModel(
     val requestLocationPermission: LiveData<Unit>
         get() = _requestLocationPermission
 
+    private val _requestImageUri = LiveEvent<Unit>()
+    val requestImageUri: LiveData<Unit>
+        get() = _requestImageUri
+
     private val _gotoListScreen = LiveEvent<Unit>()
     val gotoListScreen: LiveData<Unit>
         get() = _gotoListScreen
@@ -36,11 +39,10 @@ class AddObservationViewModel(
     val addLocationToObservation: LiveData<Boolean>
         get() = _addLocationToObservation
 
-    private val _userImageBitmap = MutableLiveData<Bitmap?>().apply { value = null }
-    val userImageBitmap: LiveData<Bitmap?>
-        get() = _userImageBitmap
+    private val _userImageUri = MutableLiveData<Uri?>().apply { value = null }
+    val userImageUri: LiveData<Uri?>
+        get() = _userImageUri
 
-    private val isResolvingBitmap = MutableLiveData<Boolean>().apply { value = false }
     private val isSavingObservation = MutableLiveData<Boolean>().apply { value = false }
 
     val saveButtonEnabled: LiveData<Boolean>
@@ -48,13 +50,8 @@ class AddObservationViewModel(
     init {
         saveButtonEnabled = MediatorLiveData<Boolean>().apply {
             fun resolve() {
-                val resolvingBitmap = isResolvingBitmap.value ?: true
                 val saving = isSavingObservation.value ?: true
-                value = !resolvingBitmap && !saving
-            }
-
-            addSource(isResolvingBitmap) {
-                resolve()
+                value = !saving
             }
 
             addSource(isSavingObservation) {
@@ -78,25 +75,16 @@ class AddObservationViewModel(
         }
     }
 
-    fun setImage(uri: Uri) {
-        imageResolvingJob?.cancel()
-        imageResolvingJob = viewModelScope.launch {
-            isResolvingBitmap.value = true
-            try {
-                val bitmap = bitmapResolver.getBitmap(uri)
-                _userImageBitmap.value = bitmap
-            } catch (e: Exception) {
-                _displayMessages.postValue("Error reading image")
-                _userImageBitmap.value = null
-            }
-            isResolvingBitmap.value = false
+    fun onAttachImageToggled(value: Boolean) {
+        if (value) {
+            _requestImageUri.postValue(Unit)
+        } else {
+            _userImageUri.postValue(null)
         }
     }
 
-    fun removeImage() {
-        imageResolvingJob?.cancel()
-        _userImageBitmap.value = null
-        isResolvingBitmap.value = false
+    fun onImageUriRequestFinished(uri: Uri?) {
+        _userImageUri.postValue(uri)
     }
 
     fun onSaveObservationClicked(
@@ -109,8 +97,10 @@ class AddObservationViewModel(
 
             val addLocation =
                 addLocationToObservation.value!! //addLocation LiveData was initialized with nonnull
-            val imageBytes = userImageBitmap.value?.let { bitmapResolver.getBytes(it) }
-
+            val imageBytes = userImageUri.value?.let {
+                val bitmap = bitmapResolver.getBitmap(it)
+                bitmapResolver.getBytes(bitmap)
+            }
 
             try {
                 val result = insertNewObservationUseCase(

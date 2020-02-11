@@ -1,7 +1,6 @@
 package fi.jara.birdwatcher.screens.addobservation
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -43,9 +42,9 @@ class AddObservationFragment @Inject constructor(
             add_observation_location_toggle.isChecked = it
         })
 
-        viewModel.userImageBitmap.observe(viewLifecycleOwner, Observer {
+        viewModel.userImageUri.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                add_observation_image_preview.setImageBitmap(it)
+                add_observation_image_preview.setImageURI(it)
                 add_observation_image_preview.contentDescription =
                     resources.getString(R.string.user_image_attached)
                 add_observation_image_toggle.isChecked = true
@@ -80,12 +79,12 @@ class AddObservationFragment @Inject constructor(
         }
 
         add_observation_image_toggle.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                requestImageFromGallery()
-            } else {
-                viewModel.removeImage()
-            }
+            viewModel.onAttachImageToggled(isChecked)
         }
+
+        viewModel.requestImageUri.observe(viewLifecycleOwner, Observer {
+            requestImageFromGallery()
+        })
 
         add_observation_save_button.setOnClickListener {
             val name = add_observation_species.text?.toString() ?: ""
@@ -140,11 +139,7 @@ class AddObservationFragment @Inject constructor(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == IMAGE_FROM_GALLERY_REQUEST_CODE) {
             val uri = data?.data
-            if (resultCode == Activity.RESULT_OK && uri != null) {
-                viewModel.setImage(uri)
-            } else {
-                viewModel.removeImage()
-            }
+            viewModel.onImageUriRequestFinished(uri)
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }

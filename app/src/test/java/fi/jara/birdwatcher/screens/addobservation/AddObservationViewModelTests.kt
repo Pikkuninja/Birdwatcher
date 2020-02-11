@@ -15,7 +15,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
-import org.mockito.ArgumentMatchers.any
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.suspendCoroutine
@@ -41,46 +40,6 @@ class AddObservationViewModelTests {
         SUT = AddObservationViewModel(insertNewObservationUseCaseMock, bitmapResolverMock)
         setupUseCaseSuccess()
         setupBitmapResolverSuccess()
-    }
-
-    @Test
-    fun `saveButtonEnabled set to false when setImage is called`() {
-        setupBitmapResolverNotReturning()
-        val liveData = SUT.saveButtonEnabled.test()
-
-        SUT.setImage(mockk())
-
-        liveData.assertValue(false)
-    }
-
-    @Test
-    fun `saveButtonEnabled set to true after setImage success`() {
-        val liveData = SUT.saveButtonEnabled.test()
-
-        SUT.setImage(mockk())
-
-        liveData.assertValue(true)
-    }
-
-    @Test
-    fun `saveButtonEnabled set to true after setImage error`() {
-        setupBitmapResolverError()
-        val liveData = SUT.saveButtonEnabled.test()
-
-        SUT.setImage(mockk())
-
-        liveData.assertValue(true)
-    }
-
-    @Test
-    fun `saveButtonEnabled set to true after removeImage cancels ongoing setImage`() {
-        setupBitmapResolverNotReturning()
-        val liveData = SUT.saveButtonEnabled.test()
-
-        SUT.setImage(mockk())
-        SUT.removeImage()
-
-        liveData.assertValue(true)
     }
 
     @Test
@@ -113,27 +72,17 @@ class AddObservationViewModelTests {
     }
 
     @Test
-    fun `userImageBitmap set after setImage success`() {
-        SUT.setImage(mockk())
+    fun `userImageUri set after imageUriRequestFinished with proper uri`() {
+        SUT.onImageUriRequestFinished(mockk())
 
-        SUT.userImageBitmap.test().assertHasValue()
+        SUT.userImageUri.test().assertHasValue()
     }
 
     @Test
-    fun `userImageBitmap null after setImage failure`() {
-        SUT.setImage(mockk())
-        setupBitmapResolverError()
-        SUT.setImage(mockk())
+    fun `userImageUri null after imageUriRequestFinished with null`() {
+        SUT.onImageUriRequestFinished(null)
 
-        SUT.userImageBitmap.test().assertValue(null)
-    }
-
-    @Test
-    fun `userImageBitmap null after removeImage call`() {
-        SUT.setImage(mockk())
-        SUT.removeImage()
-
-        SUT.userImageBitmap.test().assertValue(null)
+        SUT.userImageUri.test().assertValue(null)
     }
 
     @Test
