@@ -17,7 +17,6 @@ class AddObservationViewModel(
 ) : ViewModel() {
 
     private var hasLocationPermission: Boolean = false
-    private var imageResolvingJob: Job? = null
 
     private val _displayMessages = LiveEvent<String>()
     val displayMessages: LiveData<String>
