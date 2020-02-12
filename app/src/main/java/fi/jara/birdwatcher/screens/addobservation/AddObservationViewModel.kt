@@ -1,10 +1,7 @@
 package fi.jara.birdwatcher.screens.addobservation
 
 import android.net.Uri
-import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
 import fi.jara.birdwatcher.common.Either
 import fi.jara.birdwatcher.common.LiveEvent
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
