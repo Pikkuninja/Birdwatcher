@@ -4,14 +4,12 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import fi.jara.birdwatcher.R
@@ -35,10 +33,15 @@ class AddObservationFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         subscribeToViewModel()
+        addViewListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeViewListeners()
     }
 
     private fun subscribeToViewModel() {
-
         viewModel.addLocationToObservation.observe(viewLifecycleOwner, Observer {
             add_observation_location_toggle.isChecked = it
         })
@@ -75,6 +78,12 @@ class AddObservationFragment @Inject constructor(
             gotoListScreen()
         })
 
+        viewModel.requestImageUri.observe(viewLifecycleOwner, Observer {
+            requestImageFromGallery()
+        })
+    }
+
+    private fun addViewListeners() {
         add_observation_location_toggle.setOnCheckedChangeListener { _, isChecked ->
             viewModel.onAddLocationToObservationToggled(isChecked)
         }
@@ -82,10 +91,6 @@ class AddObservationFragment @Inject constructor(
         add_observation_image_toggle.setOnCheckedChangeListener { _, isChecked ->
             viewModel.onAttachImageToggled(isChecked)
         }
-
-        viewModel.requestImageUri.observe(viewLifecycleOwner, Observer {
-            requestImageFromGallery()
-        })
 
         add_observation_save_button.setOnClickListener {
             val name = add_observation_species.text?.toString() ?: ""
@@ -99,6 +104,25 @@ class AddObservationFragment @Inject constructor(
 
             viewModel.onSaveObservationClicked(name, rarity, description)
         }
+
+        add_observation_species.setOnEditorActionListener { _, _, _ ->
+            add_observation_species.clearFocus()
+            false
+        }
+
+        add_observation_description.setOnEditorActionListener { _, _, _ ->
+            add_observation_description.clearFocus()
+            false
+        }
+    }
+
+    private fun removeViewListeners() {
+        add_observation_location_toggle.setOnClickListener(null)
+        add_observation_image_toggle.setOnClickListener(null)
+        add_observation_save_button.setOnClickListener(null)
+
+        add_observation_species.setOnEditorActionListener(null)
+        add_observation_description.setOnEditorActionListener(null)
     }
 
     private fun requestLocationPermission() {
