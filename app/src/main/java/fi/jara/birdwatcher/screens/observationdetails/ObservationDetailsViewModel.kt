@@ -8,12 +8,15 @@ import fi.jara.birdwatcher.common.ValueFound
 import fi.jara.birdwatcher.data.StatusSuccess
 import fi.jara.birdwatcher.observations.Observation
 import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 
 class ObservationDetailsViewModel(
     private val observeSingleObservationsUseCase: ObserveSingleObservationsUseCase,
-    private val observationId: Long
+    private val observationId: Long,
+    uiDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
     val observation: LiveData<Observation>
@@ -28,7 +31,7 @@ class ObservationDetailsViewModel(
         get() = _observationLoadErrors
 
     init {
-        observation = liveData {
+        observation = liveData(uiDispatcher) {
             observeSingleObservationsUseCase.execute(observationId)
                 .collect { resultOrError ->
                     when (val result = resultOrError.result) {

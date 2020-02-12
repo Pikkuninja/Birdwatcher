@@ -12,6 +12,9 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,12 +23,15 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.suspendCoroutine
 
+@ExperimentalCoroutinesApi
 class AddObservationViewModelTests {
     @get:Rule
     var instantLiveDataExecutorRule: TestRule = InstantTaskExecutorRule()
 
     @get:Rule
     var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
+
+    private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     @MockK
     lateinit var insertNewObservationUseCaseMock: InsertNewObservationUseCase
@@ -38,7 +44,7 @@ class AddObservationViewModelTests {
     fun setup() {
         MockKAnnotations.init(this)
 
-        SUT = AddObservationViewModel(SavedStateHandle(), insertNewObservationUseCaseMock, bitmapResolverMock)
+        SUT = AddObservationViewModel(SavedStateHandle(), insertNewObservationUseCaseMock, bitmapResolverMock, testCoroutineDispatcher)
         setupUseCaseSuccess()
         setupBitmapResolverSuccess()
     }
@@ -109,8 +115,9 @@ class AddObservationViewModelTests {
         val liveData = SUT.gotoListScreen.test()
 
         SUT.onSaveObservationClicked("species", ObservationRarity.Common, "description")
+        testCoroutineDispatcher.advanceTimeBy(1000)
 
-        liveData.awaitNextValue(1100, TimeUnit.MILLISECONDS).assertHistorySize(1)
+        liveData.assertHistorySize(1)
     }
 
     @Test
@@ -214,18 +221,5 @@ class AddObservationViewModelTests {
     private fun setupBitmapResolverSuccess() {
         coEvery { bitmapResolverMock.getBitmap(any()) }.returns(mockk())
         coEvery { bitmapResolverMock.getBytes(any()) }.returns(byteArrayOf(1, 2, 3, 4))
-    }
-
-
-    private fun setupBitmapResolverError() {
-        coEvery { bitmapResolverMock.getBitmap(any()) }.throws(IOException())
-    }
-
-    private fun setupBitmapResolverNotReturning() {
-        coEvery { bitmapResolverMock.getBitmap(any()) }.coAnswers {
-            suspendCoroutine {
-                // never continue
-            }
-        }
     }
 }

@@ -11,6 +11,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,6 +26,8 @@ class ObservationDetailsViewModelTests {
     @JvmField
     var coroutineRule: TestRule = CoroutinesMainDispatcherRule()
 
+    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+
     private val observeSingleObservationsUseCaseMock: ObserveSingleObservationsUseCase = mockk()
     private val mockUseCaseResults = Channel<ResultOrError<ObservationStatus<Observation>, String>>(Channel.CONFLATED)
 
@@ -35,7 +38,7 @@ class ObservationDetailsViewModelTests {
         mockUseCaseResults.offer(ResultOrError.result(LoadingInitial()))
         coEvery { observeSingleObservationsUseCaseMock.execute(any()) } answers { mockUseCaseResults.consumeAsFlow() }
 
-        SUT = ObservationDetailsViewModel(observeSingleObservationsUseCaseMock, 1)
+        SUT = ObservationDetailsViewModel(observeSingleObservationsUseCaseMock, 1, testCoroutineDispatcher)
     }
 
     @Test

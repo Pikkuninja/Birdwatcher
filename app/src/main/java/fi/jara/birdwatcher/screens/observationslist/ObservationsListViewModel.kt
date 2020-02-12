@@ -6,11 +6,16 @@ import fi.jara.birdwatcher.common.LoadingInitial
 import fi.jara.birdwatcher.common.NotFound
 import fi.jara.birdwatcher.common.ValueFound
 import fi.jara.birdwatcher.observations.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 
-class ObservationsListViewModel(private val observeAllObservationsUseCase: ObserveAllObservationsUseCase) :
+class ObservationsListViewModel(
+    private val observeAllObservationsUseCase: ObserveAllObservationsUseCase,
+    uiDispatcher: CoroutineDispatcher = Dispatchers.Main
+) :
     ViewModel() {
 
     private val sorting =
@@ -36,7 +41,7 @@ class ObservationsListViewModel(private val observeAllObservationsUseCase: Obser
     val observations: LiveData<List<Observation>>
 
     init {
-        observations = liveData {
+        observations = liveData(uiDispatcher) {
             sorting
                 .asFlow()
                 .flatMapLatest { observeAllObservationsUseCase.execute(it) }

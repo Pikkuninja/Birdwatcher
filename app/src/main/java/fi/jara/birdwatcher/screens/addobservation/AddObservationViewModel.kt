@@ -10,13 +10,16 @@ import fi.jara.birdwatcher.common.LiveEvent
 import fi.jara.birdwatcher.common.filesystem.BitmapResolver
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
 import fi.jara.birdwatcher.observations.ObservationRarity
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AddObservationViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val insertNewObservationUseCase: InsertNewObservationUseCase,
-    private val bitmapResolver: BitmapResolver
+    private val bitmapResolver: BitmapResolver,
+    private val uiDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
     private val imageUriObserver: Observer<Uri?>
     private var hasLocationPermission: Boolean = false
@@ -111,7 +114,7 @@ class AddObservationViewModel(
         observationRarity: ObservationRarity?,
         observationDescription: String
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(uiDispatcher) {
             isSavingObservation.value = true
 
             val addLocation =
@@ -143,7 +146,7 @@ class AddObservationViewModel(
 
     private fun saveObservationSuccess() {
         _displayMessages.value = "Successfully saved observation"
-        viewModelScope.launch {
+        viewModelScope.launch(uiDispatcher) {
             delay(1000)
             _gotoListScreen.postValue(Unit)
         }

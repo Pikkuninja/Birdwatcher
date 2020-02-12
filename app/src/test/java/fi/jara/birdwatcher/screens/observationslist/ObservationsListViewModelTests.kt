@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consume
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -30,6 +31,8 @@ class ObservationsListViewModelTests {
     @JvmField
     var coroutineRule: TestRule = CoroutinesMainDispatcherRule()
 
+    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+
     private val useCaseResults = Channel<ResultOrError<ObservationStatus<List<Observation>>, String>>(Channel.CONFLATED)
     private val observeAllObservationsUseCaseMock: ObserveAllObservationsUseCase = mockk()
 
@@ -41,7 +44,7 @@ class ObservationsListViewModelTests {
 
         every { observeAllObservationsUseCaseMock.execute(any()) } answers { useCaseResults.consumeAsFlow() }
 
-        SUT = ObservationsListViewModel(observeAllObservationsUseCaseMock)
+        SUT = ObservationsListViewModel(observeAllObservationsUseCaseMock, testCoroutineDispatcher)
     }
 
     @Test
