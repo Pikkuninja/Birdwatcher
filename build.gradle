@@ -44,6 +44,7 @@ buildscript {
     ext.deps = [
             'androidGradlePlugin'           : "com.android.tools.build:gradle:$versions.androidGradlePlugin",
             'kotlinGradlePlugin'            : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
+            'kotlinAllOpenPlugin'           : "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin",
 
             'kotlinStdLib'                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin",
             'kotlinCoroutines'              : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines",
@@ -95,6 +96,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.androidGradlePlugin}"
         classpath deps.kotlinGradlePlugin
+        classpath deps.kotlinAllOpenPlugin
         classpath deps.ossLicensesGradlePlugin
         classpath deps.navigationSageArgsGradlePlugin
         // NOTE: Do not place your application dependencies here; they belong

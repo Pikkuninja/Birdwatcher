@@ -3,7 +3,12 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-allopen'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+
+allOpen {
+    annotation 'fi.jara.birdwatcher.common.testing.OpenForTesting'
+}
 
 android {
     compileSdkVersion versions.compileSdk
@@ -13,7 +18,7 @@ android {
         targetSdkVersion versions.targetSdk
         versionCode versions.versionCode
         versionName versions.versionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "fi.jara.birdwatcher.TestBirdwatcherApplicationTestRunner"
 
         buildConfigField "String", "SOURCE_CODE_REPOSITORY_URL", "\"https://github.com/Pikkuninja/birdwatcher\""
 
@@ -83,11 +88,13 @@ dependencies {
     testImplementation deps.lifecycleTesting
     testImplementation deps.liveDataTesting
     testImplementation deps.fragmentTesting
+    kaptTest deps.daggerKapt
     androidTestImplementation deps.androidTestRunner
     androidTestImplementation deps.androidKtxTesting
     androidTestImplementation deps.espresso
     androidTestImplementation deps.lifecycleTesting
     androidTestImplementation deps.liveDataTesting
     androidTestImplementation deps.roomTesting
+    kaptAndroidTest deps.daggerKapt
     debugImplementation deps.fragmentTesting
 }

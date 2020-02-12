@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ObservationsListFragmentTests {
 
-    lateinit var fragmentFactory: FragmentFactory
+    private lateinit var fragmentFactory: FragmentFactory
 
     @Before
     fun setup() {
