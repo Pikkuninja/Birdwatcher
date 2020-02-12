@@ -1,6 +1,5 @@
 package fi.jara.birdwatcher.screens.observationslist
 
-import android.app.Application
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
@@ -10,8 +9,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import fi.jara.birdwatcher.R
+import fi.jara.birdwatcher.TestApplicationComponentOwner
+import fi.jara.birdwatcher.TestBirdwatcherApplication
+import fi.jara.birdwatcher.common.di.DaggerTestApplicationComponent
+import fi.jara.birdwatcher.common.di.TestApplicationComponent
 import fi.jara.birdwatcher.common.di.application.ApplicationModule
-import fi.jara.birdwatcher.common.di.application.DaggerApplicationComponent
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,11 +26,12 @@ class ObservationsListFragmentTests {
     @Before
     fun setup() {
         val app =
-            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as Application
-        val presentationComponent = DaggerApplicationComponent.builder()
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestBirdwatcherApplication
+        app.testApplicationComponent = DaggerTestApplicationComponent.builder()
             .applicationModule(ApplicationModule(app))
             .build()
-            .newPresentationComponent()
+
+        val presentationComponent = app.testApplicationComponent.newPresentationComponent()
         fragmentFactory = presentationComponent.fragmentFactory()
     }
 

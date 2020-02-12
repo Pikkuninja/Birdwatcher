@@ -3,12 +3,7 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-allopen'
 apply plugin: "androidx.navigation.safeargs.kotlin"
-
-allOpen {
-    annotation 'fi.jara.birdwatcher.common.testing.OpenClass'
-}
 
 android {
     compileSdkVersion versions.compileSdk

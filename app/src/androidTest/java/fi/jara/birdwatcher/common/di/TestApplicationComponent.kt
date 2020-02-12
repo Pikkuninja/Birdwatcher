@@ -12,5 +12,4 @@ import javax.inject.Singleton
 @Component(modules = [ApplicationModule::class, LocationModule::class, RepositoryModule::class])
 interface TestApplicationComponent: ApplicationComponent {
     override fun newPresentationComponent(): TestPresentationComponent
-
 }
