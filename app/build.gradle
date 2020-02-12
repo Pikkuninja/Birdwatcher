@@ -7,7 +7,7 @@ apply plugin: 'kotlin-allopen'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 allOpen {
-    annotation 'fi.jara.birdwatcher.common.testing.OpenForTesting'
+    annotation 'fi.jara.birdwatcher.common.testing.OpenClass'
 }
 
 android {
