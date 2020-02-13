@@ -44,6 +44,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    testOptions {
+        animationsDisabled true
+    }
 }
 
 repositories {
@@ -89,7 +93,6 @@ dependencies {
     testImplementation deps.lifecycleTesting
     testImplementation deps.liveDataTesting
     testImplementation deps.fragmentTesting
-    kaptTest deps.daggerKapt
 
     androidTestImplementation deps.androidTestRunner
     androidTestImplementation deps.androidKtxTesting
@@ -102,5 +105,4 @@ dependencies {
     androidTestImplementation deps.liveDataTesting
     androidTestImplementation deps.navigationTesting
     androidTestImplementation deps.roomTesting
-    kaptAndroidTest deps.daggerKapt
 }

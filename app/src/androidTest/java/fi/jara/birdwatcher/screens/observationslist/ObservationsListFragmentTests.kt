@@ -97,10 +97,6 @@ class ObservationsListFragmentTests {
             Navigation.setViewNavController(fragment.requireView(), navController)
         }
 
-        // If run with other tests, the click listener often doesn't get called without this sleep
-        // All sorts of Espresso's own synchronization things don't seem to help either
-        Thread.sleep(150)
-
         onView(withId(R.id.add_observation_button)).perform(click())
         assertEquals(navController.currentDestination?.id, R.id.addObservationFragment)
     }
