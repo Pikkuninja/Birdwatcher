@@ -15,8 +15,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 class ObservationsListViewModel(
     private val observeAllObservationsUseCase: ObserveAllObservationsUseCase,
     uiDispatcher: CoroutineDispatcher = Dispatchers.Main
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val sorting =
         MutableLiveData<ObservationSorting>().apply { value = ObservationSorting.TimeDescending }

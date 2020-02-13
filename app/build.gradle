@@ -46,6 +46,10 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -86,9 +90,14 @@ dependencies {
     kaptTest deps.daggerKapt
     androidTestImplementation deps.androidTestRunner
     androidTestImplementation deps.androidKtxTesting
+    androidTestImplementation deps.mockk
+    androidTestImplementation deps.mockkAndroid
+    androidTestImplementation deps.dexopener
     androidTestImplementation deps.espresso
+    androidTestImplementation deps.kotlinCoroutinesTesting
     androidTestImplementation deps.lifecycleTesting
     androidTestImplementation deps.liveDataTesting
+    androidTestImplementation deps.navigationTesting
     androidTestImplementation deps.roomTesting
     kaptAndroidTest deps.daggerKapt
     debugImplementation deps.fragmentTesting
