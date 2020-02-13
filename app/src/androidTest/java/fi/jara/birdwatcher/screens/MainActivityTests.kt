@@ -38,5 +38,7 @@ class MainActivityTests {
         }
 
         assertEquals(navController?.currentDestination?.id, R.id.observationsListFragment)
+
+        scenario.close()
     }
 }

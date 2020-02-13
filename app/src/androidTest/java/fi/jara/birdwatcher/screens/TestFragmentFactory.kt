@@ -20,7 +20,7 @@ import java.text.DateFormat
 /// FragmentFactory that can create all of the apps Fragments
 /// with mocked deps in a way that the Fragment can be safely launched
 /// To override the default config, provide a lambda for it in the constructor
-class TestFragmentFactory(private val context: Context, nonDefaults: Map<Class<Fragment>, () -> Fragment> = emptyMap()) :
+class TestFragmentFactory(private val context: Context, nonDefaults: Map<Class<*>, () -> Fragment> = emptyMap()) :
     FragmentFactory() {
     private val classNamedNonDefaults = nonDefaults.mapKeys { it.key.name }
 

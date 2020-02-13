@@ -39,7 +39,7 @@ buildscript {
             'androidTestRunner'      : '1.1.1',
             'androidxKtxTesting'     : '1.1.1',
             'espresso'               : '3.1.1',
-            'liveDataTesting'        : '1.1.0',
+            'liveDataTesting'        : '1.1.0'
     ]
 
     ext.deps = [
@@ -88,7 +88,7 @@ buildscript {
             'lifecycleTesting'              : "androidx.arch.core:core-testing:$versions.archCore",
             'liveDataTesting'               : "com.jraska.livedata:testing-ktx:$versions.liveDataTesting",
             'navigationTesting'             : "androidx.navigation:navigation-testing:$versions.navigation",
-            'fragmentTesting'               : "androidx.fragment:fragment-testing:$versions.fragment",
+            'fragmentTesting'               : "androidx.fragment:fragment-testing:$versions.fragment"
     ]
 
     repositories {

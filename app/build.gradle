@@ -81,6 +81,8 @@ dependencies {
 
     implementation deps.ossLicenses
 
+    debugImplementation deps.fragmentTesting
+
     testImplementation deps.junit
     testImplementation deps.mockk
     testImplementation deps.kotlinCoroutinesTesting
@@ -88,10 +90,11 @@ dependencies {
     testImplementation deps.liveDataTesting
     testImplementation deps.fragmentTesting
     kaptTest deps.daggerKapt
+
     androidTestImplementation deps.androidTestRunner
     androidTestImplementation deps.androidKtxTesting
-    androidTestImplementation deps.mockk
-    androidTestImplementation deps.mockkAndroid
+    androidTestImplementation (deps.mockkAndroid) { exclude module: 'objenesis' }
+    androidTestImplementation 'org.objenesis:objenesis:2.6'
     androidTestImplementation deps.dexopener
     androidTestImplementation deps.espresso
     androidTestImplementation deps.kotlinCoroutinesTesting
@@ -100,5 +103,4 @@ dependencies {
     androidTestImplementation deps.navigationTesting
     androidTestImplementation deps.roomTesting
     kaptAndroidTest deps.daggerKapt
-    debugImplementation deps.fragmentTesting
 }
