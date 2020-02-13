@@ -13,6 +13,8 @@ import fi.jara.birdwatcher.data.ObservationRepository
 import fi.jara.birdwatcher.observations.InsertNewObservationUseCase
 import fi.jara.birdwatcher.observations.ObserveAllObservationsUseCase
 import fi.jara.birdwatcher.observations.ObserveSingleObservationsUseCase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import java.text.DateFormat
 import javax.inject.Singleton
 
@@ -48,4 +50,8 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun provideDateFormat(): DateFormat = DateFormat.getDateTimeInstance()
+
+    @Provides
+    @Singleton
+    fun provideUiDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }

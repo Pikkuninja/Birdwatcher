@@ -1,29 +1,16 @@
 package fi.jara.birdwatcher.screens.observationslist
 
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
 import fi.jara.birdwatcher.observations.ObserveAllObservationsUseCase
+import fi.jara.birdwatcher.screens.common.LambdaSavedStateViewModelFactory
 
 class ObservationsListViewModelFactoryCreator(
     private val observeAllObservationsUseCase: ObserveAllObservationsUseCase
-): (ObservationsListFragment) -> ObservationsListViewModelFactory {
-    override fun invoke(fragment: ObservationsListFragment): ObservationsListViewModelFactory {
-        return ObservationsListViewModelFactory(fragment, observeAllObservationsUseCase)
-    }
-}
-
-class ObservationsListViewModelFactory(
-    savedStateRegistryOwner: SavedStateRegistryOwner,
-    private val observeAllObservationsUseCase: ObserveAllObservationsUseCase
-) : AbstractSavedStateViewModelFactory(savedStateRegistryOwner, null) {
-    override fun <T : ViewModel?> create(
-        key: String,
-        modelClass: Class<T>,
-        handle: SavedStateHandle
-    ): T {
-        @Suppress("UNCHECKED_CAST")
-        return ObservationsListViewModel(observeAllObservationsUseCase) as T
+) : (ObservationsListFragment) -> ViewModelProvider.Factory {
+    override fun invoke(fragment: ObservationsListFragment): ViewModelProvider.Factory {
+        return LambdaSavedStateViewModelFactory(
+            fragment,
+            fragment.arguments
+        ) { ObservationsListViewModel(observeAllObservationsUseCase) }
     }
 }
