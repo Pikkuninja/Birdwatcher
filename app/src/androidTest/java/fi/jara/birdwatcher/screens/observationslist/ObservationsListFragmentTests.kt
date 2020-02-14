@@ -117,9 +117,9 @@ class ObservationsListFragmentTests {
             factory = fragmentFactory
         )
 
-        onView(withText("species10")).check(doesNotExist())
+        onView(withText("species8")).check(doesNotExist())
         onView(withId(R.id.observations_recyclerview)).perform(ViewActions.swipeUp())
-        onView(withText("species10")).check(matches(isDisplayed()))
+        onView(withText("species8")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -290,24 +290,6 @@ class ObservationsListFragmentTests {
             10,
             "species10",
             Date(2000),
-            null,
-            ObservationRarity.Common,
-            null,
-            null
-        ),
-        Observation(
-            11,
-            "species11",
-            Date(2100),
-            null,
-            ObservationRarity.Common,
-            null,
-            null
-        ),
-        Observation(
-            12,
-            "species12",
-            Date(2200),
             null,
             ObservationRarity.Common,
             null,
