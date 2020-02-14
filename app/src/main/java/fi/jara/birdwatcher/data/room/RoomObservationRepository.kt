@@ -18,6 +18,7 @@ class RoomObservationRepository(private val database: ObservationDatabase) : Obs
             ObservationSorting.NameAscending -> dao.observeAllObservationsSpeciesAsc()
         }
 
+        @Suppress("EXPERIMENTAL_API_USAGE")
         return daoFlow
             .map { entities -> entities.map { it.toObservationModel() } }
             .map {
@@ -31,7 +32,7 @@ class RoomObservationRepository(private val database: ObservationDatabase) : Obs
     }
 
     override fun singleObservation(id: Long): Flow<RepositoryLoadingStatus<Observation>> {
-
+        @Suppress("EXPERIMENTAL_API_USAGE")
         return dao.observeObservation(id)
             .map { it?.toObservationModel() }
             .map {

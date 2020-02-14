@@ -41,6 +41,7 @@ class ObservationsListViewModel(
 
     init {
         observations = liveData(uiDispatcher) {
+            @Suppress("EXPERIMENTAL_API_USAGE")
             sorting
                 .asFlow()
                 .flatMapLatest { observeAllObservationsUseCase.execute(it) }

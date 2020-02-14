@@ -38,7 +38,7 @@ Keep track of bird observations
 - Dark mode toggle and overall some theme adjustments from default
 
 # Building and running
-Project uses gradle and doesn't require anything out of your regular Android app building pipeline. The Gradle warnings about 'variant.getPreBuild' and 'variant.getMergeResources' are expected and caused by the gradle plugin used to automatically generate open source licenses listings (https://github.com/google/play-services-plugins/issues/37, issue is closed but people are still reporting having these issues with newest releases).
+Project uses gradle and doesn't require anything out of your regular Android app building pipeline.
 
 Easiest way to build and run is through Android Studio
 

@@ -31,7 +31,7 @@ buildscript {
             'cardView'               : '1.0.0',
 
             'ossLicenses'            : '17.0.0',
-            'ossLicensesGradlePlugin': '0.9.5',
+            'ossLicensesGradlePlugin': '0.10.1',
 
             'junit'                  : '4.12',
             'mockk'                  : '1.9.3',
@@ -97,7 +97,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:${versions.androidGradlePlugin}"
+        classpath deps.androidGradlePlugin
         classpath deps.kotlinGradlePlugin
         classpath deps.ossLicensesGradlePlugin
         classpath deps.navigationSageArgsGradlePlugin
