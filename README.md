@@ -16,7 +16,7 @@ Keep track of bird observations
 - View a single stored observation in more detail
 
 # Implementation notes
-- Uses AndroidX and Jetpack libraries heavily: LiveData, Navigation, Room, ViewModel
+- Uses AndroidX and Jetpack libraries heavily: LiveData, Navigation, Room, ViewModel (with saved state)
   - I wanted to test using these, as Room was the only one I had previously used
 - Asynchronity handled with Kotlin Coroutines (including Flows)
   - Again, some tech I hadn't used in earlier projects
@@ -24,14 +24,18 @@ Keep track of bird observations
   - Dagger graph includes e.g. UseCases & their dependencies, ViewModelProviders
 
 # Things that could be improved
-- UI tests
+- The DI setup for VMs is annoying and needs quite a lot of hand-written code
+  - To support SavedStateHandles and giving params from Fragment's arguments to VM's constructor,
+    basically a factory of factories is injected to the Fragment (from a FragmentFactory, yo dawg).
+    Some code repetition has been cut by adding factories that take lambdas in to create the final VM.
+    Something like AssistedInject could help but I don't like how using it would move extraction of arguments to the Fragment itself. 
+- UI tests, there are some but the DI setup for them just feels wrong and requires lot of manual config
 - Better form error handling: currently errors in filling the add observation form are reported 1 at a time
 - Better feedback when saving the observation is in progress, getting user's location with GPS can take a while
   - Maybe add a cancelation option too?
 - Better i18n, viewmodels can currently just send hardcoded strings to fragments
-- Better thread handling (the coroutines are currently mostly run on main dispatcher)
-- Remove all other Android dependencies from business layer (ImageStorage is used in an UseCase, and that exposes Android Uris)
-- Update the App theme (colors, etc.) from defaults and make an app icon
+- Remove all other Android dependencies from business layer (for example Android Uris are used in ViewModels)
+- Dark mode toggle and overall some theme adjustments from default
 
 # Building and running
 Project uses gradle and doesn't require anything out of your regular Android app building pipeline. The Gradle warnings about 'variant.getPreBuild' and 'variant.getMergeResources' are expected and caused by the gradle plugin used to automatically generate open source licenses listings (https://github.com/google/play-services-plugins/issues/37, issue is closed but people are still reporting having these issues with newest releases).
