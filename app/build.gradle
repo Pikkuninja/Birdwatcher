@@ -96,8 +96,7 @@ dependencies {
 
     androidTestImplementation deps.androidTestRunner
     androidTestImplementation deps.androidKtxTesting
-    androidTestImplementation (deps.mockkAndroid) { exclude module: 'objenesis' }
-    androidTestImplementation 'org.objenesis:objenesis:2.6'
+    androidTestImplementation deps.mockkAndroid
     androidTestImplementation deps.dexopener
     androidTestImplementation deps.espresso
     androidTestImplementation deps.kotlinCoroutinesTesting
